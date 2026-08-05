@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Prueba</title>
+
+    <!-- Estilos de prueba para ver la funcionalidad del simulador. Recordar que esta parte tiene que encontrarse en el archivo estilos.css-->
+    <style>
+        body {font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 20px;}
+
+        .contenedor {max-width: 650px; background-color: #ffffff; border: 2px solid #cccccc; border-radius: 8px; padding: 20px; margin: 0 auto;}
+
+        .seccion {border: 1px solid #e0e0e0; background-color: #fafafa; padding: 15px; margin-bottom: 15px; border-radius: 5px;}
+
+        label {font-weight: bold; display: block; margin-top: 10px; margin-bottom: 5px;}
+
+        input[type="text"], input[type="number"], select {width: 95%; padding: 8px; border: 1px solid #aaaaaa; border-radius: 4px; font-size: 14px;}
+
+        .nota-aclaratoria {font-size: 12px; color: #555555; margin-top: 3px; margin-bottom: 8px;}
+
+        button {background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px;}
+
+        button:hover {background-color: #0056b3;}
+
+        #caja-resultado {border: 2px dashed #007bff; background-color: #eef6ff; padding: 15px; margin-top: 15px; border-radius: 5px; text-align: center;}
+
+        #texto-resultado {font-size: 15px; font-weight: bold; color: #222222;}
+    </style>
+</head>
+<body>
+
+    <div class="contenedor">
+        <h2>Simulador de Notas Académicas</h2>
+
+        <!-- Selección del Modo de Trabajo-->
+        <div class="seccion">
+            <label for="select-modo">1. Selecciona lo que deseas calcular:</label>
+            <select id="select-modo" onchange="cambiarModo()">
+                <option value="simular">Modo A: Saber como una nota afecta en tu pomedio final.</option>
+                <option value="necesaria">Modo B: Calcular nota necesaria para alcanzar promedio deseado.</option>
+            </select>
+        </div>
+
+        <!-- MODO A: SIMULAR NOTA FINAL (Ponderación 33.33% por criterio) -->
+        
+        <div id="sec-simular" class="seccion">
+            <h3> Modo A: Simulación de Promedio Final</h3>
+            <p class="nota-aclaratoria">
+                 <strong>Instrucciones:</strong> Ingresa tus notas separadas por comas (Ejemplo: <code>45, 50, 38</code>). 
+                Las notas deben ser entre <strong>0 y 50 puntos</strong>. Si no tienes notas en un criterio, puedes dejar la casilla vacía o simularla.
+            </p>
+
+            <label for="input-c1">Criterio 1 (33.33% del total):</label>
+            <input type="text" id="input-c1" placeholder="Ejemplo: 40, 48, 50">
+            <div class="nota-aclaratoria">Ingresa todas las tareas/pruebas del Criterio 1.</div>
+
+            <label for="input-c2">Criterio 2 (33.33% del total):</label>
+            <input type="text" id="input-c2" placeholder="Ejemplo: 35, 42">
+            <div class="nota-aclaratoria">Ingresa todas las tareas/pruebas del Criterio 2.</div>
+
+            <label for="input-c3">Criterio 3 (33.33% del total):</label>
+            <input type="text" id="input-c3" placeholder="Ejemplo: 50, 50, 45">
+            <div class="nota-aclaratoria">Ingresa todas las tareas/pruebas del Criterio 3.</div>
+        </div>
+
+        <!-- MODO B: CALCULAR NOTA NECESARIA (Despeje de x) -->
+
+        <div id="sec-necesaria" class="seccion" style="display: none;">
+            <h3>Modo B: Nota necesaria para alcanzar promedio deseado</h3>
+            
+            <label for="input-T">2. ¿Cuál es tu Promedio Final Objetivo?</label>
+            <input type="number" id="input-T" step="0.1" min="0" max="10" placeholder="Ejemplo: 7.0 o 8.5">
+            <div class="nota-aclaratoria">Escribe la nota final que deseas obtener (Escala de 0.0 a 10.0).</div>
+
+            <label for="select-crit-activo">3. ¿En cuál criterio tienes la actividad faltante?</label>
+            <select id="select-crit-activo">
+                <option value="1">Criterio 1</option>
+                <option value="2">Criterio 2</option>
+                <option value="3">Criterio 3</option>
+            </select>
+
+            <label for="input-total-act">4. ¿Cuántas actividades en TOTAL tiene este criterio?</label>
+            <input type="number" id="input-total-act" min="1" value="3" placeholder="Ejemplo: 3">
+            <div class="nota-aclaratoria">Cuenta las notas que ya tienes más las que te faltan por conocer para que el sistema calcule tu nota faltante (x).</div>
+
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #cccccc;">
+
+            <p class="nota-aclaratoria">
+                 <strong>Registro de Notas Existentes:</strong> Ingresa las notas que ya tienes en cada casillero separadas por comas. 
+            </p>
+
+            <label for="input-c1-b">Notas del Criterio 1:</label>
+            <input type="text" id="input-c1-b" placeholder="Ejemplo: 40, 45">
+
+            <label for="input-c2-b">Notas del Criterio 2:</label>
+            <input type="text" id="input-c2-b" placeholder="Ejemplo: 50, 50">
+
+            <label for="input-c3-b">Notas del Criterio 3:</label>
+            <input type="text" id="input-c3-b" placeholder="Ejemplo: 38, 40">
+        </div>
+
+        <!-- BOTÓN ÚNICO DE CÁLCULO -->
+        <button type="button" onclick="ejecutarCalculo()">Calcular Resultado</button>
+
+        <!-- CAJA DE RESPUESTA / REPORTES DE ERROR -->
+        <div id="caja-resultado">
+            <div id="texto-resultado">Resultado </div>
+        </div>
+    </div>
+
+    <!-- Carga ordenada de los scripts de lógica y validación -->
+    <script src="Funciones/Validaciones.js"></script>
+    <script src="Funciones/Simulador.js"></script>
+    <script src="Funciones/Main.js"></script>
+
+</body>
+</html>
