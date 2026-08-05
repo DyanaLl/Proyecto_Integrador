@@ -7,47 +7,58 @@
 // SEMÁFORO
 
 // SIMULADOR DE NOTAS
-function esTextoVacio(texto) {
-    if (texto === null || texto === undefined || texto.trim() === "") {
-        return true;
-    }
-    return false;
-}
+function validarNotasCriterio(textoInput, nombreCriterio) {
+    let erroresEncontrados = [];
+    let notasValidas = [];
 
-// Analiza un criterio y devuelve la lista de TODOS los errores que encontró
-function validarNotasCriterio(texto, nombreCriterio) {
-    let errores = [];
-    let notasNumericas = [];
-
-    if (esTextoVacio(texto)) {
-        return { errores: errores, notas: notasNumericas };
+    // Si el campo está vacío, retornamos un arreglo vacío de notas sin errores
+    if (textoInput === null || textoInput === undefined || textoInput.trim() === "") {
+        return {
+            errores: erroresEncontrados,
+            notas: notasValidas
+        };
     }
 
-    let listaTexto = texto.split(",");
+    // Separar los valores por comas
+    let elementos = textoInput.split(',');
 
-    for (let i = 0; i < listaTexto.length; i++) {
-        let elemento = listaTexto[i].trim();
+    for (let i = 0; i < elementos.length; i++) {
+        let elementoLimpio = elementos[i].trim();
 
-        if (elemento === "") continue;
+        if (elementoLimpio !== "") {
+            let numero = Number(elementoLimpio);
 
-        let numero = Number(elemento);
-
-        // 1. Validar si contiene letras o palabras
-        if (isNaN(numero)) {
-            errores.push("'" + elemento + "' no es un número (solo se aceptan números, no palabras ni letras)");
-        } 
-        // 2. Validar si está fuera del rango de 0 a 50 (negativos o mayores a 50)
-        else if (numero < 0 || numero > 50) {
-            errores.push("la nota " + numero + " está fuera de rango (solo se aceptan notas entre 0 y 50)");
-        } 
-        // 3. Si todo está bien, guardamos el número
-        else {
-            notasNumericas.push(numero);
+            // Verificar si es un número válido y si está entre 0 y 50
+            if (isNaN(numero)) {
+                erroresEncontrados.push('La nota "' + elementoLimpio + '" no es un número válido');
+            } else if (numero < 0 || numero > 50) {
+                erroresEncontrados.push('La nota ' + numero + ' está fuera de rango (debe ser de 0 a 50)');
+            } else {
+                notasValidas.push(numero);
+            }
         }
     }
 
     return {
-        errores: errores,
-        notas: notasNumericas
+        errores: erroresEncontrados,
+        notas: notasValidas
+    };
+}
+
+// Función para validar que el Promedio Objetivo este entre (0 a 10)
+function validarPromedioObjetivo(valorTexto) {
+    let numero = Number(valorTexto);
+
+    if (valorTexto === null || valorTexto === undefined || valorTexto.trim() === "" || isNaN(numero) || numero < 0 || numero > 10) {
+        return {
+            esValido: false,
+            mensajeError: "Por favor, ingresa un Promedio Objetivo válido entre 0.0 y 10.0."
+        };
+    }
+
+    return {
+        esValido: true,
+        mensajeError: "",
+        valor: numero
     };
 }
