@@ -10,8 +10,9 @@
 
     <div class="contenedor">
         <h2>Simulador de Notas Académicas</h2>
-
-        <!-- Selección del Modo de Trabajo-->
+        <!--------------------------------------
+         Selección del Modo de Trabajo
+        ------------------------------------->
         <div class="seccion">
             <label for="select-modo">1. Selecciona lo que deseas calcular:</label>
             <select id="select-modo" onchange="cambiarModo()">
@@ -20,12 +21,14 @@
             </select>
         </div>
 
-        <!-- MODO A: SIMULAR NOTA FINAL (Ponderación 33.33% por criterio) -->
-        
+        <!-- ----------------------------------------------------------
+        MODO A: SIMULAR NOTA FINAL (Ponderación 33.33% por criterio)
+        ---------------------------------------------------------------->
+
         <div id="sec-simular" class="seccion">
             <h3> Modo A: Simulación de Promedio Final</h3>
             <p class="nota-aclaratoria">
-                 <strong>Instrucciones:</strong> Ingresa tus notas separadas por comas (Ejemplo: <code>45, 50, 38</code>). 
+                 <strong>Instrucciones:</strong> Ingresa tus notas separadas por comas (Ejemplo: <code>45, 50, 38</code>).
                 Las notas deben ser entre <strong>0 y 50 puntos</strong>. Si no tienes notas en un criterio, puedes dejar la casilla vacía o simularla.
             </p>
 
@@ -42,11 +45,13 @@
             <div class="nota-aclaratoria">Ingresa todas las tareas/pruebas del Criterio 3.</div>
         </div>
 
-        <!-- MODO B: CALCULAR NOTA NECESARIA (Despeje de x) -->
+        <!-----------------------------------------------
+        MODO B: CALCULAR NOTA NECESARIA (Despeje de x)
+        ------------------------------------------------>
 
         <div id="sec-necesaria" class="seccion" style="display: none;">
             <h3>Modo B: Nota necesaria para alcanzar promedio deseado</h3>
-            
+
             <label for="input-T">2. ¿Cuál es tu Promedio Final Objetivo?</label>
             <input type="number" id="input-T" step="0.1" min="0" max="10" placeholder="Ejemplo: 7.0 o 8.5">
             <div class="nota-aclaratoria">Escribe la nota final que deseas obtener (Escala de 0.0 a 10.0).</div>
@@ -65,7 +70,7 @@
             <hr style="margin: 15px 0; border: 0; border-top: 1px solid #cccccc;">
 
             <p class="nota-aclaratoria">
-                 <strong>Registro de Notas Existentes:</strong> Ingresa las notas que ya tienes en cada casillero separadas por comas. 
+                 <strong>Registro de Notas Existentes:</strong> Ingresa las notas que ya tienes en cada casillero separadas por comas.
             </p>
 
             <label for="input-c1-b">Notas del Criterio 1:</label>
@@ -81,13 +86,64 @@
         <!-- BOTÓN ÚNICO DE CÁLCULO -->
         <button type="button" onclick="ejecutarCalculo()">Calcular Resultado</button>
 
-        <!-- CAJA DE RESPUESTA / REPORTES DE ERROR -->
+        <!---------------------------------------
+         CAJA DE RESPUESTA / REPORTES DE ERROR
+          -------------------------------------->
         <div id="caja-resultado">
             <div id="texto-resultado">Resultado </div>
         </div>
     </div>
+    <!------
+     SEMÁFORO
+     ------->
+    <div id="seccion-semaforo" class="seccion">
+        <h3>Semáforo de Alertas Académicas</h3>
+        <p class="nota-aclaratoria">
+            El semáforo muestra el estado académico
+            según el promedio final obtenido.
+        </p>
+        <div id="semaforo-visual">
+            <!--------
+            Luz roja
+             -------->
+            <div
+                    id="luz-roja"
+                    class="luz-semaforo luz-roja"
+                    title="En peligro crítico">
+            </div>
+            <!-----------
+            Luz amarilla
+            ------------>
+            <div
+                    id="luz-amarilla"
+                    class="luz-semaforo luz-amarilla"
+                    title="En advertencia">
+            </div>
+            <!--------
+             Luz verde
+             --------->
+            <div
+                    id="luz-verde"
+                    class="luz-semaforo luz-verde"
+                    title="Óptimo / Aprobado">
+            </div>
+        </div>
+        <div id="resultado-semaforo">
+            <h4 id="estado-semaforo">
+                Estado académico
+            </h4>
+            <p id="mensaje-semaforo">
+                Calcula tu promedio para conocer
+                tu estado académico.
+            </p>
+        </div>
+    </div>
 
-    <!-- Carga ordenada de los scripts de lógica y validación -->
+    </div>
+
+    <!-------------------------------------------------
+     Carga ordenada de los scripts de lógica y validación
+     -------------------------------------------------->
     <script src="Funciones/Validaciones.js"></script>
     <script src="Funciones/Simulador.js"></script>
     <script src="Funciones/Main.js"></script>
