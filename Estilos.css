@@ -107,6 +107,19 @@ hr {
     text-align: center;
     margin-top: 20px;
 }
+#semaforo-visual {
+    width: 150px;
+    background: #222;
+    padding: 18px;
+    border-radius: 25px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
 @media(max-width:768px){
     body{
         padding:15px;
