@@ -38,7 +38,7 @@ function simularNotaFinalPorCriterios(notasCriterioUno, notasCriterioDos, notasC
 
 
 // Función principal Modo B: Calcula la nota requerida 'x' en la actividad faltante para alcanzar la meta 'T'
-    function calcularNotaNecesariaEnCriterio(promedioObjetivo, cantidadNotasIngresadas, totalActividadesEsperadas, aporteOtrosCriterios, nombreCriterio) {
+function calcularNotaNecesariaEnCriterio(promedioObjetivo, cantidadNotasIngresadas, totalActividadesEsperadas, aporteOtrosCriterios, nombreCriterio) {
 
     // "cantidadNotasIngresadas" es la lista de notas (un arreglo).
     // Usamos .length para contar cuántas notas metió el usuario.
@@ -56,7 +56,7 @@ function simularNotaFinalPorCriterios(notasCriterioUno, notasCriterioDos, notasC
 
     if (notaFaltanteEscalaCincuenta <= 0) {
         return "¡Felicidades! Ya alcanzaste tu meta de " + promedioObjetivo.toFixed(2) + ". No necesitas sacar puntos adicionales en las actividades faltantes.";
-    } 
+    }
 
     if (notaFaltanteEscalaCincuenta > 50) {
         return "Imposible alcanzar la nota deseada (" + promedioObjetivo.toFixed(2) + "). Necesitarías sacar " + notaFaltanteEscalaCincuenta.toFixed(2) + " / 50 en la actividad faltante (supera el límite de 50 pts).";
