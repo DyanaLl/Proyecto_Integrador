@@ -8,6 +8,39 @@ function normalizarTexto(texto) {
         .toLowerCase();
 }
 
+function verificarActividadesVencidas() {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    let huboCambios = false;
+
+    actividades.forEach(actividad => {
+        if (
+            actividad.fechaLimite &&
+            normalizarTexto(actividad.estado) === "pendiente"
+        ) {
+            const fechaLimite = new Date(actividad.fechaLimite + "T00:00:00");
+
+            if (hoy > fechaLimite) {
+                actividad.estado = "vencida";
+                huboCambios = true;
+            }
+        }
+    });
+
+    if (huboCambios) {
+        localStorage.setItem("actividades", JSON.stringify(actividades));
+    }
+}
+
+function actualizarTablasRegistro() {
+    mostrarActividades();
+
+    if (typeof mostrarTablaPromedios === "function") {
+        mostrarTablaPromedios();
+    }
+}
+
 function registrarActividad() {
     const materia = document.getElementById("materia").value.trim();
     const criterio = Number(document.getElementById("criterio").value);
@@ -15,6 +48,7 @@ function registrarActividad() {
     const notaTexto = document.getElementById("nota").value.trim();
     const nota = notaTexto === "" ? 0 : Number(notaTexto);
     const estado = normalizarTexto(document.getElementById("estado").value);
+    const fechaLimite = document.getElementById("fechaLimite").value;
 
     if (!materia) {
         alert("Selecciona una materia.");
@@ -23,6 +57,11 @@ function registrarActividad() {
 
     if (!tema) {
         alert("Escribe el tema o actividad.");
+        return false;
+    }
+
+    if (!fechaLimite) {
+        alert("Selecciona una fecha límite.");
         return false;
     }
 
@@ -36,12 +75,20 @@ function registrarActividad() {
         criterio: criterio,
         tema: tema,
         nota: nota,
-        estado: estado
+        estado: estado,
+        fechaLimite: fechaLimite
     });
 
-    localStorage.setItem("actividades", JSON.stringify(actividades));
+    localStorage.setItem(
+        "actividades",
+        JSON.stringify(actividades)
+    );
+
+    verificarActividadesVencidas();
     limpiarFormulario();
-    mostrarActividades();
+    actualizarTablasRegistro();
+
+    alert("Actividad registrada correctamente.");
 
     return true;
 }
@@ -60,6 +107,7 @@ function seleccionarActividad(indice) {
     document.getElementById("tema").value = actividad.tema;
     document.getElementById("nota").value = actividad.nota;
     document.getElementById("estado").value = normalizarTexto(actividad.estado);
+    document.getElementById("fechaLimite").value = actividad.fechaLimite || "";
 
     const formulario = document.getElementById("formulario-registro");
     const boton = document.getElementById("btn-mostrar-registro");
@@ -72,7 +120,7 @@ function seleccionarActividad(indice) {
         boton.textContent = "−";
     }
 
-    alert("Actividad seleccionada. Ahora puedes cambiar su estado y presionar Actualizar.");
+    alert("Actividad seleccionada. Ahora puedes cambiar sus datos y presionar Actualizar actividad.");
 }
 
 function actualizarActividadSeleccionada() {
@@ -94,9 +142,15 @@ function actualizarActividadSeleccionada() {
     const notaTexto = document.getElementById("nota").value.trim();
     const nota = notaTexto === "" ? 0 : Number(notaTexto);
     const estado = normalizarTexto(document.getElementById("estado").value);
+    const fechaLimite = document.getElementById("fechaLimite").value;
 
     if (!materia || !tema) {
         alert("Completa la materia y el tema o actividad.");
+        return;
+    }
+
+    if (!fechaLimite) {
+        alert("Selecciona una fecha límite.");
         return;
     }
 
@@ -110,11 +164,17 @@ function actualizarActividadSeleccionada() {
     actividad.tema = tema;
     actividad.nota = nota;
     actividad.estado = estado;
+    actividad.fechaLimite = fechaLimite;
 
-    localStorage.setItem("actividades", JSON.stringify(actividades));
+    localStorage.setItem(
+        "actividades",
+        JSON.stringify(actividades)
+    );
 
-    mostrarActividades();
+    verificarActividadesVencidas();
+    actualizarTablasRegistro();
     limpiarFormulario();
+
     actividadSeleccionada = null;
 
     alert("Actividad actualizada correctamente.");
@@ -126,6 +186,7 @@ function limpiarFormulario() {
     document.getElementById("tema").value = "";
     document.getElementById("nota").value = "";
     document.getElementById("estado").value = "pendiente";
+    document.getElementById("fechaLimite").value = "";
 }
 
 function mostrarActividades() {
@@ -138,14 +199,21 @@ function mostrarActividades() {
     tabla.innerHTML = "";
 
     const actividadesPendientes = actividades
-        .map((actividad, indice) => ({ actividad, indice }))
-        .filter(item => normalizarTexto(item.actividad.estado) === "pendiente");
+        .map((actividad, indice) => ({
+            actividad: actividad,
+            indice: indice
+        }))
+        .filter(item => {
+            const estado = normalizarTexto(item.actividad.estado);
+
+            return estado === "pendiente" || estado === "vencida";
+        });
 
     if (actividadesPendientes.length === 0) {
         tabla.innerHTML = `
             <tr>
-                <td colspan="5" style="text-align:center;">
-                    No hay actividades pendientes.
+                <td colspan="6" style="text-align:center;">
+                    No hay actividades pendientes o vencidas.
                 </td>
             </tr>
         `;
@@ -154,6 +222,7 @@ function mostrarActividades() {
 
     actividadesPendientes.forEach(item => {
         const fila = document.createElement("tr");
+
         fila.style.cursor = "pointer";
         fila.title = "Haz clic para editar esta actividad";
 
@@ -163,6 +232,7 @@ function mostrarActividades() {
             <td>${item.actividad.tema}</td>
             <td>${item.actividad.nota}</td>
             <td>${item.actividad.estado}</td>
+            <td>${item.actividad.fechaLimite || "Sin fecha"}</td>
         `;
 
         fila.addEventListener("click", function() {
@@ -193,14 +263,21 @@ function cargarActividadesGuardadas() {
 
 function guardarExcel() {
     if (actividades.length === 0) {
-        alert("No existen actividades para guardar.");
+        alert("No existen actividades para exportar.");
         return;
     }
 
     const libro = XLSX.utils.book_new();
 
     const datosExcel = [
-        ["Materia", "Criterio", "Tema", "Nota", "Estado"]
+        [
+            "Materia",
+            "Criterio",
+            "Tema",
+            "Nota",
+            "Estado",
+            "Fecha límite"
+        ]
     ];
 
     actividades.forEach(actividad => {
@@ -209,7 +286,8 @@ function guardarExcel() {
             actividad.criterio,
             actividad.tema,
             actividad.nota,
-            actividad.estado
+            actividad.estado,
+            actividad.fechaLimite || ""
         ]);
     });
 
@@ -226,7 +304,7 @@ function guardarExcel() {
         "Actividades_Academicas.xlsx"
     );
 
-    alert("Archivo Excel guardado correctamente.");
+    alert("Archivo Excel exportado correctamente.");
 }
 
 function leerExcel(evento) {
@@ -241,7 +319,14 @@ function leerExcel(evento) {
     lector.onload = function(e) {
         try {
             const datos = new Uint8Array(e.target.result);
-            const libro = XLSX.read(datos, { type: "array" });
+
+            const libro = XLSX.read(
+                datos,
+                {
+                    type: "array"
+                }
+            );
+
             const hoja = libro.Sheets[libro.SheetNames[0]];
 
             const filas = XLSX.utils.sheet_to_json(
@@ -261,6 +346,7 @@ function leerExcel(evento) {
 
             const indiceMateria = encabezados.indexOf("materia");
             const indiceCriterio = encabezados.indexOf("criterio");
+
             let indiceTema = encabezados.indexOf("tema");
 
             if (indiceTema === -1) {
@@ -269,6 +355,12 @@ function leerExcel(evento) {
 
             const indiceNota = encabezados.indexOf("nota");
             const indiceEstado = encabezados.indexOf("estado");
+
+            let indiceFechaLimite = encabezados.indexOf("fecha limite");
+
+            if (indiceFechaLimite === -1) {
+                indiceFechaLimite = encabezados.indexOf("fecha límite");
+            }
 
             if (
                 indiceMateria === -1 ||
@@ -289,7 +381,11 @@ function leerExcel(evento) {
                     criterio: Number(fila[indiceCriterio]) || 0,
                     tema: String(fila[indiceTema]).trim(),
                     nota: Number(fila[indiceNota]) || 0,
-                    estado: normalizarTexto(fila[indiceEstado]) || "pendiente"
+                    estado: normalizarTexto(fila[indiceEstado]) || "pendiente",
+                    fechaLimite:
+                        indiceFechaLimite !== -1
+                            ? String(fila[indiceFechaLimite]).trim()
+                            : ""
                 }));
 
             localStorage.setItem(
@@ -297,9 +393,11 @@ function leerExcel(evento) {
                 JSON.stringify(actividades)
             );
 
-            mostrarActividades();
+            verificarActividadesVencidas();
+            actualizarTablasRegistro();
 
             alert("Actividades importadas correctamente.");
+
         } catch (error) {
             console.error("Error al leer Excel:", error);
             alert("No se pudo leer el archivo Excel.");
@@ -315,7 +413,8 @@ function actualizarActividades() {
         JSON.stringify(actividades)
     );
 
-    mostrarActividades();
+    verificarActividadesVencidas();
+    actualizarTablasRegistro();
 
     alert("Actividades actualizadas correctamente.");
 }
@@ -346,34 +445,36 @@ function configurarBotonMas() {
 
 document.addEventListener("DOMContentLoaded", function() {
     cargarActividadesGuardadas();
-    mostrarActividades();
+    verificarActividadesVencidas();
+    actualizarTablasRegistro();
     configurarBotonMas();
 
-    const botonGuardar = document.getElementById("btn-guardar-excel");
+    const botonRegistrar = document.getElementById("btn-registrar");
 
-    if (botonGuardar) {
-        botonGuardar.addEventListener("click", function() {
+    if (botonRegistrar) {
+        botonRegistrar.addEventListener("click", function() {
             if (actividadSeleccionada !== null) {
-                alert("Tienes una actividad seleccionada. Usa Actualizar para modificarla.");
+                alert("Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla.");
                 return;
             }
 
-            const registrada = registrarActividad();
-
-            if (registrada) {
-                guardarExcel();
-            }
+            registrarActividad();
         });
     }
 
     const botonActualizar = document.getElementById("btn-actualizar");
 
     if (botonActualizar) {
-        botonActualizar.addEventListener(
-            "click",
-            function() {
-                actualizarActividadSeleccionada();
-            }
-        );
+        botonActualizar.addEventListener("click", function() {
+            actualizarActividadSeleccionada();
+        });
+    }
+
+    const botonExportar = document.getElementById("btn-exportar-excel");
+
+    if (botonExportar) {
+        botonExportar.addEventListener("click", function() {
+            guardarExcel();
+        });
     }
 });

@@ -3,6 +3,7 @@
     padding:0;
     box-sizing:border-box;
 }
+
 body{
     font-family:Arial,Helvetica,sans-serif;
     background:#eef2f7;
@@ -10,6 +11,7 @@ body{
     padding:30px 15px;
     min-height:100vh;
 }
+
 .contenedor{
     max-width:800px;
     margin:0 auto;
@@ -18,25 +20,30 @@ body{
     border-radius:14px;
     box-shadow:0 6px 20px rgba(0,0,0,.12);
 }
+
 .encabezado{
     text-align:center;
     margin-bottom:25px;
 }
+
 .encabezado h1{
     color:#0d47a1;
     font-size:28px;
     margin-bottom:10px;
 }
+
 .encabezado p{
     color:#666;
     font-size:15px;
     line-height:1.5;
 }
+
 h2{
     text-align:center;
     color:#0d47a1;
     margin-bottom:25px;
 }
+
 .seccion{
     background:#fafafa;
     border:1px solid #ddd;
@@ -44,15 +51,18 @@ h2{
     padding:20px;
     margin-bottom:20px;
 }
+
 .seccion h2{
     color:#1565c0;
     font-size:21px;
     margin-bottom:15px;
 }
+
 .seccion h3{
     color:#1565c0;
     margin-bottom:12px;
 }
+
 label{
     display:block;
     margin-top:14px;
@@ -60,8 +70,10 @@ label{
     font-weight:bold;
     color:#333;
 }
+
 input[type="text"],
 input[type="number"],
+input[type="date"],
 select{
     width:100%;
     padding:11px;
@@ -71,12 +83,14 @@ select{
     background:#fff;
     transition:.2s;
 }
+
 input:focus,
 select:focus{
     outline:none;
     border-color:#2196f3;
     box-shadow:0 0 0 2px rgba(33,150,243,.12);
 }
+
 .nota-aclaratoria{
     font-size:13px;
     color:#666;
@@ -84,17 +98,20 @@ select:focus{
     margin-bottom:10px;
     line-height:1.5;
 }
+
 code{
     background:#e8eef7;
     padding:2px 5px;
     border-radius:4px;
     font-family:monospace;
 }
+
 hr{
     margin:20px 0;
     border:0;
     border-top:1px solid #ccc;
 }
+
 button,
 .boton-principal{
     width:100%;
@@ -108,6 +125,7 @@ button,
     cursor:pointer;
     transition:.3s;
 }
+
 button:hover,
 .boton-principal:hover{
     background:#0d47a1;
@@ -118,6 +136,86 @@ button:active,
 .boton-principal:active{
     transform:translateY(0);
 }
+
+.titulo-seccion{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.titulo-seccion h2{
+    text-align:left;
+    margin-bottom:5px;
+}
+
+.btn-mas{
+    width:48px;
+    min-width:48px;
+    height:48px;
+    padding:0;
+    border-radius:50%;
+    font-size:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.registro-oculto{
+    display:none;
+    margin-top:20px;
+}
+
+.registro-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.campo-registro{
+    width:100%;
+}
+
+.acciones-registro{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.accion-boton{
+    flex:1;
+    min-width:200px;
+}
+
+.accion-boton .nota-aclaratoria{
+    margin-top:7px;
+    text-align:center;
+}
+
+.btn-guardar,
+.btn-actualizar,
+.btn-calcular{
+    background:#1976d2;
+}
+
+.btn-excel{
+    background:#388e3c;
+}
+
+.btn-excel:hover{
+    background:#1b5e20;
+}
+
+#fechaLimite{
+    width:100%;
+    padding:11px;
+    border:1px solid #c7c7c7;
+    border-radius:7px;
+    font-size:15px;
+    background:#fff;
+}
+
 #caja-resultado{
     margin-top:20px;
     border:2px dashed #1976d2;
@@ -138,9 +236,9 @@ button:active,
     font-weight:bold;
     line-height:1.5;
 }
+
 #seccion-semaforo{
     text-align:center;
-    margin-top:20px;
 }
 
 .semaforo-contenedor{
@@ -148,6 +246,7 @@ button:active,
     margin:20px auto 0;
     text-align:center;
 }
+
 #semaforo-visual{
     width:150px;
     background:#222;
@@ -160,6 +259,7 @@ button:active,
     gap:15px;
     box-shadow:0 5px 12px rgba(0,0,0,.25);
 }
+
 .luz-semaforo{
     width:65px;
     height:65px;
@@ -168,6 +268,7 @@ button:active,
     transition:all .3s ease;
     border:3px solid rgba(255,255,255,.2);
 }
+
 .luz-roja{
     background-color:#f44336;
 }
@@ -255,7 +356,8 @@ table{
     background:#fff;
 }
 
-th,td{
+th,
+td{
     padding:10px;
     border:1px solid #ddd;
     text-align:center;
@@ -269,18 +371,30 @@ th{
 tr:nth-child(even){
     background:#f5f7fa;
 }
+
+tbody tr{
+    transition:.2s;
+}
+
+tbody tr:hover{
+    background:#eaf3ff;
+}
+
 .formulario-actividad{
     display:grid;
     gap:5px;
 }
+
 .grupo-botones{
     display:flex;
     gap:10px;
     margin-top:15px;
 }
+
 .grupo-botones button{
     flex:1;
 }
+
 input[type="file"]{
     width:100%;
     padding:10px;
@@ -288,27 +402,52 @@ input[type="file"]{
     border-radius:7px;
     background:#fff;
 }
+
+#tabla-promedios th,
+#tabla-promedios td{
+    text-align:center;
+}
+
 @media(max-width:768px){
     body{
         padding:15px;
     }
+
     .contenedor{
         padding:20px;
     }
+
     h2{
         font-size:24px;
     }
+
     .encabezado h1{
         font-size:24px;
     }
+
+    .registro-grid{
+        grid-template-columns:1fr;
+    }
+
+    .acciones-registro{
+        flex-direction:column;
+    }
+
+    .accion-boton{
+        width:100%;
+        min-width:0;
+    }
+
     #semaforo-visual{
         width:135px;
         padding:15px;
     }
+
     .luz-semaforo{
         width:58px;
         height:58px;
     }
+
     .grupo-botones{
         flex-direction:column;
     }
@@ -318,52 +457,51 @@ input[type="file"]{
     body{
         padding:10px;
     }
+
     .contenedor{
         padding:15px;
         border-radius:8px;
     }
+
     h2{
         font-size:21px;
     }
+
     .encabezado h1{
         font-size:21px;
     }
+
     .seccion{
         padding:14px;
     }
+
+    .titulo-seccion{
+        align-items:flex-start;
+    }
+
     button,
     .boton-principal{
         font-size:15px;
     }
+
     #semaforo-visual{
         width:125px;
         padding:13px;
     }
+
     .luz-semaforo{
         width:52px;
         height:52px;
     }
-    th,td{
+
+    th,
+    td{
         padding:7px;
         font-size:13px;
     }
-    #archivo-excel {
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-    th,
-    td {
-        border: 1px solid #dddddd;
-        padding: 10px;
-        text-align: center;
-    }
-    th {
-        background: #1976d2;
-        color: white;
+
+    #archivo-excel{
+        margin-top:10px;
+        margin-bottom:20px;
     }
 }

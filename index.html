@@ -7,336 +7,292 @@
     <link rel="stylesheet" href="Estilos.css">
 </head>
 <body>
+
 <div class="contenedor">
+
     <header class="encabezado">
         <h1>Simulador de Notas Académicas</h1>
-        <p>
-            Sistema para registrar actividades, simular notas
-            y consultar alertas académicas.
-        </p>
+        <p>Sistema para registrar actividades, simular notas y consultar alertas académicas.</p>
     </header>
+
     <section class="seccion registro-dashboard">
         <div class="titulo-seccion">
             <div>
                 <h2>Registro de Actividades</h2>
-                <p>
-                    Agrega y administra las actividades académicas.
-                </p>
+                <p>Agrega y administra las actividades académicas.</p>
             </div>
-            <button
-                    type="button"
-                    id="btn-mostrar-registro"
-                    class="btn-mas"
-                    title="Agregar actividad">
+
+            <button type="button" id="btn-mostrar-registro" class="btn-mas" title="Agregar actividad">
                 +
             </button>
         </div>
+
         <div id="formulario-registro" class="registro-oculto">
             <div class="registro-grid">
+
                 <div class="campo-registro">
                     <label for="materia">Materia</label>
-
                     <select id="materia">
-
-                        <option value="">
-                            Seleccione una materia
-                        </option>
-
-                        <option value="Programación Web">
-                            Programación Web
-                        </option>
-
-                        <option value="Matemáticas">
-                            Matemáticas
-                        </option>
-
-                        <option value="Física">
-                            Física
-                        </option>
-
-                        <option value="Sistemas Operativos">
-                            Sistemas Operativos
-                        </option>
-
-                        <option value="Comunicación Oral y Escrita">
-                            Comunicación Oral y Escrita
-                        </option>
+                        <option value="">Seleccione una materia</option>
+                        <option value="Programación Web">Programación Web</option>
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Física">Física</option>
+                        <option value="Sistemas Operativos">Sistemas Operativos</option>
+                        <option value="Comunicación Oral y Escrita">Comunicación Oral y Escrita</option>
                     </select>
                 </div>
+
                 <div class="campo-registro">
-                    <label for="criterio">
-                        Criterio
-                    </label>
+                    <label for="criterio">Criterio</label>
                     <select id="criterio">
-                        <option value="1">
-                            Criterio 1
-                        </option>
-                        <option value="2">
-                            Criterio 2
-                        </option>
-                        <option value="3">
-                            Criterio 3
-                        </option>
-
+                        <option value="1">Criterio 1</option>
+                        <option value="2">Criterio 2</option>
+                        <option value="3">Criterio 3</option>
                     </select>
+                </div>
 
-                </div>
                 <div class="campo-registro">
-                    <label for="tema">
-                        Tema o actividad
-                    </label>
+                    <label for="tema">Tema o actividad</label>
+                    <input type="text" id="tema" placeholder="Ej. Taller HTML/CSS">
+                </div>
 
-                    <input
-                            type="text"
-                            id="tema"
-                            placeholder="Ej. Taller HTML/CSS">
-                </div>
                 <div class="campo-registro">
-                    <label for="nota">
-                        Nota
-                    </label>
-                    <input
-                            type="number"
-                            id="nota"
-                            min="0"
-                            max="50"
-                            step="0.01"
-                            placeholder="0 - 50">
+                    <label for="nota">Nota</label>
+                    <input type="number" id="nota" min="0" max="50" step="0.01" placeholder="0 - 50">
                 </div>
+
                 <div class="campo-registro">
-                    <label for="estado">
-                        Estado
-                    </label>
+                    <label for="estado">Estado</label>
                     <select id="estado">
-                        <option value="pendiente">
-                            Pendiente
-                        </option>
-                        <option value="entregada">
-                            Entregada
-                        </option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="entregada">Entregada</option>
+                        <option value="vencida" disabled>Vencida</option>
                     </select>
                 </div>
+
+                <div class="campo-registro">
+                    <label for="fechaLimite">Fecha límite</label>
+                    <input type="date" id="fechaLimite" required>
+                    <p class="nota-aclaratoria">
+                        La fecha límite es obligatoria para controlar automáticamente las actividades vencidas.
+                    </p>
+                </div>
+
             </div>
+
             <div class="acciones-registro">
-                <button
-                        type="button"
-                        id="btn-guardar-excel"
-                        class="btn btn-guardar">
-                    Guardar
-                </button>
-                <button
-                        type="button"
-                        id="btn-actualizar"
-                        class="btn btn-actualizar">
-                    Actualizar
-                </button>
+
+                <div class="accion-boton">
+                    <button type="button" id="btn-registrar" class="btn btn-guardar">
+                        Registrar nueva tarea
+                    </button>
+                    <p class="nota-aclaratoria">
+                        Usa este botón para agregar una nueva actividad.
+                    </p>
+                </div>
+
+                <div class="accion-boton">
+                    <button type="button" id="btn-actualizar" class="btn btn-actualizar">
+                        Actualizar actividad
+                    </button>
+                    <p class="nota-aclaratoria">
+                        Selecciona primero una actividad de la tabla para modificarla.
+                    </p>
+                </div>
+
+                <div class="accion-boton">
+                    <button type="button" id="btn-exportar-excel" class="btn btn-excel">
+                        Exportar Excel
+                    </button>
+                    <p class="nota-aclaratoria">
+                        Descarga el historial completo cuando lo necesites.
+                    </p>
+                </div>
+
             </div>
         </div>
     </section>
+
     <section class="seccion">
         <h2>Resumen de Actividades</h2>
+
         <p class="nota-aclaratoria">
-            En esta sección se muestran únicamente las actividades
-            que se encuentran pendientes.
+            En esta sección se muestran las actividades pendientes y vencidas para facilitar el seguimiento académico.
         </p>
+
         <div class="tabla-contenedor">
             <table id="tabla-actividades">
                 <thead>
                 <tr>
-
                     <th>Materia</th>
                     <th>Criterio</th>
                     <th>Tema o actividad</th>
                     <th>Nota</th>
                     <th>Estado</th>
+                    <th>Fecha límite</th>
                 </tr>
                 </thead>
-                <tbody id="tabla-actividades-body">
+                <tbody id="tabla-actividades-body"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="seccion" id="seccion-promedios">
+        <h2>Promedios por Materia</h2>
+        <p class="nota-aclaratoria">
+            Esta tabla muestra automáticamente el promedio de cada criterio y el promedio final de las materias registradas.
+        </p>
+
+        <div class="tabla-contenedor">
+            <table id="tabla-promedios">
+                <thead>
+                <tr>
+                    <th>Materia</th>
+                    <th>Criterio 1</th>
+                    <th>Criterio 2</th>
+                    <th>Criterio 3</th>
+                    <th>Promedio Final</th>
+                </tr>
+                </thead>
+                <tbody id="tabla-promedios-body">
                 </tbody>
             </table>
         </div>
     </section>
     <section class="seccion simulador">
         <h2>Simulador de Notas Académicas</h2>
+
         <div class="campo">
             <label for="select-modo">
                 Selecciona lo que deseas calcular:
             </label>
-            <select
-                    id="select-modo"
-                    onchange="cambiarModo()">
+
+            <select id="select-modo" onchange="cambiarModo()">
                 <option value="simular">
-                    Modo A: Saber cómo una nota afecta
-                    en mi promedio final.
+                    Modo A: Saber cómo una nota afecta en mi promedio final.
                 </option>
                 <option value="necesaria">
-                    Modo B: Calcular la nota necesaria
-                    para alcanzar un promedio deseado.
+                    Modo B: Calcular la nota necesaria para alcanzar un promedio deseado.
                 </option>
             </select>
         </div>
-        <div
-                id="sec-simular"
-                class="modo-simulador">
-            <h3>
-                Modo A: Simulación de Promedio Final
-            </h3>
+
+        <div id="sec-simular" class="modo-simulador">
+            <h3>Modo A: Simulación de Promedio Final</h3>
+
             <p class="nota-aclaratoria">
                 Ingresa tus notas separadas por comas.
-                Ejemplo:
-                <strong>45, 50, 38</strong>
-                Las notas deben estar entre
-                <strong>0 y 50 puntos</strong>.
+                Ejemplo: <strong>45, 50, 38</strong>.
+                Las notas deben estar entre <strong>0 y 50 puntos</strong>.
             </p>
-            <label for="input-c1">
-                Criterio 1 (33.33% del total):
-            </label>
-            <input
-                    type="text"
-                    id="input-c1"
-                    placeholder="Ejemplo: 40, 48, 50">
-            <label for="input-c2">
-                Criterio 2 (33.33% del total):
-            </label>
-            <input
-                    type="text"
-                    id="input-c2"
-                    placeholder="Ejemplo: 35, 42">
-            <label for="input-c3">
-                Criterio 3 (33.33% del total):
-            </label>
 
-            <input
-                    type="text"
-                    id="input-c3"
-                    placeholder="Ejemplo: 50, 50, 45">
+            <label for="input-c1">Criterio 1 (33.33% del total):</label>
+            <input type="text" id="input-c1" placeholder="Ejemplo: 40, 48, 50">
 
+            <label for="input-c2">Criterio 2 (33.33% del total):</label>
+            <input type="text" id="input-c2" placeholder="Ejemplo: 35, 42">
+
+            <label for="input-c3">Criterio 3 (33.33% del total):</label>
+            <input type="text" id="input-c3" placeholder="Ejemplo: 50, 50, 45">
         </div>
-        <div
-                id="sec-necesaria"
-                class="modo-simulador"
-                style="display: none;">
-            <h3>
-                Modo B: Nota necesaria para alcanzar
-                promedio deseado
-            </h3>
-            <label for="input-T">
-                Promedio Final Objetivo
-            </label>
-            <input
-                    type="number"
-                    id="input-T"
-                    step="0.1"
-                    min="0"
-                    max="10"
-                    placeholder="Ejemplo: 7.0">
+
+        <div id="sec-necesaria" class="modo-simulador" style="display:none;">
+            <h3>Modo B: Nota necesaria para alcanzar promedio deseado</h3>
+
+            <label for="input-T">Promedio Final Objetivo</label>
+            <input type="number" id="input-T" step="0.1" min="0" max="10" placeholder="Ejemplo: 7.0">
+
             <label for="select-crit-activo">
                 ¿En cuál criterio tienes la actividad faltante?
             </label>
+
             <select id="select-crit-activo">
-                <option value="1">
-                    Criterio 1
-                </option>
-                <option value="2">
-                    Criterio 2
-                </option>
-                <option value="3">
-                    Criterio 3
-                </option>
+                <option value="1">Criterio 1</option>
+                <option value="2">Criterio 2</option>
+                <option value="3">Criterio 3</option>
             </select>
+
             <label for="input-total-act">
                 ¿Cuántas actividades tiene este criterio?
             </label>
-            <input
-                    type="number"
-                    id="input-total-act"
-                    min="1"
-                    value="3">
+
+            <input type="number" id="input-total-act" min="1" value="3">
+
             <p class="nota-aclaratoria">
                 Ingresa las notas que ya tienes en cada criterio.
             </p>
-            <label for="input-c1-b">
-                Notas del Criterio 1:
-            </label>
-            <input
-                    type="text"
-                    id="input-c1-b"
-                    placeholder="Ejemplo: 40, 45">
-            <label for="input-c2-b">
-                Notas del Criterio 2:
-            </label>
-            <input
-                    type="text"
-                    id="input-c2-b"
-                    placeholder="Ejemplo: 50, 50">
-            <label for="input-c3-b">
-                Notas del Criterio 3:
-            </label>
-            <input
-                    type="text"
-                    id="input-c3-b"
-                    placeholder="Ejemplo: 38, 40">
+
+            <label for="input-c1-b">Notas del Criterio 1:</label>
+            <input type="text" id="input-c1-b" placeholder="Ejemplo: 40, 45">
+
+            <label for="input-c2-b">Notas del Criterio 2:</label>
+            <input type="text" id="input-c2-b" placeholder="Ejemplo: 50, 50">
+
+            <label for="input-c3-b">Notas del Criterio 3:</label>
+            <input type="text" id="input-c3-b" placeholder="Ejemplo: 38, 40">
         </div>
-        <button
-                type="button"
-                id="btn-calcular"
-                onclick="ejecutarCalculo()"
-                class="btn btn-calcular">
+
+        <button type="button" id="btn-calcular" onclick="ejecutarCalculo()" class="btn btn-calcular">
             Calcular Resultado
         </button>
+
         <div id="caja-resultado">
             <div id="texto-resultado">
                 Resultado
             </div>
         </div>
     </section>
-    <section
-            id="seccion-semaforo"
-            class="seccion">
-        <h2>
-            Semáforo de Alertas Académicas
-        </h2>
+
+    <section id="seccion-semaforo" class="seccion">
+        <h2>Semáforo de Alertas Académicas</h2>
+
         <p class="nota-aclaratoria">
-
-            El semáforo muestra el estado académico
-            según el promedio final obtenido.
-
+            El semáforo muestra el estado académico según el promedio final obtenido.
         </p>
+
         <div id="semaforo-visual">
+
             <div
                     id="luz-roja"
                     class="luz-semaforo luz-roja"
                     title="En peligro crítico">
             </div>
+
             <div
                     id="luz-amarilla"
                     class="luz-semaforo luz-amarilla"
                     title="En advertencia">
             </div>
+
             <div
                     id="luz-verde"
                     class="luz-semaforo luz-verde"
                     title="Óptimo / Aprobado">
             </div>
+
         </div>
+
         <div id="resultado-semaforo">
             <h3 id="estado-semaforo">
                 Estado académico
             </h3>
+
             <p id="mensaje-semaforo">
-                Calcula tu promedio para conocer
-                tu estado académico.
+                Calcula tu promedio para conocer tu estado académico.
             </p>
         </div>
     </section>
+
 </div>
-   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-   <script src="Funciones/Calculos.js"></script>
-   <script src="Funciones/Validaciones.js"></script>
-   <script src="Funciones/Simulador.js"></script>
-   <script src="Funciones/Semaforo.js"></script>
-   <script src="Funciones/Registro.js"></script>
-   <script src="Funciones/Main.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="Funciones/Calculos.js"></script>
+<script src="Funciones/Validaciones.js"></script>
+<script src="Funciones/Simulador.js"></script>
+<script src="Funciones/Semaforo.js"></script>
+<script src="Funciones/Registro.js"></script>
+<script src="Funciones/Promedios.js"></script>
+<script src="Funciones/Main.js"></script>
 
 </body>
 </html>
