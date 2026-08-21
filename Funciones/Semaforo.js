@@ -2,16 +2,19 @@
  * Área de David: Lógica del Semáforo Académico
  * En proceso de desarrollo...
  */
-export function evaluarSemaforo(nota) {
+export function evaluarSemaforo(promedio, actividades) {
     // 1. Apagar primero las luces
-        quitarLucesActivas();
+    quitarLucesActivas();
 
+    // Contadores para evaluar el estado
+    let vencidas = actividades.filter(a => a.estado === "vencida").length;
+    let pendientes = actividades.filter(a => a.estado === "pendiente").length;
     // 2. Lógica basica
-    if (nota >= 7.0 && nota <= 10.0) {
+    if (promedio >= 7.0 && vencidas === 0 && pendientes === 0) {
         activarLuz("verde");
         return "Promedio Aprobado: Verde";
 
-    } else if (nota >= 5.0 && nota < 7.0) {
+    } else if (pendientes > 0 && vencidas === 0) {
         activarLuz("amarillo");
         return "Promedio Regular: Amarillo";
 
