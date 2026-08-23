@@ -702,4 +702,47 @@ input[type="file"]{
             padding:10px;
         }
     }
+    .cabecera-historial{
+        text-align:center;
+        margin-bottom:18px;
+    }
+
+    .cabecera-historial h2{
+        margin:0 0 8px;
+        color:#1565c0;
+        font-size:21px;
+    }
+
+    .cabecera-historial .nota-aclaratoria{
+        max-width:650px;
+        margin:0 auto;
+        text-align:center;
+        color:#666;
+    }
+
+    .simulador{
+        padding:24px;
+    }
+
+    .simulador .modo-simulador{
+        margin-top:18px;
+        padding:18px;
+        border:1px solid #dce3ec;
+        border-radius:9px;
+        background:#f8fbff;
+    }
+
+    .simulador .modo-simulador h3{
+        margin-top:0;
+        margin-bottom:15px;
+        text-align:center;
+    }
+
+    .grafica-dashboard .grafica-contenedor{
+        margin-top:18px;
+    }
+
+    #seccion-semaforo .cabecera-historial{
+        margin-bottom:10px;
+    }
 }

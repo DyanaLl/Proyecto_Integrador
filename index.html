@@ -170,14 +170,10 @@
     <section class="seccion historial-academico">
 
         <div class="cabecera-historial">
-            <div>
-                <span class="etiqueta-historial">SEGUIMIENTO ACADÉMICO</span>
-                <h2>Historial Académico</h2>
-
-                <p class="nota-aclaratoria">
-                    Se muestra el historial completo de actividades académicas registradas.
-                </p>
-            </div>
+            <h2>Historial Académico</h2>
+            <p class="nota-aclaratoria">
+                Se muestra el historial completo de actividades académicas registradas.
+            </p>
         </div>
 
         <div class="barra-historial">
@@ -211,15 +207,11 @@
     <section class="seccion" id="seccion-promedios">
 
         <div class="cabecera-historial">
-            <div>
-                <span class="etiqueta-historial">CALIFICACIONES</span>
-                <h2>Promedios por Materia</h2>
-
-                <p class="nota-aclaratoria">
-                    Esta tabla calcula automáticamente el promedio de cada criterio
-                    y el promedio final de las materias registradas.
-                </p>
-            </div>
+            <h2>Promedios por Materia</h2>
+            <p class="nota-aclaratoria">
+                Esta tabla calcula automáticamente el promedio de cada criterio
+                y el promedio final de las materias registradas.
+            </p>
         </div>
 
         <div class="tabla-contenedor">
@@ -247,10 +239,10 @@
     <section class="seccion simulador">
 
         <div class="cabecera-historial">
-            <div>
-                <span class="etiqueta-historial">SIMULADOR</span>
-                <h2>Simulador de Notas Académicas</h2>
-            </div>
+            <h2>Simulador de Notas Académicas</h2>
+            <p class="nota-aclaratoria">
+                Simula una nota o calcula cuánto necesitas para alcanzar tu promedio objetivo.
+            </p>
         </div>
 
         <label for="select-modo">
@@ -375,14 +367,10 @@
     <section class="seccion grafica-dashboard">
 
         <div class="cabecera-historial">
-            <div>
-                <span class="etiqueta-historial">ESTADÍSTICAS</span>
-                <h2>Gráfica de Rendimiento Académico</h2>
-
-                <p class="nota-aclaratoria">
-                    La gráfica se actualiza utilizando la información registrada en el arreglo de actividades.
-                </p>
-            </div>
+            <h2>Gráfica de Rendimiento Académico</h2>
+            <p class="nota-aclaratoria">
+                La gráfica se actualiza utilizando la información registrada en el arreglo de actividades.
+            </p>
         </div>
 
         <div class="grafica-contenedor">
@@ -394,10 +382,7 @@
     <section id="seccion-semaforo" class="seccion">
 
         <div class="cabecera-historial">
-            <div>
-                <span class="etiqueta-historial">ALERTAS</span>
-                <h2>Semáforo de Alertas Académicas</h2>
-            </div>
+            <h2>Semáforo de Alertas Académicas</h2>
         </div>
 
         <p class="nota-aclaratoria">
@@ -441,7 +426,17 @@
     </section>
 
 </div>
-
+<div id="modal-mensaje" class="modal-mensaje">
+    <div class="modal-contenido">
+        <h3>La página dice</h3>
+        <p id="modal-texto"></p>
+        <button
+                type="button"
+                id="modal-aceptar">
+            Aceptar
+        </button>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

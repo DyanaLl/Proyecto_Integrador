@@ -8,6 +8,19 @@ function normalizarTexto(texto) {
         .toLowerCase();
 }
 
+function mostrarMensaje(mensaje) {
+    const modal = document.getElementById("modal-mensaje");
+    const texto = document.getElementById("modal-texto");
+
+    if (!modal || !texto) {
+        console.log(mensaje);
+        return;
+    }
+
+    texto.textContent = mensaje;
+    modal.style.display = "flex";
+}
+
 function verificarActividadesVencidas() {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -55,6 +68,55 @@ function actualizarGraficaRegistro() {
     inicializarGraficaMaterias();
 }
 
+function actualizarMateriasSimulador() {
+    const selectMateriaA = document.getElementById("select-materia-a");
+    const selectMateriaB = document.getElementById("select-materia-b");
+
+    if (!selectMateriaA || !selectMateriaB) {
+        return;
+    }
+
+    const valorSeleccionadoA = selectMateriaA.value;
+    const valorSeleccionadoB = selectMateriaB.value;
+
+    const materias = [];
+
+    actividades.forEach(actividad => {
+        if (
+            actividad.materia &&
+            !materias.includes(actividad.materia)
+        ) {
+            materias.push(actividad.materia);
+        }
+    });
+
+    selectMateriaA.innerHTML =
+        '<option value="">-- Selecciona una materia --</option>';
+
+    selectMateriaB.innerHTML =
+        '<option value="">-- Selecciona una materia --</option>';
+
+    materias.forEach(materia => {
+        const opcionA = document.createElement("option");
+        opcionA.value = materia;
+        opcionA.textContent = materia;
+        selectMateriaA.appendChild(opcionA);
+
+        const opcionB = document.createElement("option");
+        opcionB.value = materia;
+        opcionB.textContent = materia;
+        selectMateriaB.appendChild(opcionB);
+    });
+
+    if (materias.includes(valorSeleccionadoA)) {
+        selectMateriaA.value = valorSeleccionadoA;
+    }
+
+    if (materias.includes(valorSeleccionadoB)) {
+        selectMateriaB.value = valorSeleccionadoB;
+    }
+}
+
 function actualizarTablasRegistro() {
     mostrarActividades();
 
@@ -62,6 +124,7 @@ function actualizarTablasRegistro() {
         mostrarTablaPromedios();
     }
 
+    actualizarMateriasSimulador();
     actualizarGraficaRegistro();
 }
 
@@ -78,17 +141,17 @@ function registrarActividad() {
         document.getElementById("fechaLimite").value;
 
     if (!materia) {
-        alert("Selecciona una materia.");
+        mostrarMensaje("Selecciona una materia.");
         return false;
     }
 
     if (!tema) {
-        alert("Escribe el tema o actividad.");
+        mostrarMensaje("Escribe el tema o actividad.");
         return false;
     }
 
     if (!fechaLimite) {
-        alert("Selecciona una fecha límite.");
+        mostrarMensaje("Selecciona una fecha límite.");
         return false;
     }
 
@@ -97,7 +160,7 @@ function registrarActividad() {
         nota < 0 ||
         nota > 50
     ) {
-        alert("La nota debe estar entre 0 y 50.");
+        mostrarMensaje("La nota debe estar entre 0 y 50.");
         return false;
     }
 
@@ -119,7 +182,7 @@ function registrarActividad() {
     limpiarFormulario();
     actualizarTablasRegistro();
 
-    alert("Actividad registrada correctamente.");
+    mostrarMensaje("Actividad registrada correctamente.");
 
     return true;
 }
@@ -165,14 +228,14 @@ function seleccionarActividad(indice) {
         boton.textContent = "−";
     }
 
-    alert(
+    mostrarMensaje(
         "Actividad seleccionada. Ahora puedes cambiar sus datos y presionar Actualizar actividad."
     );
 }
 
 function actualizarActividadSeleccionada() {
     if (actividadSeleccionada === null) {
-        alert(
+        mostrarMensaje(
             "Selecciona primero una actividad de la tabla."
         );
         return;
@@ -212,14 +275,14 @@ function actualizarActividadSeleccionada() {
         document.getElementById("fechaLimite").value;
 
     if (!materia || !tema) {
-        alert(
+        mostrarMensaje(
             "Completa la materia y el tema o actividad."
         );
         return;
     }
 
     if (!fechaLimite) {
-        alert("Selecciona una fecha límite.");
+        mostrarMensaje("Selecciona una fecha límite.");
         return;
     }
 
@@ -228,7 +291,7 @@ function actualizarActividadSeleccionada() {
         nota < 0 ||
         nota > 50
     ) {
-        alert(
+        mostrarMensaje(
             "La nota debe estar entre 0 y 50."
         );
         return;
@@ -252,7 +315,7 @@ function actualizarActividadSeleccionada() {
 
     actividadSeleccionada = null;
 
-    alert(
+    mostrarMensaje(
         "Actividad actualizada correctamente."
     );
 }
@@ -276,24 +339,25 @@ function mostrarActividades() {
 
     tabla.innerHTML = "";
 
-    const actividadesPendientes = actividades
+    const actividadesRegistradas = actividades
         .map((actividad, indice) => ({
             actividad: actividad,
             indice: indice
         }));
 
-    if (actividadesPendientes.length === 0) {
+    if (actividadesRegistradas.length === 0) {
         tabla.innerHTML = `
-        <tr>
-            <td colspan="6" class="tabla-vacia">
-                No hay actividades registradas.
-            </td>
-        </tr>
-    `;
+            <tr>
+                <td colspan="6" class="tabla-vacia">
+                    No hay actividades registradas.
+                </td>
+            </tr>
+        `;
+
         return;
     }
 
-    actividadesPendientes.forEach(item => {
+    actividadesRegistradas.forEach(item => {
         const fila =
             document.createElement("tr");
 
@@ -378,11 +442,14 @@ function cargarActividadesGuardadas() {
 
 function guardarExcel() {
     if (actividades.length === 0) {
-        mostrarMensaje("No existen actividades para exportar.");
+        mostrarMensaje(
+            "No existen actividades para exportar."
+        );
         return;
     }
 
-    const libro = XLSX.utils.book_new();
+    const libro =
+        XLSX.utils.book_new();
 
     const datosExcel = [
         [
@@ -406,7 +473,8 @@ function guardarExcel() {
         ]);
     });
 
-    const hoja = XLSX.utils.aoa_to_sheet(datosExcel);
+    const hoja =
+        XLSX.utils.aoa_to_sheet(datosExcel);
 
     hoja["!cols"] = [
         { wch: 24 },
@@ -437,7 +505,40 @@ function guardarExcel() {
         "Historial_Academico.xlsx"
     );
 
-    mostrarMensaje("Historial académico exportado correctamente.");
+    mostrarMensaje(
+        "Historial académico exportado correctamente."
+    );
+}
+
+function convertirFechaExcel(valor) {
+    if (
+        valor === null ||
+        valor === undefined ||
+        valor === ""
+    ) {
+        return "";
+    }
+
+    if (typeof valor === "number") {
+        const fechaExcel =
+            XLSX.SSF.parse_date_code(valor);
+
+        if (fechaExcel) {
+            const anio = fechaExcel.y;
+
+            const mes =
+                String(fechaExcel.m)
+                    .padStart(2, "0");
+
+            const dia =
+                String(fechaExcel.d)
+                    .padStart(2, "0");
+
+            return `${anio}-${mes}-${dia}`;
+        }
+    }
+
+    return String(valor).trim();
 }
 
 function leerExcel(evento) {
@@ -452,7 +553,6 @@ function leerExcel(evento) {
         new FileReader();
 
     lector.onload = function(e) {
-
         try {
             const datos =
                 new Uint8Array(e.target.result);
@@ -480,7 +580,7 @@ function leerExcel(evento) {
                 );
 
             if (filas.length < 2) {
-                alert(
+                mostrarMensaje(
                     "El archivo Excel no contiene actividades."
                 );
                 return;
@@ -530,7 +630,7 @@ function leerExcel(evento) {
                 indiceNota === -1 ||
                 indiceEstado === -1
             ) {
-                alert(
+                mostrarMensaje(
                     "El Excel debe tener las columnas: Materia, Criterio, Tema, Nota y Estado."
                 );
 
@@ -573,11 +673,9 @@ function leerExcel(evento) {
 
                     fechaLimite:
                         indiceFechaLimite !== -1
-                            ? String(
-                                fila[
-                                    indiceFechaLimite
-                                    ]
-                            ).trim()
+                            ? convertirFechaExcel(
+                                fila[indiceFechaLimite]
+                            )
                             : ""
                 }));
 
@@ -589,7 +687,7 @@ function leerExcel(evento) {
             verificarActividadesVencidas();
             actualizarTablasRegistro();
 
-            alert(
+            mostrarMensaje(
                 "Actividades importadas correctamente."
             );
 
@@ -599,7 +697,7 @@ function leerExcel(evento) {
                 error
             );
 
-            alert(
+            mostrarMensaje(
                 "No se pudo leer el archivo Excel."
             );
         }
@@ -617,22 +715,19 @@ function actualizarActividades() {
     verificarActividadesVencidas();
     actualizarTablasRegistro();
 
-    alert(
+    mostrarMensaje(
         "Actividades actualizadas correctamente."
     );
 }
-
 function configurarBotonMas() {
     const boton =
         document.getElementById(
             "btn-mostrar-registro"
         );
-
     const formulario =
         document.getElementById(
             "formulario-registro"
         );
-
     if (!boton || !formulario) {
         return;
     }
@@ -642,49 +737,68 @@ function configurarBotonMas() {
     boton.addEventListener(
         "click",
         function() {
-
             if (
                 formulario.style.display === "none" ||
                 formulario.style.display === ""
             ) {
                 formulario.style.display =
                     "block";
-
                 boton.textContent = "−";
-
             } else {
                 formulario.style.display =
                     "none";
-
                 boton.textContent = "+";
             }
         }
     );
 }
-
 document.addEventListener(
     "DOMContentLoaded",
     function() {
-
         cargarActividadesGuardadas();
         verificarActividadesVencidas();
-        actualizarTablasRegistro();
+
+        mostrarActividades();
+
+        if (typeof mostrarTablaPromedios === "function") {
+            mostrarTablaPromedios();
+        }
+
+        actualizarMateriasSimulador();
         configurarBotonMas();
+        const modal =
+            document.getElementById("modal-mensaje");
+        const botonAceptar =
+            document.getElementById("modal-aceptar");
+        if (modal && botonAceptar) {
+            botonAceptar.addEventListener(
+                "click",
+                function() {
+                    modal.style.display = "none";
+                }
+            );
+            modal.addEventListener(
+                "click",
+                function(evento) {
+                    if (evento.target === modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            );
+        }
 
         const botonRegistrar =
             document.getElementById(
                 "btn-registrar"
             );
-
         if (botonRegistrar) {
             botonRegistrar.addEventListener(
                 "click",
                 function() {
-
                     if (
                         actividadSeleccionada !== null
                     ) {
-                        alert(
+                        mostrarMensaje(
                             "Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla."
                         );
 
@@ -695,12 +809,10 @@ document.addEventListener(
                 }
             );
         }
-
         const botonActualizar =
             document.getElementById(
                 "btn-actualizar"
             );
-
         if (botonActualizar) {
             botonActualizar.addEventListener(
                 "click",
@@ -709,12 +821,10 @@ document.addEventListener(
                 }
             );
         }
-
         const botonExportar =
             document.getElementById(
                 "btn-exportar-excel"
             );
-
         if (botonExportar) {
             botonExportar.addEventListener(
                 "click",
