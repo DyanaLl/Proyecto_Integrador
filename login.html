@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenida - Sistema Académico</title>
+    <link rel="stylesheet" href="estilo-semaforo.css"> 
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. Vista de Bienvenida Principal -->
+        <section id="seccion-bienvenida" class="card">
+            <h1>¡Bienvenido al Sistema Académico!</h1>
+            <p>Gestiona tu rendimiento, calcula tus promedios y mantén tus notas al día.</p>
+            <p><strong>¿Nuevo por aquí?</strong> Regístrate para comenzar a usar la plataforma.</p>
+            
+            <div class="botones-inicio">
+                <button id="btn-ir-registro" class="btn-primary">Registrarse</button>
+                <button id="btn-ir-login" class="btn-secondary">Iniciar Sesión</button>
+            </div>
+        </section>
+
+        <!-- 2. Formulario de Registro (Inicia oculto) -->
+        <section id="seccion-registro" class="card" style="display: none;">
+            <h2>Registro de Nuevo Estudiante</h2>
+            <form id="form-registro">
+                <label for="reg-nombre">Nombre:</label>
+                <input type="text" id="reg-nombre" required>
+
+                <label for="reg-usuario">Nombre de Usuario:</label>
+                <input type="text" id="reg-usuario" required>
+
+                <label for="reg-password">Contraseña:</label>
+                <input type="password" id="reg-password" required>
+
+                <button type="submit" class="btn-primary">Guardar Registro</button>
+                <button type="button" id="volver-de-registro" class="btn-link">Volver</button>
+            </form>
+        </section>
+    </div>
+
+    <script type="module" src="Funciones/Auth.js"></script>
+</body>
+</html>
