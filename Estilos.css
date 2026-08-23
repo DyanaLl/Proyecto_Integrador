@@ -504,4 +504,202 @@ input[type="file"]{
         margin-top:10px;
         margin-bottom:20px;
     }
+    .historial-academico{
+        overflow:hidden;
+    }
+
+    .cabecera-historial{
+        margin-bottom:16px;
+    }
+
+    .etiqueta-historial{
+        display:inline-block;
+        margin-bottom:5px;
+        color:#6b778c;
+        font-size:11px;
+        font-weight:bold;
+        letter-spacing:1px;
+        text-transform:uppercase;
+    }
+
+    .barra-historial{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+        background:#f1f3f6;
+        border:1px solid #d9dee6;
+        border-bottom:none;
+        border-radius:8px 8px 0 0;
+        padding:12px 15px;
+        color:#5c6879;
+        font-size:13px;
+        font-weight:bold;
+    }
+
+    .importar-excel{
+        margin-top:20px;
+        padding:15px;
+        border:1px dashed #b9c7d9;
+        border-radius:8px;
+        background:#f8fbff;
+    }
+
+    .tabla-contenedor{
+        border:1px solid #d9dee6;
+        border-radius:0 0 8px 8px;
+        overflow-x:auto;
+    }
+
+    table{
+        border-collapse:collapse;
+        width:100%;
+        background:white;
+    }
+
+    th{
+        background:#eef1f5;
+        color:#596678;
+        padding:11px 12px;
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:.3px;
+        border-bottom:1px solid #d4dae3;
+        text-align:left;
+    }
+
+    td{
+        padding:12px;
+        font-size:13px;
+        border-bottom:1px solid #e0e4ea;
+        color:#36465a;
+    }
+
+    tbody tr:last-child td{
+        border-bottom:none;
+    }
+
+    .fila-actividad{
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .fila-actividad:hover{
+        background:#f5f9ff;
+    }
+
+    .fila-pendiente{
+        background:#fffdf7;
+    }
+
+    .fila-vencida{
+        background:#fff7f7;
+    }
+
+    .celda-materia{
+        font-weight:bold;
+    }
+
+    .celda-tema{
+        color:#1976d2;
+    }
+
+    .celda-nota{
+        font-weight:bold;
+    }
+
+    .estado-tabla{
+        display:inline-block;
+        min-width:78px;
+        padding:5px 9px;
+        text-align:center;
+        border-radius:14px;
+        font-size:11px;
+        font-weight:bold;
+        text-transform:capitalize;
+    }
+
+    .estado-pendiente{
+        background:#fff3cd;
+        border:1px solid #ffe08a;
+        color:#856404;
+    }
+
+    .estado-vencida{
+        background:#fde7e7;
+        border:1px solid #f4b7b7;
+        color:#a52a2a;
+    }
+
+    .estado-entregada{
+        background:#e5f5e8;
+        border:1px solid #b3ddb9;
+        color:#2e7437;
+    }
+
+    .tabla-vacia{
+        text-align:center;
+        padding:22px;
+        color:#7f8998;
+    }
+
+    #tabla-promedios th,
+    #tabla-promedios td{
+        text-align:center;
+    }
+
+    #tabla-promedios th:first-child,
+    #tabla-promedios td:first-child{
+        text-align:left;
+    }
+
+    .grafica-dashboard{
+        overflow:hidden;
+    }
+
+    .grafica-contenedor{
+        position:relative;
+        width:100%;
+        min-height:330px;
+        margin-top:15px;
+        padding:20px;
+        background:#fafcff;
+        border:1px solid #dfe5ed;
+        border-radius:9px;
+    }
+
+    .caja-resultado{
+        margin-top:18px;
+        border:2px dashed #1976d2;
+        background:#eef5ff;
+        border-radius:10px;
+        padding:20px;
+        text-align:center;
+        font-size:17px;
+        font-weight:bold;
+    }
+
+    .modo-simulador{
+        margin-top:18px;
+        background:#f8faff;
+        border:1px solid #dce4ef;
+        border-radius:9px;
+        padding:18px;
+    }
+
+    .simulador #btn-calcular{
+        margin-top:18px;
+    }
+
+    @media(max-width:768px){
+        .barra-historial{
+            flex-direction:column;
+            align-items:flex-start;
+        }
+
+        .grafica-contenedor{
+            min-height:260px;
+            padding:10px;
+        }
+    }
 }
