@@ -442,14 +442,11 @@ function cargarActividadesGuardadas() {
 
 function guardarExcel() {
     if (actividades.length === 0) {
-        mostrarMensaje(
-            "No existen actividades para exportar."
-        );
+        mostrarMensaje("No existen actividades para exportar.");
         return;
     }
 
-    const libro =
-        XLSX.utils.book_new();
+    const libro = XLSX.utils.book_new();
 
     const datosExcel = [
         [
@@ -473,26 +470,176 @@ function guardarExcel() {
         ]);
     });
 
-    const hoja =
-        XLSX.utils.aoa_to_sheet(datosExcel);
+    const hoja = XLSX.utils.aoa_to_sheet(datosExcel);
 
     hoja["!cols"] = [
         { wch: 24 },
+        { wch: 14 },
+        { wch: 36 },
         { wch: 12 },
-        { wch: 35 },
-        { wch: 10 },
-        { wch: 16 },
-        { wch: 18 }
+        { wch: 18 },
+        { wch: 20 }
     ];
 
     hoja["!autofilter"] = {
         ref: `A1:F${datosExcel.length}`
     };
 
-    hoja["!freeze"] = {
-        xSplit: 0,
-        ySplit: 1
+    const estiloEncabezado = {
+        font: {
+            bold: true,
+            color: { rgb: "FFFFFF" },
+            sz: 12
+        },
+        fill: {
+            fgColor: { rgb: "4472C4" }
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        },
+        border: {
+            top: {
+                style: "thin",
+                color: { rgb: "D9E1F2" }
+            },
+            bottom: {
+                style: "thin",
+                color: { rgb: "D9E1F2" }
+            },
+            left: {
+                style: "thin",
+                color: { rgb: "D9E1F2" }
+            },
+            right: {
+                style: "thin",
+                color: { rgb: "D9E1F2" }
+            }
+        }
     };
+
+    const estiloCelda = {
+        alignment: {
+            vertical: "center"
+        },
+        border: {
+            top: {
+                style: "thin",
+                color: { rgb: "E2E8F0" }
+            },
+            bottom: {
+                style: "thin",
+                color: { rgb: "E2E8F0" }
+            },
+            left: {
+                style: "thin",
+                color: { rgb: "E2E8F0" }
+            },
+            right: {
+                style: "thin",
+                color: { rgb: "E2E8F0" }
+            }
+        }
+    };
+
+    for (let columna = 0; columna < 6; columna++) {
+        const direccion = XLSX.utils.encode_cell({
+            r: 0,
+            c: columna
+        });
+
+        if (hoja[direccion]) {
+            hoja[direccion].s = estiloEncabezado;
+        }
+    }
+
+    for (let fila = 1; fila < datosExcel.length; fila++) {
+        for (let columna = 0; columna < 6; columna++) {
+            const direccion = XLSX.utils.encode_cell({
+                r: fila,
+                c: columna
+            });
+
+            if (hoja[direccion]) {
+                hoja[direccion].s = {
+                    ...estiloCelda,
+                    fill: {
+                        fgColor: {
+                            rgb: fila % 2 === 0
+                                ? "F7F9FC"
+                                : "FFFFFF"
+                        }
+                    }
+                };
+            }
+        }
+
+        const celdaEstado = hoja[
+            XLSX.utils.encode_cell({
+                r: fila,
+                c: 4
+            })
+            ];
+
+        if (celdaEstado) {
+            const estado = normalizarTexto(celdaEstado.v);
+
+            if (estado === "entregada") {
+                celdaEstado.s = {
+                    ...estiloCelda,
+                    font: {
+                        bold: true,
+                        color: { rgb: "1B5E20" }
+                    },
+                    fill: {
+                        fgColor: { rgb: "E2F0D9" }
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: "center"
+                    }
+                };
+            }
+
+            if (estado === "pendiente") {
+                celdaEstado.s = {
+                    ...estiloCelda,
+                    font: {
+                        bold: true,
+                        color: { rgb: "7F6000" }
+                    },
+                    fill: {
+                        fgColor: { rgb: "FFF2CC" }
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: "center"
+                    }
+                };
+            }
+
+            if (estado === "vencida") {
+                celdaEstado.s = {
+                    ...estiloCelda,
+                    font: {
+                        bold: true,
+                        color: { rgb: "9C0006" }
+                    },
+                    fill: {
+                        fgColor: { rgb: "FFC7CE" }
+                    },
+                    alignment: {
+                        horizontal: "center",
+                        vertical: "center"
+                    }
+                };
+            }
+        }
+    }
+
+    hoja["!rows"] = [
+        { hpt: 24 }
+    ];
 
     XLSX.utils.book_append_sheet(
         libro,
