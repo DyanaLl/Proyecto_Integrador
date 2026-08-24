@@ -117,6 +117,7 @@ function actualizarMateriasSimulador() {
     }
 }
 
+// Función auxiliar unificada para limpiar código repetitivo
 function actualizarTablasRegistro() {
     mostrarActividades();
 
@@ -180,7 +181,7 @@ function registrarActividad() {
 
     verificarActividadesVencidas();
     limpiarFormulario();
-    actualizarTablasRegistro();
+    actualizarTablasRegistro(); // Uso de la función centralizada
 
     mostrarMensaje("Actividad registrada correctamente.");
 
@@ -310,7 +311,7 @@ function actualizarActividadSeleccionada() {
     );
 
     verificarActividadesVencidas();
-    actualizarTablasRegistro();
+    actualizarTablasRegistro(); // Uso de la función centralizada
     limpiarFormulario();
 
     actividadSeleccionada = null;
@@ -499,22 +500,10 @@ function guardarExcel() {
             vertical: "center"
         },
         border: {
-            top: {
-                style: "thin",
-                color: { rgb: "D9E1F2" }
-            },
-            bottom: {
-                style: "thin",
-                color: { rgb: "D9E1F2" }
-            },
-            left: {
-                style: "thin",
-                color: { rgb: "D9E1F2" }
-            },
-            right: {
-                style: "thin",
-                color: { rgb: "D9E1F2" }
-            }
+            top: { style: "thin", color: { rgb: "D9E1F2" } },
+            bottom: { style: "thin", color: { rgb: "D9E1F2" } },
+            left: { style: "thin", color: { rgb: "D9E1F2" } },
+            right: { style: "thin", color: { rgb: "D9E1F2" } }
         }
     };
 
@@ -523,22 +512,10 @@ function guardarExcel() {
             vertical: "center"
         },
         border: {
-            top: {
-                style: "thin",
-                color: { rgb: "E2E8F0" }
-            },
-            bottom: {
-                style: "thin",
-                color: { rgb: "E2E8F0" }
-            },
-            left: {
-                style: "thin",
-                color: { rgb: "E2E8F0" }
-            },
-            right: {
-                style: "thin",
-                color: { rgb: "E2E8F0" }
-            }
+            top: { style: "thin", color: { rgb: "E2E8F0" } },
+            bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+            left: { style: "thin", color: { rgb: "E2E8F0" } },
+            right: { style: "thin", color: { rgb: "E2E8F0" } }
         }
     };
 
@@ -579,7 +556,7 @@ function guardarExcel() {
                 r: fila,
                 c: 4
             })
-            ];
+        ];
 
         if (celdaEstado) {
             const estado = normalizarTexto(celdaEstado.v);
@@ -587,51 +564,27 @@ function guardarExcel() {
             if (estado === "entregada") {
                 celdaEstado.s = {
                     ...estiloCelda,
-                    font: {
-                        bold: true,
-                        color: { rgb: "1B5E20" }
-                    },
-                    fill: {
-                        fgColor: { rgb: "E2F0D9" }
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    }
+                    font: { bold: true, color: { rgb: "1B5E20" } },
+                    fill: { fgColor: { rgb: "E2F0D9" } },
+                    alignment: { horizontal: "center", vertical: "center" }
                 };
             }
 
             if (estado === "pendiente") {
                 celdaEstado.s = {
                     ...estiloCelda,
-                    font: {
-                        bold: true,
-                        color: { rgb: "7F6000" }
-                    },
-                    fill: {
-                        fgColor: { rgb: "FFF2CC" }
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    }
+                    font: { bold: true, color: { rgb: "7F6000" } },
+                    fill: { fgColor: { rgb: "FFF2CC" } },
+                    alignment: { horizontal: "center", vertical: "center" }
                 };
             }
 
             if (estado === "vencida") {
                 celdaEstado.s = {
                     ...estiloCelda,
-                    font: {
-                        bold: true,
-                        color: { rgb: "9C0006" }
-                    },
-                    fill: {
-                        fgColor: { rgb: "FFC7CE" }
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    }
+                    font: { bold: true, color: { rgb: "9C0006" } },
+                    fill: { fgColor: { rgb: "FFC7CE" } },
+                    alignment: { horizontal: "center", vertical: "center" }
                 };
             }
         }
@@ -689,85 +642,50 @@ function convertirFechaExcel(valor) {
 }
 
 function leerExcel(evento) {
-    const archivo =
-        evento.target.files[0];
+    const archivo = evento.target.files[0];
 
     if (!archivo) {
         return;
     }
 
-    const lector =
-        new FileReader();
+    const lector = new FileReader();
 
     lector.onload = function(e) {
         try {
-            const datos =
-                new Uint8Array(e.target.result);
+            const datos = new Uint8Array(e.target.result);
 
-            const libro =
-                XLSX.read(
-                    datos,
-                    {
-                        type: "array"
-                    }
-                );
+            const libro = XLSX.read(datos, { type: "array" });
 
-            const hoja =
-                libro.Sheets[
-                    libro.SheetNames[0]
-                    ];
+            const hoja = libro.Sheets[libro.SheetNames[0]];
 
-            const filas =
-                XLSX.utils.sheet_to_json(
-                    hoja,
-                    {
-                        header: 1,
-                        defval: ""
-                    }
-                );
+            const filas = XLSX.utils.sheet_to_json(hoja, {
+                header: 1,
+                defval: ""
+            });
 
             if (filas.length < 2) {
-                mostrarMensaje(
-                    "El archivo Excel no contiene actividades."
-                );
+                mostrarMensaje("El archivo Excel no contiene actividades.");
                 return;
             }
 
-            const encabezados =
-                filas[0].map(normalizarTexto);
+            // Normalizamos los encabezados para buscar tolerando tildes (Estilo mejorado)
+            const encabezados = filas[0].map(normalizarTexto);
 
-            const indiceMateria =
-                encabezados.indexOf("materia");
-
-            const indiceCriterio =
-                encabezados.indexOf("criterio");
-
-            let indiceTema =
-                encabezados.indexOf("tema");
+            const indiceMateria = encabezados.indexOf("materia");
+            const indiceCriterio = encabezados.indexOf("criterio");
+            let indiceTema = encabezados.indexOf("tema");
 
             if (indiceTema === -1) {
-                indiceTema =
-                    encabezados.indexOf(
-                        "tema o actividad"
-                    );
+                indiceTema = encabezados.indexOf("tema o actividad");
             }
 
-            const indiceNota =
-                encabezados.indexOf("nota");
-
-            const indiceEstado =
-                encabezados.indexOf("estado");
-
-            let indiceFechaLimite =
-                encabezados.indexOf(
-                    "fecha limite"
-                );
-
+            const indiceNota = encabezados.indexOf("nota");
+            const indiceEstado = encabezados.indexOf("estado");
+            
+            // Búsqueda flexible de fecha límite (con o sin tilde gracias a normalizarTexto)
+            let indiceFechaLimite = encabezados.indexOf("fecha limite");
             if (indiceFechaLimite === -1) {
-                indiceFechaLimite =
-                    encabezados.indexOf(
-                        "fecha límite"
-                    );
+                indiceFechaLimite = encabezados.indexOf("fecha límite");
             }
 
             if (
@@ -780,7 +698,6 @@ function leerExcel(evento) {
                 mostrarMensaje(
                     "El Excel debe tener las columnas: Materia, Criterio, Tema, Nota y Estado."
                 );
-
                 return;
             }
 
@@ -788,42 +705,18 @@ function leerExcel(evento) {
                 .slice(1)
                 .filter(fila =>
                     fila.some(
-                        valor =>
-                            String(valor).trim() !== ""
+                        valor => String(valor).trim() !== ""
                     )
                 )
                 .map(fila => ({
-                    materia:
-                        String(
-                            fila[indiceMateria]
-                        ).trim(),
-
-                    criterio:
-                        Number(
-                            fila[indiceCriterio]
-                        ) || 0,
-
-                    tema:
-                        String(
-                            fila[indiceTema]
-                        ).trim(),
-
-                    nota:
-                        Number(
-                            fila[indiceNota]
-                        ) || 0,
-
-                    estado:
-                        normalizarTexto(
-                            fila[indiceEstado]
-                        ) || "pendiente",
-
-                    fechaLimite:
-                        indiceFechaLimite !== -1
-                            ? convertirFechaExcel(
-                                fila[indiceFechaLimite]
-                            )
-                            : ""
+                    materia: String(fila[indiceMateria]).trim(),
+                    criterio: Number(fila[indiceCriterio]) || 0,
+                    tema: String(fila[indiceTema]).trim(),
+                    nota: Number(fila[indiceNota]) || 0,
+                    estado: normalizarTexto(fila[indiceEstado]) || "pendiente",
+                    fechaLimite: indiceFechaLimite !== -1
+                        ? convertirFechaExcel(fila[indiceFechaLimite])
+                        : ""
                 }));
 
             localStorage.setItem(
@@ -832,21 +725,13 @@ function leerExcel(evento) {
             );
 
             verificarActividadesVencidas();
-            actualizarTablasRegistro();
+            actualizarTablasRegistro(); // Uso de la función centralizada
 
-            mostrarMensaje(
-                "Actividades importadas correctamente."
-            );
+            mostrarMensaje("Actividades importadas correctamente.");
 
         } catch (error) {
-            console.error(
-                "Error al leer Excel:",
-                error
-            );
-
-            mostrarMensaje(
-                "No se pudo leer el archivo Excel."
-            );
+            console.error("Error al leer Excel:", error);
+            mostrarMensaje("No se pudo leer el archivo Excel.");
         }
     };
 
@@ -860,125 +745,87 @@ function actualizarActividades() {
     );
 
     verificarActividadesVencidas();
-    actualizarTablasRegistro();
+    actualizarTablasRegistro(); // Uso de la función centralizada
 
     mostrarMensaje(
         "Actividades actualizadas correctamente."
     );
 }
+
 function configurarBotonMas() {
-    const boton =
-        document.getElementById(
-            "btn-mostrar-registro"
-        );
-    const formulario =
-        document.getElementById(
-            "formulario-registro"
-        );
+    const boton = document.getElementById("btn-mostrar-registro");
+    const formulario = document.getElementById("formulario-registro");
+    
     if (!boton || !formulario) {
         return;
     }
 
     formulario.style.display = "none";
 
-    boton.addEventListener(
-        "click",
-        function() {
-            if (
-                formulario.style.display === "none" ||
-                formulario.style.display === ""
-            ) {
-                formulario.style.display =
-                    "block";
-                boton.textContent = "−";
-            } else {
-                formulario.style.display =
-                    "none";
-                boton.textContent = "+";
-            }
+    boton.addEventListener("click", function() {
+        if (
+            formulario.style.display === "none" ||
+            formulario.style.display === ""
+        ) {
+            formulario.style.display = "block";
+            boton.textContent = "−";
+        } else {
+            formulario.style.display = "none";
+            boton.textContent = "+";
         }
-    );
+    });
 }
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-        cargarActividadesGuardadas();
-        verificarActividadesVencidas();
 
-        mostrarActividades();
+document.addEventListener("DOMContentLoaded", function() {
+    cargarActividadesGuardadas();
+    verificarActividadesVencidas();
+    mostrarActividades();
 
-        if (typeof mostrarTablaPromedios === "function") {
-            mostrarTablaPromedios();
-        }
-
-        actualizarMateriasSimulador();
-        configurarBotonMas();
-        const modal =
-            document.getElementById("modal-mensaje");
-        const botonAceptar =
-            document.getElementById("modal-aceptar");
-        if (modal && botonAceptar) {
-            botonAceptar.addEventListener(
-                "click",
-                function() {
-                    modal.style.display = "none";
-                }
-            );
-            modal.addEventListener(
-                "click",
-                function(evento) {
-                    if (evento.target === modal) {
-                        modal.style.display = "none";
-                    }
-                }
-            );
-        }
-
-        const botonRegistrar =
-            document.getElementById(
-                "btn-registrar"
-            );
-        if (botonRegistrar) {
-            botonRegistrar.addEventListener(
-                "click",
-                function() {
-                    if (
-                        actividadSeleccionada !== null
-                    ) {
-                        mostrarMensaje(
-                            "Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla."
-                        );
-
-                        return;
-                    }
-
-                    registrarActividad();
-                }
-            );
-        }
-        const botonActualizar =
-            document.getElementById(
-                "btn-actualizar"
-            );
-        if (botonActualizar) {
-            botonActualizar.addEventListener(
-                "click",
-                function() {
-                    actualizarActividadSeleccionada();
-                }
-            );
-        }
-        const botonExportar =
-            document.getElementById(
-                "btn-exportar-excel"
-            );
-        if (botonExportar) {
-            botonExportar.addEventListener(
-                "click",
-                function() {
-                    guardarExcel();
-                }
-            );
-        }
+    if (typeof mostrarTablaPromedios === "function") {
+        mostrarTablaPromedios();
     }
-);
+
+    actualizarMateriasSimulador();
+    configurarBotonMas();
+
+    const modal = document.getElementById("modal-mensaje");
+    const botonAceptar = document.getElementById("modal-aceptar");
+
+    if (modal && botonAceptar) {
+        botonAceptar.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+        modal.addEventListener("click", function(evento) {
+            if (evento.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    }
+
+    const botonRegistrar = document.getElementById("btn-registrar");
+    if (botonRegistrar) {
+        botonRegistrar.addEventListener("click", function() {
+            if (actividadSeleccionada !== null) {
+                mostrarMensaje(
+                    "Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla."
+                );
+                return;
+            }
+            registrarActividad();
+        });
+    }
+
+    const botonActualizar = document.getElementById("btn-actualizar");
+    if (botonActualizar) {
+        botonActualizar.addEventListener("click", function() {
+            actualizarActividadSeleccionada();
+        });
+    }
+
+    const botonExportar = document.getElementById("btn-exportar-excel");
+    if (botonExportar) {
+        botonExportar.addEventListener("click", function() {
+            guardarExcel();
+        });
+    }
+});

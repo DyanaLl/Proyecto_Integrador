@@ -6,9 +6,7 @@
     <title>Simulador de Notas y Semáforo de Alertas</title>
     <link rel="stylesheet" href="Estilos.css">
 </head>
-
 <body>
-
 <div class="contenedor">
 
     <header class="encabezado">
@@ -45,7 +43,11 @@
 
                     <select id="materia">
                         <option value="">Seleccione una materia</option>
-                        <option value="Álgebra">Álgebra</option>
+                        <option value="Programación Web">Programación Web</option>
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Física">Física</option>
+                        <option value="Sistemas Operativos">Sistemas Operativos</option>
+                        <option value="Comunicación Oral y Escrita">Comunicación Oral y Escrita</option>
                     </select>
                 </div>
 
@@ -99,7 +101,7 @@
                             required>
 
                     <p class="nota-aclaratoria">
-                        La fecha límite permite identificar automáticamente las actividades vencidas.
+                        La fecha límite es obligatoria para controlar automáticamente las actividades vencidas.
                     </p>
                 </div>
 
@@ -116,7 +118,7 @@
                     </button>
 
                     <p class="nota-aclaratoria">
-                        Agrega una nueva actividad al historial académico.
+                        Usa este botón para agregar una nueva actividad.
                     </p>
                 </div>
 
@@ -129,7 +131,7 @@
                     </button>
 
                     <p class="nota-aclaratoria">
-                        Selecciona primero una actividad del historial para modificarla.
+                        Selecciona primero una actividad de la tabla para modificarla.
                     </p>
                 </div>
 
@@ -209,8 +211,7 @@
         <div class="cabecera-historial">
             <h2>Promedios por Materia</h2>
             <p class="nota-aclaratoria">
-                Esta tabla calcula automáticamente el promedio de cada criterio
-                y el promedio final de las materias registradas.
+                Esta tabla muestra automáticamente el promedio de cada criterio y el promedio final de las materias registradas.
             </p>
         </div>
 
@@ -271,7 +272,11 @@
 
             <select id="select-materia-a">
                 <option value="">-- Selecciona una materia --</option>
-                <option value="Álgebra">Álgebra</option>
+                <option value="Programación Web">Programación Web</option>
+                <option value="Matemáticas">Matemáticas</option>
+                <option value="Física">Física</option>
+                <option value="Sistemas Operativos">Sistemas Operativos</option>
+                <option value="Comunicación Oral y Escrita">Comunicación Oral y Escrita</option>
             </select>
 
             <label for="select-criterio-a">
@@ -310,7 +315,11 @@
 
             <select id="select-materia-b">
                 <option value="">-- Selecciona una materia --</option>
-                <option value="Álgebra">Álgebra</option>
+                <option value="Programación Web">Programación Web</option>
+                <option value="Matemáticas">Matemáticas</option>
+                <option value="Física">Física</option>
+                <option value="Sistemas Operativos">Sistemas Operativos</option>
+                <option value="Comunicación Oral y Escrita">Comunicación Oral y Escrita</option>
             </select>
 
             <label for="input-T">
@@ -353,7 +362,7 @@
                 id="btn-calcular"
                 onclick="ejecutarCalculo()"
                 class="btn btn-calcular">
-            Calcular Resultado
+            Calcula Resultado
         </button>
 
         <div
@@ -426,6 +435,7 @@
     </section>
 
 </div>
+
 <div id="modal-mensaje" class="modal-mensaje">
     <div class="modal-contenido">
         <h3>La página dice</h3>
@@ -448,7 +458,6 @@
 <script src="Funciones/Registro.js"></script>
 <script src="Funciones/Promedios.js"></script>
 <script src="Funciones/Main.js"></script>
-
 
 </body>
 </html>
