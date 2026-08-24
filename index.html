@@ -35,6 +35,122 @@
                 +
             </button>
         </div>
+        <div
+                id="formulario-registro"
+                class="registro-oculto">
+            <div class="registro-grid">
+                <div class="campo-registro">
+                    <label for="materia">
+                        Materia
+                    </label>
+                    <select id="materia">
+                        <option value="">
+                            Seleccione una materia
+                        </option>
+                        <option value="Álgebra">
+                            Álgebra
+                        </option>
+
+                        <option value="Programación">
+                            Programación
+                        </option>
+
+                        <option value="Desarrollo Web">
+                            Desarrollo Web
+                        </option>
+
+                        <option value="Habilidades Matemáticas">
+                            Habilidades Matemáticas
+                        </option>
+
+                        <option value="Comunicación">
+                            Comunicación
+                        </option>
+
+                        <option value="Sistemas Operativos">
+                            Sistemas Operativos
+                        </option>
+
+                        <option value="Fundamentos de Programación">
+                            Fundamentos de Programación
+                        </option>
+                    </select>
+                </div>
+
+                <div class="campo-registro">
+                    <label for="criterio">
+                        Criterio
+                    </label>
+                    <select id="criterio">
+
+                        <option value="1">
+                            Criterio 1
+                        </option>
+                        <option value="2">
+                            Criterio 2
+                        </option>
+                        <option value="3">
+                            Criterio 3
+                        </option>
+                    </select>
+                </div>
+                <div class="campo-registro">
+                    <label for="tema">
+                        Tema o actividad
+                    </label>
+                    <input
+                            type="text"
+                            id="tema"
+                            placeholder="Ej. Taller de funciones">
+
+                </div>
+                <div class="campo-registro">
+
+                    <label for="nota">
+                        Nota
+                    </label>
+                    <input
+                            type="number"
+                            id="nota"
+                            min="0"
+                            max="50"
+                            step="0.01"
+                            placeholder="0 - 50">
+
+                </div>
+                <div class="campo-registro">
+
+                    <label for="estado">
+                        Estado
+                    </label>
+
+                    <select id="estado">
+                        <option value="pendiente">
+                            Pendiente
+                        </option>
+
+                        <option value="entregada">
+                            Entregada
+                        </option>
+                        <option value="vencida">
+                            Vencida
+                        </option>
+                    </select>
+                </div>
+                <div class="campo-registro">
+                    <label for="fechaLimite">
+                        Fecha límite
+                    </label>
+                    <input
+                            type="date"
+                            id="fechaLimite"
+                            required>
+                    <p class="nota-aclaratoria">
+                        La fecha límite permite identificar automáticamente
+                        las actividades vencidas.
+                    </p>
+
+                </div>
 
         <div id="formulario-registro" class="registro-oculto">
 
