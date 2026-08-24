@@ -746,3 +746,579 @@ input[type="file"]{
         margin-bottom:10px;
     }
 }
+/* =========================================
+   AJUSTE DE DISEÑO COMPACTO TIPO DASHBOARD
+   Basado en el estilo actualizado de Diana
+   ========================================= */
+
+body{
+    background:#1b2a4a;
+    padding:10px 15px;
+}
+
+.contenedor{
+    max-width:98%;
+    margin:0 auto;
+    background:transparent;
+    padding:0;
+    border-radius:0;
+    box-shadow:none;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+/* Encabezado */
+.encabezado{
+    grid-column:span 3;
+    text-align:left;
+    margin-bottom:0;
+    background:#0f172a;
+    padding:15px 20px;
+    border-radius:10px;
+    box-shadow:0 4px 15px rgba(0,0,0,.3);
+    border:1px solid #2e3d5c;
+}
+
+.encabezado h1{
+    color:#fff;
+    font-size:22px;
+    margin-bottom:2px;
+}
+
+.encabezado p{
+    color:#94a3b8;
+    font-size:12px;
+}
+
+/* Tarjetas */
+.seccion{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:0;
+    box-shadow:0 4px 10px rgba(0,0,0,.15);
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+}
+
+/* Distribución */
+.registro-dashboard{
+    grid-column:span 1;
+    height:fit-content;
+}
+
+.historial-academico{
+    grid-column:span 2;
+    overflow:hidden;
+}
+
+#seccion-promedios{
+    grid-column:span 2;
+}
+
+#seccion-semaforo{
+    grid-column:span 1;
+}
+
+.simulador{
+    grid-column:span 2;
+}
+
+.grafica-dashboard{
+    grid-column:span 1;
+    overflow:hidden;
+}
+
+/* Títulos */
+.seccion h2,
+.cabecera-historial h2{
+    color:#1e293b;
+    font-size:16px;
+    margin-bottom:10px;
+    border-bottom:2px solid #e2e8f0;
+    padding-bottom:6px;
+    text-align:left;
+}
+
+.seccion h3{
+    color:#1565c0;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.cabecera-historial{
+    text-align:left;
+    margin-bottom:10px;
+}
+
+.cabecera-historial .nota-aclaratoria{
+    max-width:none;
+    margin:0;
+    text-align:left;
+}
+
+/* Registro compacto */
+.titulo-seccion{
+    gap:10px;
+}
+
+.titulo-seccion h2{
+    text-align:left;
+    margin-bottom:0;
+    border-bottom:none;
+    padding-bottom:0;
+}
+
+.btn-mas{
+    width:34px;
+    min-width:34px;
+    height:34px;
+    padding:0;
+    border-radius:50%;
+    font-size:18px;
+}
+
+.registro-oculto{
+    margin-top:10px;
+}
+
+.registro-grid{
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.acciones-registro{
+    gap:8px;
+    margin-top:10px;
+}
+
+.accion-boton{
+    min-width:120px;
+}
+
+label{
+    margin-top:8px;
+    margin-bottom:4px;
+    font-size:12px;
+    color:#334155;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select{
+    padding:8px;
+    border:1px solid #cbd5e1;
+    border-radius:5px;
+    font-size:13px;
+}
+
+input:focus,
+select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 2px rgba(37,99,235,.15);
+}
+
+.nota-aclaratoria{
+    font-size:11px;
+    color:#64748b;
+    margin-top:4px;
+    margin-bottom:6px;
+    line-height:1.3;
+}
+
+button,
+.boton-principal{
+    padding:9px 12px;
+    background:#2563eb;
+    border-radius:5px;
+    font-size:13px;
+}
+
+button:hover,
+.boton-principal:hover{
+    background:#1d4ed8;
+}
+
+.btn-excel{
+    background:#16a34a;
+}
+
+.btn-excel:hover{
+    background:#15803d;
+}
+
+/* Importar Excel */
+.importar-excel{
+    margin-top:10px;
+    padding:10px;
+    border:1px dashed #cbd5e1;
+    border-radius:6px;
+    background:#f8fafc;
+}
+
+/* Barra de tabla */
+.barra-historial{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    border-bottom:none;
+    border-radius:6px 6px 0 0;
+    padding:8px 10px;
+    color:#64748b;
+    font-size:11px;
+    font-weight:bold;
+}
+
+/* Tablas */
+.tabla-contenedor{
+    width:100%;
+    overflow-x:auto;
+    margin-top:8px;
+    border:1px solid #e2e8f0;
+    border-radius:5px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    font-size:12px;
+}
+
+th,
+td{
+    padding:6px 8px;
+    border:1px solid #e2e8f0;
+    text-align:center;
+}
+
+th{
+    background:#1e293b;
+    color:#fff;
+    text-transform:uppercase;
+    font-size:10px;
+}
+
+tr:nth-child(even){
+    background:#f8fafc;
+}
+
+tbody tr{
+    transition:.2s;
+}
+
+tbody tr:hover{
+    background:#eef6ff;
+}
+
+/* Estados */
+.fila-actividad{
+    cursor:pointer;
+}
+
+.fila-pendiente{
+    background:#fffdf7;
+}
+
+.fila-vencida{
+    background:#fff7f7;
+}
+
+.celda-materia{
+    font-weight:bold;
+}
+
+.celda-tema{
+    color:#1976d2;
+}
+
+.celda-nota{
+    font-weight:bold;
+}
+
+.estado-tabla{
+    display:inline-block;
+    min-width:72px;
+    padding:4px 8px;
+    text-align:center;
+    border-radius:14px;
+    font-size:10px;
+    font-weight:bold;
+    text-transform:capitalize;
+}
+
+.estado-pendiente{
+    background:#fff3cd;
+    border:1px solid #ffe08a;
+    color:#856404;
+}
+
+.estado-vencida{
+    background:#fde7e7;
+    border:1px solid #f4b7b7;
+    color:#a52a2a;
+}
+
+.estado-entregada{
+    background:#e5f5e8;
+    border:1px solid #b3ddb9;
+    color:#2e7437;
+}
+
+.tabla-vacia{
+    text-align:center;
+    padding:18px;
+    color:#7f8998;
+}
+
+/* Simulador */
+.modo-simulador{
+    margin-top:8px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:6px;
+    padding:10px;
+}
+
+.simulador #btn-calcular{
+    margin-top:10px;
+}
+
+.caja-resultado,
+#texto-resultado{
+    margin-top:10px;
+    border:2px dashed #2563eb;
+    background:#f0f6ff;
+    border-radius:6px;
+    padding:10px;
+    text-align:center;
+    font-size:14px;
+    font-weight:bold;
+}
+
+/* Gráfica */
+.grafica-contenedor{
+    position:relative;
+    width:100%;
+    min-height:260px;
+    margin-top:8px;
+    padding:10px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:6px;
+}
+
+/* Semáforo compacto */
+#semaforo-visual{
+    width:100px;
+    background:#0f172a;
+    padding:10px;
+    border-radius:15px;
+    margin:10px auto;
+    gap:8px;
+}
+
+.luz-semaforo{
+    width:40px;
+    height:40px;
+    border:2px solid rgba(255,255,255,.2);
+}
+
+#resultado-semaforo{
+    margin-top:8px;
+    padding:8px;
+    border-radius:6px;
+}
+
+#estado-semaforo{
+    font-size:14px;
+    margin-bottom:3px;
+}
+
+#mensaje-semaforo{
+    font-size:12px;
+}
+
+/* Responsive */
+@media(max-width:1200px){
+    .contenedor{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .encabezado,
+    .historial-academico,
+    #seccion-promedios,
+    .simulador{
+        grid-column:span 2;
+    }
+
+    .registro-dashboard,
+    #seccion-semaforo,
+    .grafica-dashboard{
+        grid-column:span 1;
+    }
+}
+
+@media(max-width:768px){
+    .contenedor{
+        grid-template-columns:1fr;
+    }
+
+    .encabezado,
+    .seccion,
+    .registro-dashboard,
+    .historial-academico,
+    #seccion-promedios,
+    #seccion-semaforo,
+    .simulador,
+    .grafica-dashboard{
+        grid-column:span 1;
+    }
+
+    .registro-grid{
+        grid-template-columns:1fr;
+    }
+
+    .acciones-registro{
+        flex-direction:column;
+    }
+
+    .accion-boton{
+        width:100%;
+        min-width:0;
+    }
+
+    .barra-historial{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+/* =========================================
+   AJUSTE DE LEGIBILIDAD DEL DASHBOARD
+   Mantiene el grid pero mejora tamaños
+   ========================================= */
+
+body{
+    font-size:15px;
+}
+.encabezado h1{
+    font-size:26px;
+}
+
+.encabezado p{
+    font-size:14px;
+}
+.seccion{
+    padding:18px;
+}
+
+.seccion h2,
+.cabecera-historial h2{
+    font-size:19px;
+    margin-bottom:12px;
+}
+
+.seccion h3{
+    font-size:16px;
+}
+
+/* Textos informativos */
+.nota-aclaratoria{
+    font-size:13px;
+    line-height:1.45;
+}
+
+/* Labels */
+label{
+    font-size:14px;
+}
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select{
+    padding:10px;
+    font-size:14px;
+}
+
+button,
+.boton-principal{
+    padding:11px 14px;
+    font-size:14px;
+}
+
+.btn-mas{
+    width:40px;
+    min-width:40px;
+    height:40px;
+    font-size:22px;
+}
+table{
+    font-size:13px;
+}
+
+th{
+    font-size:12px;
+    padding:9px 10px;
+}
+
+td{
+    font-size:13px;
+    padding:9px 10px;
+}
+.estado-tabla{
+    min-width:80px;
+    font-size:11px;
+    padding:5px 9px;
+}
+.barra-historial{
+    font-size:13px;
+    padding:10px 12px;
+}
+
+.modo-simulador{
+    padding:14px;
+}
+#texto-resultado{
+    font-size:15px;
+}
+
+#semaforo-visual{
+    width:115px;
+    padding:12px;
+}
+
+.luz-semaforo{
+    width:48px;
+    height:48px;
+}
+
+#estado-semaforo{
+    font-size:16px;
+}
+#mensaje-semaforo{
+    font-size:13px;
+}
+
+.grafica-contenedor{
+    min-height:320px;
+    padding:14px;
+}
+
+@media(min-width:1400px){
+    .contenedor{
+        max-width:96%;
+        gap:18px;
+    }
+
+    .seccion{
+        padding:20px;
+    }
+}

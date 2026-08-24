@@ -330,53 +330,36 @@ function limpiarFormulario() {
 }
 
 function mostrarActividades() {
-    const tabla =
-        document.getElementById("tabla-actividades-body");
-
+    const tabla = document.getElementById("tabla-actividades-body");
     if (!tabla) {
         return;
     }
-
     tabla.innerHTML = "";
-
-    const actividadesRegistradas = actividades
+    const actividadesPendientes = actividades
         .map((actividad, indice) => ({
             actividad: actividad,
             indice: indice
-        }));
-
-    if (actividadesRegistradas.length === 0) {
+        }))
+        .filter(item =>
+            normalizarTexto(item.actividad.estado) === "pendiente" &&
+            normalizarTexto(item.actividad.materia) === "algebra"
+        );
+    if (actividadesPendientes.length === 0) {
         tabla.innerHTML = `
             <tr>
                 <td colspan="6" class="tabla-vacia">
-                    No hay actividades registradas.
+                    No hay actividades pendientes.
                 </td>
             </tr>
         `;
-
         return;
     }
-
-    actividadesRegistradas.forEach(item => {
-        const fila =
-            document.createElement("tr");
-
-        const estado =
-            normalizarTexto(item.actividad.estado);
-
+    actividadesPendientes.forEach(item => {
+        const fila = document.createElement("tr");
+        const estado = normalizarTexto(item.actividad.estado);
         fila.classList.add("fila-actividad");
-
-        if (estado === "pendiente") {
-            fila.classList.add("fila-pendiente");
-        }
-
-        if (estado === "vencida") {
-            fila.classList.add("fila-vencida");
-        }
-
-        fila.title =
-            "Haz clic para editar esta actividad";
-
+        fila.classList.add("fila-pendiente");
+        fila.title = "Haz clic para editar esta actividad";
         fila.innerHTML = `
             <td class="celda-materia">
                 ${item.actividad.materia}
@@ -399,23 +382,19 @@ function mostrarActividades() {
                     ${item.actividad.estado}
                 </span>
             </td>
-
             <td>
                 ${item.actividad.fechaLimite || "Sin fecha"}
             </td>
         `;
-
         fila.addEventListener(
             "click",
             function() {
                 seleccionarActividad(item.indice);
             }
         );
-
         tabla.appendChild(fila);
     });
 }
-
 function cargarActividadesGuardadas() {
     const datosGuardados =
         localStorage.getItem("actividades");
