@@ -62,3 +62,16 @@ function validarPromedioObjetivo(valorTexto) {
         valor: numero
     };
 }
+// Función para validar que la cantidad de notas no exceda el total esperado
+function validarCantidadActividades(notasIngresadasArray, totalActividadesEsperadas, nombreCriterio) {
+    if (notasIngresadasArray.length > totalActividadesEsperadas) {
+        return {
+            esValido: false,
+            mensajeError: "Error en el " + nombreCriterio + ": Has ingresado " + notasIngresadasArray.length + " notas, pero el total esperado es " + totalActividadesEsperadas + "."
+        };
+    }
+    return {
+        esValido: true,
+        mensajeError: ""
+    };
+}
