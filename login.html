@@ -9,69 +9,70 @@
     <link rel="stylesheet" href="Estilos.css"> 
 </head>
 <body>
-
-    <div class="container">
-        <!-- Panel de Control de Archivo Excel / CSV -->
-        <div class="file-control-box">
-            <div id="fileStatusMsg" class="file-status">Estado: Ningún archivo vinculado. Carga uno existente o guarda uno nuevo.</div>
-            <div class="actions-bar">
-                <button id="btnCargar" class="btn-secondary-file">📂 Cargar Archivo Excel</button>
-                <button id="btnGuardar" class="btn-success-file" disabled>💾 Crear / Actualizar Archivo Excel</button>
+    <div id="modulo-login-deivid">
+        <!-- Todo tu contenido va aquí adentro -->
+        <div class="container">
+            <!-- Panel de Control de Archivo Excel / CSV -->
+            <div class="file-control-box">
+                <div id="fileStatusMsg" class="file-status">Estado: Ningún archivo vinculado. Carga uno existente o guarda uno nuevo.</div>
+                <div class="actions-bar">
+                    <button id="btnCargar" class="btn-secondary-file">📂 Cargar Archivo Excel</button>
+                    <button id="btnGuardar" class="btn-success-file" disabled>💾 Crear / Actualizar Archivo Excel</button>
+                </div>
             </div>
+
+            <!-- 1. Vista de Bienvenida Principal -->
+            <section id="seccion-bienvenida" class="card">
+                <h1>¡Bienvenido al Sistema Académico!</h1>
+                <p>Gestiona tu rendimiento, calcula tus promedios y mantén tus notas al día.</p>
+                <p><strong>Si eres nuevo estudiante</strong> Regístrate para comenzar a usar la plataforma, o inicia sesión si ya tienes cuenta.</p>
+                
+                <div class="botones-inicio">
+                    <button id="btn-ir-registro" class="btn-primary">Registrarse</button>
+                    <button id="btn-ir-login" class="btn-secondary">Iniciar Sesión</button>
+                </div>
+            </section>
+
+            <!-- 2. Formulario de Registro -->
+            <section id="seccion-registro" class="card" style="display: none;">
+                <h2>Registro de Nuevo Estudiante</h2>
+                <form id="form-registro">
+                    <label for="reg-nombre">Nombre:</label>
+                    <input type="text" id="reg-nombre" placeholder="Ej. Juan" required>
+
+                    <label for="reg-apellido">Apellido:</label>
+                    <input type="text" id="reg-apellido" placeholder="Ej. Pérez" required>
+
+                    <label for="reg-usuario">Nombre de Usuario:</label>
+                    <input type="text" id="reg-usuario" placeholder="Ej. jperez" required>
+
+                    <label for="reg-correo">Correo Electrónico:</label>
+                    <input type="email" id="reg-correo" placeholder="ejemplo@correo.com" required>
+
+                    <label for="reg-password">Contraseña:</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" required>
+
+                    <button type="submit" class="btn-primary">Guardar Registro</button>
+                    <button type="button" id="volver-de-registro" class="btn-link">Volver</button>
+                </form>
+            </section>
+
+            <!-- 3. Formulario de Login -->
+            <section id="seccion-login" class="card" style="display: none;">
+                <h2>Iniciar Sesión</h2>
+                <form id="form-login">
+                    <label for="log-usuario">Nombre de Usuario:</label>
+                    <input type="text" id="log-usuario" placeholder="Ingrese su usuario" required>
+
+                    <label for="log-password">Contraseña:</label>
+                    <input type="password" id="log-password" placeholder="••••••••" required>
+
+                    <button type="submit" class="btn-primary">Ingresar al Dashboard</button>
+                    <button type="button" id="volver-de-login" class="btn-link">Volver</button>
+                </form>
+            </section>
         </div>
-
-        <!-- 1. Vista de Bienvenida Principal -->
-        <section id="seccion-bienvenida" class="card">
-            <h1>¡Bienvenido al Sistema Académico!</h1>
-            <p>Gestiona tu rendimiento, calcula tus promedios y mantén tus notas al día.</p>
-            <p><strong>Si eres nuevo estudiante</strong> Regístrate para comenzar a usar la plataforma, o inicia sesión si ya tienes cuenta.</p>
-            
-            <div class="botones-inicio">
-                <button id="btn-ir-registro" class="btn-primary">Registrarse</button>
-                <button id="btn-ir-login" class="btn-secondary">Iniciar Sesión</button>
-            </div>
-        </section>
-
-        <!-- 2. Formulario de Registro (Inicia oculto) -->
-        <section id="seccion-registro" class="card" style="display: none;">
-            <h2>Registro de Nuevo Estudiante</h2>
-            <form id="form-registro">
-                <label for="reg-nombre">Nombre:</label>
-                <input type="text" id="reg-nombre" required>
-
-                <label for="reg-apellido">Apellido:</label>
-                <input type="text" id="reg-apellido" required>
-
-                <label for="reg-usuario">Nombre de Usuario:</label>
-                <input type="text" id="reg-usuario" required>
-
-                <label for="reg-correo">Correo Electrónico:</label>
-                <input type="email" id="reg-correo" required>
-
-                <label for="reg-password">Contraseña:</label>
-                <input type="password" id="reg-password" required>
-
-                <button type="submit" class="btn-primary">Guardar Registro</button>
-                <button type="button" id="volver-de-registro" class="btn-link">Volver</button>
-            </form>
-        </section>
-
-        <!-- 3. Formulario de Login (Inicia oculto) -->
-        <section id="seccion-login" class="card" style="display: none;">
-            <h2>Iniciar Sesión</h2>
-            <form id="form-login">
-                <label for="log-usuario">Nombre de Usuario:</label>
-                <input type="text" id="log-usuario" required>
-
-                <label for="log-password">Contraseña:</label>
-                <input type="password" id="log-password" required>
-
-                <button type="submit" class="btn-primary">Ingresar al Dashboard</button>
-                <button type="button" id="volver-de-login" class="btn-link">Volver</button>
-            </form>
-        </section>
     </div>
-
     <script src="Funciones/Auth.js"></script>
 </body>
 </html>
