@@ -1,240 +1,531 @@
-{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
+body {
     font-family: Arial, Helvetica, sans-serif;
-    background:#eef2f7;
-    color:#333;
-    padding:30px;
+    background: #1b2a4a; /* Fondo oscuro estilo HubSpot */
+    color: #333;
+    padding: 10px 15px;
+    min-height: 100vh;
 }
 
-.contenedor{
-    max-width:750px;
-    margin:auto;
-    background:white;
-    padding:30px;
-    border-radius:12px;
-    box-shadow:0 5px 15px rgba(0,0,0,.15);
+/* CONTENEDOR PRINCIPAL: Ocupa casi todo el ancho de la pantalla */
+.contenedor {
+    max-width: 98%;
+    margin: 0 auto;
+    background: transparent;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
 
-h2{
-    text-align:center;
-    color:#0d47a1;
-    margin-bottom:25px;
+/* Encabezado superior abarca todo el ancho (3 columnas) */
+.encabezado {
+    grid-column: span 3;
+    text-align: left;
+    background: #0f172a;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border: 1px solid #2e3d5c;
 }
 
-.seccion{
-    background:#fafafa;
-    border:1px solid #dddddd;
-    border-radius:8px;
-    padding:18px;
-    margin-bottom:18px;
-}
-.seccion h3{
-    color:#1565c0;
-    margin-bottom:12px;
+.encabezado h1 {
+    color: #ffffff;
+    font-size: 22px;
+    margin-bottom: 2px;
 }
 
-label{
-    display:block;
-    margin-top:12px;
-    margin-bottom:6px;
-    font-weight:bold;
+.encabezado p {
+    color: #94a3b8;
+    font-size: 12px;
 }
 
-input[type=text],
-input[type=number],
-select{
-    width:100%;
-    padding:10px;
-    border:1px solid #c7c7c7;
-    border-radius:6px;
-    font-size:15px;
+/* ESTILO GENERAL DE LAS TARJETAS */
+.seccion {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
+
+/* DISTRIBUCIÓN EXACTA EN EL GRID DE 3 COLUMNAS */
+
+/* 1. Registro de Actividades (Compacto a 1 columna) */
+.registro-dashboard {
+    grid-column: span 1;
+    height: fit-content; /* Se contrae si el formulario está cerrado para no dejar espacio en blanco */
+}
+
+/* 2. Resumen de Actividades / Historial (Ocupa 2 columnas para aprovechar el lado derecho) */
+.seccion:nth-of-type(2) {
+    grid-column: span 2;
+}
+
+/* 3. Promedios por Materia (Ocupa 2 columnas) */
+#seccion-promedios {
+    grid-column: span 2;
+}
+
+/* 4. Semáforo (Ocupa 1 columna) */
+#seccion-semaforo {
+    grid-column: span 1;
+}
+
+/* 5. Simulador de Notas (Ocupa 2 columnas) */
+.simulador {
+    grid-column: span 2;
+}
+
+/* 6. Gráfica de Materias (Ocupa 1 columna) */
+.seccion:last-of-type {
+    grid-column: span 1;
+}
+
+/* Títulos de las tarjetas */
+.seccion h2 {
+    color: #1e293b;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 6px;
+    text-align: left;
+}
+
+.seccion h3 {
+    color: #1565c0;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+label {
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    color: #334155;
+    font-size: 12px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font-size: 13px;
+    background: #fff;
+}
+
 input:focus,
-select:focus{
-    outline:none;
-    border:1px solid #2196f3;
+select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
-.nota-aclaratoria{
-    font-size:13px;
-    color:#666;
-    margin-bottom:10px;
-    line-height: 1.5;
+.nota-aclaratoria {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+    margin-bottom: 6px;
+    line-height: 1.3;
 }
 
-button{
-    width:100%;
-    padding:14px;
-    background:#1976d2;
-    color:white;
-    border:none;
-    border-radius:6px;
-    font-size:16px;
-    cursor:pointer;
-    transition:0.3s;
+button,
+.boton-principal {
+    width: 100%;
+    padding: 9px 12px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
 }
 
-button:hover{
-    background:#0d47a1;
+button:hover,
+.boton-principal:hover {
+    background: #1d4ed8;
 }
 
-#caja-resultado{
-    margin-top:20px;
-    border:2px dashed #1976d2;
-    background:#eef5ff;
-    border-radius:8px;
-    padding:20px;
-    text-align:center;
+.titulo-seccion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-#texto-resultado{
-    font-size:17px;
-    font-weight:bold;
+.titulo-seccion h2 {
+    text-align: left;
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
 }
 
-hr {
-    margin: 18px 0;
-    border: 0;
-    border-top: 1px solid #cccccc;
+.btn-mas {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#seccion-semaforo{
+.registro-oculto {
+    display: none;
+    margin-top: 10px;
+}
+
+.registro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.acciones-registro {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.accion-boton {
+    flex: 1;
+    min-width: 120px;
+}
+
+.btn-guardar,
+.btn-actualizar,
+.btn-calcular {
+    background: #2563eb;
+}
+
+.btn-excel {
+    background: #16a34a;
+}
+
+.btn-excel:hover {
+    background: #15803d;
+}
+
+#caja-resultado {
+    margin-top: 10px;
+    border: 2px dashed #2563eb;
+    background: #f0f6ff;
+    border-radius: 6px;
+    padding: 10px;
     text-align: center;
-    margin-top: 20px;
 }
+
+#texto-resultado {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+#seccion-semaforo {
+    text-align: center;
+}
+
 #semaforo-visual {
-    width: 150px;
-    background: #222;
-    padding: 18px;
-    border-radius: 25px;
-    margin: 20px auto;
+    width: 100px;
+    background: #0f172a;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 10px auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    gap: 8px;
 }
+
 .luz-semaforo {
-    width: 65px;
-    height: 65px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    opacity: 0.35;
-    transition: all 0.3s ease;
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    opacity: .3;
+    transition: all .3s ease;
+    border: 2px solid rgba(255, 255, 255, .2);
 }
-.luz-roja {
-    background-color: #f44336;
-}
-.luz-amarilla {
-    background-color: #ffc107;
-}
-.luz-verde {
-    background-color: #4caf50;
-}
+
+.luz-roja { background-color: #ef4444; }
+.luz-amarilla { background-color: #f59e0b; }
+.luz-verde { background-color: #22c55e; }
+
 .luz-semaforo.activa {
     opacity: 1;
-    transform: scale(1.08);
+    transform: scale(1.05);
 }
-.luz-roja.activa {
-    box-shadow:
-            0 0 10px #f44336,
-            0 0 25px #f44336,
-            0 0 40px rgba(244, 67, 54, 0.8);
-}
-.luz-amarilla.activa {
-    box-shadow:
-            0 0 10px #ffc107,
-            0 0 25px #ffc107,
-            0 0 40px rgba(255, 193, 7, 0.8);
-}
+
+.luz-roja.activa { box-shadow: 0 0 10px #ef4444; }
+.luz-amarilla.activa { box-shadow: 0 0 10px #f59e0b; }
+.luz-verde.activa { box-shadow: 0 0 10px #22c55e; }
 
 #resultado-semaforo {
-    margin-top: 15px;
-    padding: 15px;
-    border: 1px solid #dddddd;
-    border-radius: 8px;
-    background: #f5f5f5;
-    transition: all 0.3s ease;
+    margin-top: 8px;
+    padding: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #f8fafc;
 }
-#estado-semaforo {
-    margin-bottom: 8px;
-    font-size: 20px;
-    color: #1565c0;
-}
-#mensaje-semaforo {
-    margin: 0;
-    font-size: 15px;
-    color: #555;
-    line-height: 1.5;
-}
-.semaforo-verde {
-    border: 2px solid #4caf50 !important;
-    background: #e8f5e9 !important;
-    color: #1b5e20;
-}
-.semaforo-amarillo {
-    border: 2px solid #ffc107 !important;
-    background: #fff8e1 !important;
-    color: #8a6d00;
-}
-.semaforo-rojo {
-    border: 2px solid #f44336 !important;
-    background: #ffebee !important;
-    color: #b71c1c;
-}
-.semaforo-gris {
-    border: 2px solid #9e9e9e !important;
-    background: #eeeeee !important;
-    color: #424242;
-}
-@media (max-width: 768px) {
-    body {
-        padding: 15px;
-    }
-    .contenedor {
-        padding: 20px;
-    }
-    h2 {
-        font-size: 24px;
-    }
-    #semaforo-visual {
-        width: 135px;
-        padding: 15px;
-    }
-    .luz-semaforo {
-        width: 58px;
-        height: 58px;
-    }
-}
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-    .contenedor {
-        padding: 15px;
-        border-radius: 8px;
-    }
-    h2 {
-        font-size: 21px;
-    }
 
-    .seccion {
-        padding: 14px;
+#estado-semaforo {
+    font-size: 14px;
+    color: #1e293b;
+    margin-bottom: 3px;
+}
+
+#mensaje-semaforo {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Tablas compactas */
+.tabla-contenedor {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    font-size: 12px;
+}
+
+th,
+td {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+th {
+    background: #1e293b;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.modo-simulador {
+    margin-top: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+/* Adaptabilidad para pantallas medianas y pequeñas */
+@media(max-width: 1200px) {
+    .contenedor {
+        grid-template-columns: repeat(2, 1fr);
     }
-    button {
-        font-size: 15px;
+    .encabezado, 
+    .seccion:nth-of-type(2), 
+    #seccion-promedios, 
+    .simulador {
+        grid-column: span 2;
     }
-    #semaforo-visual {
-        width: 125px;
-        padding: 13px;
+    .registro-dashboard, 
+    #seccion-semaforo, 
+    .seccion:last-of-type {
+        grid-column: span 1;
     }
-    .luz-semaforo {
-        width: 52px;
-        height: 52px;
+}
+
+@media(max-width: 768px) {
+    .contenedor {
+        grid-template-columns: 1fr;
     }
+    .encabezado, 
+    .seccion, 
+    .registro-dashboard, 
+    #seccion-promedios, 
+    #seccion-semaforo, 
+    .simulador, 
+    .seccion:nth-of-type(2), 
+    .seccion:last-of-type {
+        grid-column: span 1;
+    }
+}
+
+/* --- ESTILOS AISLADOS EXCLUSIVOS PARA EL MÓDULO DE DEIVID --- */
+#modulo-login-deivid {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef2f7;
+    color: #333;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+#modulo-login-deivid *, #modulo-login-deivid *::before, #modulo-login-deivid *::after {
+    box-sizing: border-box;
+}
+
+#modulo-login-deivid .container {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+}
+
+#modulo-login-deivid .card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#modulo-login-deivid h1, 
+#modulo-login-deivid h2 {
+    color: #0d47a1;
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#modulo-login-deivid p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+#modulo-login-deivid label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    font-weight: bold;
+    text-align: left;
+}
+
+#modulo-login-deivid input[type=text],
+#modulo-login-deivid input[type=email],
+#modulo-login-deivid input[type=password],
+#modulo-login-deivid input[type=number],
+#modulo-login-deivid select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #c7c7c7;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+#modulo-login-deivid input:focus,
+#modulo-login-deivid select:focus {
+    outline: none;
+    border: 1px solid #2196f3;
+}
+
+#modulo-login-deivid .botones-inicio {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#modulo-login-deivid .btn-primary, 
+#modulo-login-deivid .btn-secondary, 
+#modulo-login-deivid .btn-link {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s;
+}
+
+#modulo-login-deivid .btn-primary {
+    background: #1976d2;
+    color: white;
+}
+#modulo-login-deivid .btn-primary:hover {
+    background: #0d47a1;
+}
+
+#modulo-login-deivid .btn-secondary {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+#modulo-login-deivid .btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+#modulo-login-deivid .btn-link {
+    background: transparent;
+    color: #64748b;
+    margin-top: 5px;
+}
+#modulo-login-deivid .btn-link:hover {
+    color: #0d47a1;
+    text-decoration: underline;
+}
+
+/* Caja de control de archivos Excel */
+#modulo-login-deivid .file-control-box {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #cbd5e1;
+}
+
+#modulo-login-deivid .file-status {
+    font-size: 12px;
+    color: #dc2626;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#modulo-login-deivid .actions-bar {
+    display: flex;
+    gap: 8px;
+}
+
+#modulo-login-deivid .actions-bar button {
+    flex: 1;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+#modulo-login-deivid .btn-secondary-file {
+    background: #0f172a;
+}
+#modulo-login-deivid .btn-success-file {
+    background: #94a3b8;
+    cursor: not-allowed;
 }
