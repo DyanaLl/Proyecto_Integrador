@@ -1,12 +1,13 @@
-function obtenerNotasTablaPromedios(materia, criterio) {
+function obtenerNotasTablaPromedios(materia, rda, criterio) {
     let notas = [];
 
     actividades.forEach(actividad => {
         if (
             actividad.materia === materia &&
+            Number(actividad.rda || 1) === Number(rda) &&
             Number(actividad.criterio) === Number(criterio)
         ) {
-            let valorNota = Number(actividad.nota);
+            const valorNota = Number(actividad.nota);
 
             if (!isNaN(valorNota)) {
                 notas.push(valorNota);
@@ -15,6 +16,20 @@ function obtenerNotasTablaPromedios(materia, criterio) {
     });
 
     return notas;
+}
+
+function calcularPromedioRDA(materia, rda) {
+    const notasCriterioUno = obtenerNotasTablaPromedios(materia, rda, 1);
+    const notasCriterioDos = obtenerNotasTablaPromedios(materia, rda, 2);
+    const notasCriterioTres = obtenerNotasTablaPromedios(materia, rda, 3);
+
+    return Number(
+        calcularNotaFinalProyectada(
+            notasCriterioUno,
+            notasCriterioDos,
+            notasCriterioTres
+        )
+    );
 }
 
 function mostrarTablaPromedios() {
@@ -26,7 +41,7 @@ function mostrarTablaPromedios() {
 
     tabla.innerHTML = "";
 
-    let materias = [];
+    const materias = [];
 
     actividades.forEach(actividad => {
         if (
@@ -49,28 +64,21 @@ function mostrarTablaPromedios() {
     }
 
     materias.forEach(materia => {
-        let notasCriterioUno = obtenerNotasTablaPromedios(materia, 1);
-        let notasCriterioDos = obtenerNotasTablaPromedios(materia, 2);
-        let notasCriterioTres = obtenerNotasTablaPromedios(materia, 3);
+        const promedioRDA1 = calcularPromedioRDA(materia, 1);
+        const promedioRDA2 = calcularPromedioRDA(materia, 2);
+        const promedioRDA3 = calcularPromedioRDA(materia, 3);
 
-        let promedioUno = calcularPromedioCriterio(notasCriterioUno);
-        let promedioDos = calcularPromedioCriterio(notasCriterioDos);
-        let promedioTres = calcularPromedioCriterio(notasCriterioTres);
-
-        let promedioFinal = calcularNotaFinalProyectada(
-            notasCriterioUno,
-            notasCriterioDos,
-            notasCriterioTres
-        );
+        const promedioFinal =
+            (promedioRDA1 + promedioRDA2 + promedioRDA3) / 3;
 
         const fila = document.createElement("tr");
 
         fila.innerHTML = `
             <td>${materia}</td>
-            <td>${promedioUno.toFixed(2)}</td>
-            <td>${promedioDos.toFixed(2)}</td>
-            <td>${promedioTres.toFixed(2)}</td>
-            <td>${promedioFinal}</td>
+            <td>${promedioRDA1.toFixed(2)}</td>
+            <td>${promedioRDA2.toFixed(2)}</td>
+            <td>${promedioRDA3.toFixed(2)}</td>
+            <td>${promedioFinal.toFixed(2)}</td>
         `;
 
         tabla.appendChild(fila);

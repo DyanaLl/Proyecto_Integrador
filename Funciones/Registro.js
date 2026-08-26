@@ -69,8 +69,11 @@ function actualizarGraficaRegistro() {
 }
 
 function actualizarMateriasSimulador() {
-    const selectMateriaA = document.getElementById("select-materia-a");
-    const selectMateriaB = document.getElementById("select-materia-b");
+    const selectMateriaA =
+        document.getElementById("select-materia-a");
+
+    const selectMateriaB =
+        document.getElementById("select-materia-b");
 
     if (!selectMateriaA || !selectMateriaB) {
         return;
@@ -98,13 +101,17 @@ function actualizarMateriasSimulador() {
 
     materias.forEach(materia => {
         const opcionA = document.createElement("option");
+
         opcionA.value = materia;
         opcionA.textContent = materia;
+
         selectMateriaA.appendChild(opcionA);
 
         const opcionB = document.createElement("option");
+
         opcionB.value = materia;
         opcionB.textContent = materia;
+
         selectMateriaB.appendChild(opcionB);
     });
 
@@ -129,19 +136,44 @@ function actualizarTablasRegistro() {
 }
 
 function registrarActividad() {
-    const materia = document.getElementById("materia").value.trim();
-    const criterio = Number(document.getElementById("criterio").value);
-    const tema = document.getElementById("tema").value.trim();
-    const notaTexto = document.getElementById("nota").value.trim();
-    const nota = notaTexto === "" ? 0 : Number(notaTexto);
-    const estado = normalizarTexto(
-        document.getElementById("estado").value
-    );
+    const materia =
+        document.getElementById("materia").value.trim();
+
+    const rda =
+        Number(document.getElementById("rda").value);
+
+    const criterio =
+        Number(document.getElementById("criterio").value);
+
+    const tema =
+        document.getElementById("tema").value.trim();
+
+    const notaTexto =
+        document.getElementById("nota").value.trim();
+
+    const nota =
+        notaTexto === "" ? 0 : Number(notaTexto);
+
+    const estado =
+        normalizarTexto(
+            document.getElementById("estado").value
+        );
+
     const fechaLimite =
         document.getElementById("fechaLimite").value;
 
     if (!materia) {
         mostrarMensaje("Selecciona una materia.");
+        return false;
+    }
+
+    if (![1, 2, 3].includes(rda)) {
+        mostrarMensaje("Selecciona un RDA válido.");
+        return false;
+    }
+
+    if (![1, 2, 3].includes(criterio)) {
+        mostrarMensaje("Selecciona un criterio válido.");
         return false;
     }
 
@@ -160,12 +192,16 @@ function registrarActividad() {
         nota < 0 ||
         nota > 50
     ) {
-        mostrarMensaje("La nota debe estar entre 0 y 50.");
+        mostrarMensaje(
+            "La nota debe estar entre 0 y 50."
+        );
+
         return false;
     }
 
     actividades.push({
         materia: materia,
+        rda: rda,
         criterio: criterio,
         tema: tema,
         nota: nota,
@@ -182,7 +218,9 @@ function registrarActividad() {
     limpiarFormulario();
     actualizarTablasRegistro();
 
-    mostrarMensaje("Actividad registrada correctamente.");
+    mostrarMensaje(
+        "Actividad registrada correctamente."
+    );
 
     return true;
 }
@@ -198,6 +236,9 @@ function seleccionarActividad(indice) {
 
     document.getElementById("materia").value =
         actividad.materia;
+
+    document.getElementById("rda").value =
+        String(actividad.rda || 1);
 
     document.getElementById("criterio").value =
         String(actividad.criterio);
@@ -238,6 +279,7 @@ function actualizarActividadSeleccionada() {
         mostrarMensaje(
             "Selecciona primero una actividad de la tabla."
         );
+
         return;
     }
 
@@ -251,6 +293,9 @@ function actualizarActividadSeleccionada() {
 
     const materia =
         document.getElementById("materia").value.trim();
+
+    const rda =
+        Number(document.getElementById("rda").value);
 
     const criterio =
         Number(document.getElementById("criterio").value);
@@ -278,11 +323,31 @@ function actualizarActividadSeleccionada() {
         mostrarMensaje(
             "Completa la materia y el tema o actividad."
         );
+
+        return;
+    }
+
+    if (![1, 2, 3].includes(rda)) {
+        mostrarMensaje(
+            "Selecciona un RDA válido."
+        );
+
+        return;
+    }
+
+    if (![1, 2, 3].includes(criterio)) {
+        mostrarMensaje(
+            "Selecciona un criterio válido."
+        );
+
         return;
     }
 
     if (!fechaLimite) {
-        mostrarMensaje("Selecciona una fecha límite.");
+        mostrarMensaje(
+            "Selecciona una fecha límite."
+        );
+
         return;
     }
 
@@ -294,10 +359,12 @@ function actualizarActividadSeleccionada() {
         mostrarMensaje(
             "La nota debe estar entre 0 y 50."
         );
+
         return;
     }
 
     actividad.materia = materia;
+    actividad.rda = rda;
     actividad.criterio = criterio;
     actividad.tema = tema;
     actividad.nota = nota;
@@ -322,6 +389,7 @@ function actualizarActividadSeleccionada() {
 
 function limpiarFormulario() {
     document.getElementById("materia").value = "";
+    document.getElementById("rda").value = "1";
     document.getElementById("criterio").value = "1";
     document.getElementById("tema").value = "";
     document.getElementById("nota").value = "";
@@ -331,7 +399,9 @@ function limpiarFormulario() {
 
 function mostrarActividades() {
     const tabla =
-        document.getElementById("tabla-actividades-body");
+        document.getElementById(
+            "tabla-actividades-body"
+        );
 
     if (!tabla) {
         return;
@@ -339,16 +409,18 @@ function mostrarActividades() {
 
     tabla.innerHTML = "";
 
-    const actividadesRegistradas = actividades
-        .map((actividad, indice) => ({
-            actividad: actividad,
-            indice: indice
-        }));
+    const actividadesRegistradas =
+        actividades.map(
+            (actividad, indice) => ({
+                actividad: actividad,
+                indice: indice
+            })
+        );
 
     if (actividadesRegistradas.length === 0) {
         tabla.innerHTML = `
             <tr>
-                <td colspan="6" class="tabla-vacia">
+                <td colspan="7" class="tabla-vacia">
                     No hay actividades registradas.
                 </td>
             </tr>
@@ -362,16 +434,24 @@ function mostrarActividades() {
             document.createElement("tr");
 
         const estado =
-            normalizarTexto(item.actividad.estado);
+            normalizarTexto(
+                item.actividad.estado
+            );
 
-        fila.classList.add("fila-actividad");
+        fila.classList.add(
+            "fila-actividad"
+        );
 
         if (estado === "pendiente") {
-            fila.classList.add("fila-pendiente");
+            fila.classList.add(
+                "fila-pendiente"
+            );
         }
 
         if (estado === "vencida") {
-            fila.classList.add("fila-vencida");
+            fila.classList.add(
+                "fila-vencida"
+            );
         }
 
         fila.title =
@@ -380,6 +460,10 @@ function mostrarActividades() {
         fila.innerHTML = `
             <td class="celda-materia">
                 ${item.actividad.materia}
+            </td>
+
+            <td>
+                RDA ${item.actividad.rda || 1}
             </td>
 
             <td>
@@ -408,7 +492,9 @@ function mostrarActividades() {
         fila.addEventListener(
             "click",
             function() {
-                seleccionarActividad(item.indice);
+                seleccionarActividad(
+                    item.indice
+                );
             }
         );
 
@@ -418,7 +504,9 @@ function mostrarActividades() {
 
 function cargarActividadesGuardadas() {
     const datosGuardados =
-        localStorage.getItem("actividades");
+        localStorage.getItem(
+            "actividades"
+        );
 
     if (!datosGuardados) {
         return;
@@ -442,15 +530,20 @@ function cargarActividadesGuardadas() {
 
 function guardarExcel() {
     if (actividades.length === 0) {
-        mostrarMensaje("No existen actividades para exportar.");
+        mostrarMensaje(
+            "No existen actividades para exportar."
+        );
+
         return;
     }
 
-    const libro = XLSX.utils.book_new();
+    const libro =
+        XLSX.utils.book_new();
 
     const datosExcel = [
         [
             "Materia",
+            "RDA",
             "Criterio",
             "Tema",
             "Nota",
@@ -462,6 +555,7 @@ function guardarExcel() {
     actividades.forEach(actividad => {
         datosExcel.push([
             actividad.materia,
+            actividad.rda || 1,
             actividad.criterio,
             actividad.tema,
             actividad.nota,
@@ -470,11 +564,15 @@ function guardarExcel() {
         ]);
     });
 
-    const hoja = XLSX.utils.aoa_to_sheet(datosExcel);
+    const hoja =
+        XLSX.utils.aoa_to_sheet(
+            datosExcel
+        );
 
     hoja["!cols"] = [
-        { wch: 24 },
-        { wch: 14 },
+        { wch: 32 },
+        { wch: 10 },
+        { wch: 12 },
         { wch: 36 },
         { wch: 12 },
         { wch: 18 },
@@ -482,17 +580,21 @@ function guardarExcel() {
     ];
 
     hoja["!autofilter"] = {
-        ref: `A1:F${datosExcel.length}`
+        ref: `A1:G${datosExcel.length}`
     };
 
     const estiloEncabezado = {
         font: {
             bold: true,
-            color: { rgb: "FFFFFF" },
+            color: {
+                rgb: "FFFFFF"
+            },
             sz: 12
         },
         fill: {
-            fgColor: { rgb: "4472C4" }
+            fgColor: {
+                rgb: "4472C4"
+            }
         },
         alignment: {
             horizontal: "center",
@@ -501,19 +603,27 @@ function guardarExcel() {
         border: {
             top: {
                 style: "thin",
-                color: { rgb: "D9E1F2" }
+                color: {
+                    rgb: "D9E1F2"
+                }
             },
             bottom: {
                 style: "thin",
-                color: { rgb: "D9E1F2" }
+                color: {
+                    rgb: "D9E1F2"
+                }
             },
             left: {
                 style: "thin",
-                color: { rgb: "D9E1F2" }
+                color: {
+                    rgb: "D9E1F2"
+                }
             },
             right: {
                 style: "thin",
-                color: { rgb: "D9E1F2" }
+                color: {
+                    rgb: "D9E1F2"
+                }
             }
         }
     };
@@ -525,74 +635,106 @@ function guardarExcel() {
         border: {
             top: {
                 style: "thin",
-                color: { rgb: "E2E8F0" }
+                color: {
+                    rgb: "E2E8F0"
+                }
             },
             bottom: {
                 style: "thin",
-                color: { rgb: "E2E8F0" }
+                color: {
+                    rgb: "E2E8F0"
+                }
             },
             left: {
                 style: "thin",
-                color: { rgb: "E2E8F0" }
+                color: {
+                    rgb: "E2E8F0"
+                }
             },
             right: {
                 style: "thin",
-                color: { rgb: "E2E8F0" }
+                color: {
+                    rgb: "E2E8F0"
+                }
             }
         }
     };
 
-    for (let columna = 0; columna < 6; columna++) {
-        const direccion = XLSX.utils.encode_cell({
-            r: 0,
-            c: columna
-        });
+    for (
+        let columna = 0;
+        columna < 7;
+        columna++
+    ) {
+        const direccion =
+            XLSX.utils.encode_cell({
+                r: 0,
+                c: columna
+            });
 
         if (hoja[direccion]) {
-            hoja[direccion].s = estiloEncabezado;
+            hoja[direccion].s =
+                estiloEncabezado;
         }
     }
 
-    for (let fila = 1; fila < datosExcel.length; fila++) {
-        for (let columna = 0; columna < 6; columna++) {
-            const direccion = XLSX.utils.encode_cell({
-                r: fila,
-                c: columna
-            });
+    for (
+        let fila = 1;
+        fila < datosExcel.length;
+        fila++
+    ) {
+        for (
+            let columna = 0;
+            columna < 7;
+            columna++
+        ) {
+            const direccion =
+                XLSX.utils.encode_cell({
+                    r: fila,
+                    c: columna
+                });
 
             if (hoja[direccion]) {
                 hoja[direccion].s = {
                     ...estiloCelda,
                     fill: {
                         fgColor: {
-                            rgb: fila % 2 === 0
-                                ? "F7F9FC"
-                                : "FFFFFF"
+                            rgb:
+                                fila % 2 === 0
+                                    ? "F7F9FC"
+                                    : "FFFFFF"
                         }
                     }
                 };
             }
         }
 
-        const celdaEstado = hoja[
-            XLSX.utils.encode_cell({
-                r: fila,
-                c: 4
-            })
-            ];
+        const celdaEstado =
+            hoja[
+                XLSX.utils.encode_cell({
+                    r: fila,
+                    c: 5
+                })
+                ];
 
         if (celdaEstado) {
-            const estado = normalizarTexto(celdaEstado.v);
+            const estado =
+                normalizarTexto(
+                    celdaEstado.v
+                );
 
             if (estado === "entregada") {
                 celdaEstado.s = {
                     ...estiloCelda,
                     font: {
                         bold: true,
-                        color: { rgb: "1B5E20" }
+                        color: {
+                            rgb: "1B5E20"
+                        }
                     },
                     fill: {
-                        fgColor: { rgb: "E2F0D9" }
+                        fgColor: {
+                            rgb: "E2F0D9"
+                        }
                     },
                     alignment: {
                         horizontal: "center",
@@ -606,10 +748,14 @@ function guardarExcel() {
                     ...estiloCelda,
                     font: {
                         bold: true,
-                        color: { rgb: "7F6000" }
+                        color: {
+                            rgb: "7F6000"
+                        }
                     },
                     fill: {
-                        fgColor: { rgb: "FFF2CC" }
+                        fgColor: {
+                            rgb: "FFF2CC"
+                        }
                     },
                     alignment: {
                         horizontal: "center",
@@ -623,10 +769,14 @@ function guardarExcel() {
                     ...estiloCelda,
                     font: {
                         bold: true,
-                        color: { rgb: "9C0006" }
+                        color: {
+                            rgb: "9C0006"
+                        }
                     },
                     fill: {
-                        fgColor: { rgb: "FFC7CE" }
+                        fgColor: {
+                            rgb: "FFC7CE"
+                        }
                     },
                     alignment: {
                         horizontal: "center",
@@ -638,7 +788,9 @@ function guardarExcel() {
     }
 
     hoja["!rows"] = [
-        { hpt: 24 }
+        {
+            hpt: 24
+        }
     ];
 
     XLSX.utils.book_append_sheet(
@@ -668,10 +820,13 @@ function convertirFechaExcel(valor) {
 
     if (typeof valor === "number") {
         const fechaExcel =
-            XLSX.SSF.parse_date_code(valor);
+            XLSX.SSF.parse_date_code(
+                valor
+            );
 
         if (fechaExcel) {
-            const anio = fechaExcel.y;
+            const anio =
+                fechaExcel.y;
 
             const mes =
                 String(fechaExcel.m)
@@ -702,7 +857,9 @@ function leerExcel(evento) {
     lector.onload = function(e) {
         try {
             const datos =
-                new Uint8Array(e.target.result);
+                new Uint8Array(
+                    e.target.result
+                );
 
             const libro =
                 XLSX.read(
@@ -730,20 +887,34 @@ function leerExcel(evento) {
                 mostrarMensaje(
                     "El archivo Excel no contiene actividades."
                 );
+
                 return;
             }
 
             const encabezados =
-                filas[0].map(normalizarTexto);
+                filas[0].map(
+                    normalizarTexto
+                );
 
             const indiceMateria =
-                encabezados.indexOf("materia");
+                encabezados.indexOf(
+                    "materia"
+                );
+
+            const indiceRda =
+                encabezados.indexOf(
+                    "rda"
+                );
 
             const indiceCriterio =
-                encabezados.indexOf("criterio");
+                encabezados.indexOf(
+                    "criterio"
+                );
 
             let indiceTema =
-                encabezados.indexOf("tema");
+                encabezados.indexOf(
+                    "tema"
+                );
 
             if (indiceTema === -1) {
                 indiceTema =
@@ -753,10 +924,14 @@ function leerExcel(evento) {
             }
 
             const indiceNota =
-                encabezados.indexOf("nota");
+                encabezados.indexOf(
+                    "nota"
+                );
 
             const indiceEstado =
-                encabezados.indexOf("estado");
+                encabezados.indexOf(
+                    "estado"
+                );
 
             let indiceFechaLimite =
                 encabezados.indexOf(
@@ -772,13 +947,14 @@ function leerExcel(evento) {
 
             if (
                 indiceMateria === -1 ||
+                indiceRda === -1 ||
                 indiceCriterio === -1 ||
                 indiceTema === -1 ||
                 indiceNota === -1 ||
                 indiceEstado === -1
             ) {
                 mostrarMensaje(
-                    "El Excel debe tener las columnas: Materia, Criterio, Tema, Nota y Estado."
+                    "El Excel debe tener las columnas: Materia, RDA, Criterio, Tema, Nota y Estado."
                 );
 
                 return;
@@ -789,46 +965,68 @@ function leerExcel(evento) {
                 .filter(fila =>
                     fila.some(
                         valor =>
-                            String(valor).trim() !== ""
+                            String(valor)
+                                .trim() !== ""
                     )
                 )
                 .map(fila => ({
                     materia:
                         String(
-                            fila[indiceMateria]
+                            fila[
+                                indiceMateria
+                                ]
                         ).trim(),
+
+                    rda:
+                        Number(
+                            fila[
+                                indiceRda
+                                ]
+                        ) || 1,
 
                     criterio:
                         Number(
-                            fila[indiceCriterio]
-                        ) || 0,
+                            fila[
+                                indiceCriterio
+                                ]
+                        ) || 1,
 
                     tema:
                         String(
-                            fila[indiceTema]
+                            fila[
+                                indiceTema
+                                ]
                         ).trim(),
 
                     nota:
                         Number(
-                            fila[indiceNota]
+                            fila[
+                                indiceNota
+                                ]
                         ) || 0,
 
                     estado:
                         normalizarTexto(
-                            fila[indiceEstado]
+                            fila[
+                                indiceEstado
+                                ]
                         ) || "pendiente",
 
                     fechaLimite:
                         indiceFechaLimite !== -1
                             ? convertirFechaExcel(
-                                fila[indiceFechaLimite]
+                                fila[
+                                    indiceFechaLimite
+                                    ]
                             )
                             : ""
                 }));
 
             localStorage.setItem(
                 "actividades",
-                JSON.stringify(actividades)
+                JSON.stringify(
+                    actividades
+                )
             );
 
             verificarActividadesVencidas();
@@ -850,7 +1048,9 @@ function leerExcel(evento) {
         }
     };
 
-    lector.readAsArrayBuffer(archivo);
+    lector.readAsArrayBuffer(
+        archivo
+    );
 }
 
 function actualizarActividades() {
@@ -866,69 +1066,96 @@ function actualizarActividades() {
         "Actividades actualizadas correctamente."
     );
 }
+
 function configurarBotonMas() {
     const boton =
         document.getElementById(
             "btn-mostrar-registro"
         );
+
     const formulario =
         document.getElementById(
             "formulario-registro"
         );
+
     if (!boton || !formulario) {
         return;
     }
 
-    formulario.style.display = "none";
+    formulario.style.display =
+        "none";
 
     boton.addEventListener(
         "click",
         function() {
             if (
-                formulario.style.display === "none" ||
-                formulario.style.display === ""
+                formulario.style.display ===
+                "none" ||
+                formulario.style.display ===
+                ""
             ) {
                 formulario.style.display =
                     "block";
+
                 boton.textContent = "−";
+
             } else {
                 formulario.style.display =
                     "none";
+
                 boton.textContent = "+";
             }
         }
     );
 }
+
 document.addEventListener(
     "DOMContentLoaded",
     function() {
         cargarActividadesGuardadas();
+
         verificarActividadesVencidas();
 
         mostrarActividades();
 
-        if (typeof mostrarTablaPromedios === "function") {
+        if (
+            typeof mostrarTablaPromedios ===
+            "function"
+        ) {
             mostrarTablaPromedios();
         }
 
         actualizarMateriasSimulador();
+
         configurarBotonMas();
+
         const modal =
-            document.getElementById("modal-mensaje");
+            document.getElementById(
+                "modal-mensaje"
+            );
+
         const botonAceptar =
-            document.getElementById("modal-aceptar");
+            document.getElementById(
+                "modal-aceptar"
+            );
+
         if (modal && botonAceptar) {
             botonAceptar.addEventListener(
                 "click",
                 function() {
-                    modal.style.display = "none";
+                    modal.style.display =
+                        "none";
                 }
             );
+
             modal.addEventListener(
                 "click",
                 function(evento) {
-                    if (evento.target === modal) {
-                        modal.style.display = "none";
+                    if (
+                        evento.target === modal
+                    ) {
+                        modal.style.display =
+                            "none";
                     }
                 }
             );
@@ -938,12 +1165,14 @@ document.addEventListener(
             document.getElementById(
                 "btn-registrar"
             );
+
         if (botonRegistrar) {
             botonRegistrar.addEventListener(
                 "click",
                 function() {
                     if (
-                        actividadSeleccionada !== null
+                        actividadSeleccionada !==
+                        null
                     ) {
                         mostrarMensaje(
                             "Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla."
@@ -956,10 +1185,12 @@ document.addEventListener(
                 }
             );
         }
+
         const botonActualizar =
             document.getElementById(
                 "btn-actualizar"
             );
+
         if (botonActualizar) {
             botonActualizar.addEventListener(
                 "click",
@@ -968,10 +1199,12 @@ document.addEventListener(
                 }
             );
         }
+
         const botonExportar =
             document.getElementById(
                 "btn-exportar-excel"
             );
+
         if (botonExportar) {
             botonExportar.addEventListener(
                 "click",
