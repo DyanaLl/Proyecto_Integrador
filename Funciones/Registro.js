@@ -1130,3 +1130,44 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+function actualizarSemaforoGlobal() {
+    if (typeof actividades === 'undefined' || actividades.length === 0) {
+        let txtEstado = document.getElementById("estado-semaforo");
+        let txtMensaje = document.getElementById("mensaje-semaforo");
+        if (txtEstado) txtEstado.textContent = "Estado académico";
+        if (txtMensaje) txtMensaje.textContent = "Calcula tu promedio para conocer tu estado académico.";
+        return;
+    }
+
+    // Calcular el promedio general de todas las materias registradas
+    let sumaPromedios = 0;
+    let totalMaterias = 0;
+    
+    // Obtener lista única de materias
+    let materiasUnicas = [];
+    actividades.forEach(a => {
+        if (a.materia && !materiasUnicas.includes(a.materia)) {
+            materiasUnicas.push(a.materia);
+        }
+    });
+
+    materiasUnicas.forEach(materia => {
+        if (typeof calcularPromedioFinalMateria === "function") {
+            sumaPromedios += calcularPromedioFinalMateria(materia);
+            totalMaterias++;
+        }
+    });
+
+    let promedioGeneral = totalMaterias > 0 ? (sumaPromedios / totalMaterias) : 0;
+
+    // Llamar a la función del semáforo con el promedio general y el arreglo de actividades
+    if (typeof evaluarSemaforo === "function") {
+        evaluarSemaforo(promedioGeneral, actividades);
+    }
+}
+// Llama al semáforo apenas cargue la página si ya hay datos
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof actualizarSemaforoGlobal === "function") {
+        actualizarSemaforoGlobal();
+    }
+});
