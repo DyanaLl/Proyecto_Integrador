@@ -1,66 +1,55 @@
-// =========================================================
+// ==========================================
 // SIMULADOR DE NOTAS - MODELO ALGEBRAICO LINEAL
-// =========================================================
+// ==========================================
 
-// BLOQUE A: Proceso de cálculo para el MODO A (Simular como una nota afecta al promedio final.)
+// BLOQUE A: Proceso de cálculo para el MODO A (Simular cómo una nota afecta al promedio final.)
 
-// Función auxiliar: Convierte las notas de un criterio (escala 0-50) a su promedio equivalente sobre 10
-function calcularPromedioCriterioSobreDiez(listaNotasCriterio) {
-    if (listaNotasCriterio.length === 0) return 0;
-
-    let sumaAcumuladaDeNotasIngresadas = 0;
-    for (let indice = 0; indice < listaNotasCriterio.length; indice++) {
-        sumaAcumuladaDeNotasIngresadas += listaNotasCriterio[indice];
-    }
-
-    let promedioCriterioSobreCincuenta = sumaAcumuladaDeNotasIngresadas / listaNotasCriterio.length;
-    let promedioCriterioSobreDiez = promedioCriterioSobreCincuenta / 5;
-
-    return promedioCriterioSobreDiez;
-}
-
-// Función principal Modo A: Simula la Nota Final Proyectada T (ponderación de 33.33% por criterio)
+// Función principal Modo A: Simula la Nota Final Proyectada (reutilizando la función centralizada y PESO_CRITERIO)
 function simularNotaFinalPorCriterios(notasCriterioUno, notasCriterioDos, notasCriterioTres) {
-    let promedioCriterioUnoSobreDiez = calcularPromedioCriterioSobreDiez(notasCriterioUno);
-    let promedioCriterioDosSobreDiez = calcularPromedioCriterioSobreDiez(notasCriterioDos);
-    let promedioCriterioTresSobreDiez = calcularPromedioCriterioSobreDiez(notasCriterioTres);
+    let promedioCriterioUnoSobreDiez = calcularPromedioCriterio(notasCriterioUno);
+    let promedioCriterioDosSobreDiez = calcularPromedioCriterio(notasCriterioDos);
+    let promedioCriterioTresSobreDiez = calcularPromedioCriterio(notasCriterioTres);
 
-    let aporteCriterioUnoAlTotal = promedioCriterioUnoSobreDiez * 0.333333;
-    let aporteCriterioDosAlTotal = promedioCriterioDosSobreDiez * 0.333333;
-    let aporteCriterioTresAlTotal = promedioCriterioTresSobreDiez * 0.333333;
-
-    let promedioFinalProyectado = aporteCriterioUnoAlTotal + aporteCriterioDosAlTotal + aporteCriterioTresAlTotal;
+    // Se aplica la constante PESO_CRITERIO importada desde Calculos.js para evitar repetición
+    let promedioFinalProyectado = (promedioCriterioUnoSobreDiez + promedioCriterioDosSobreDiez + promedioCriterioTresSobreDiez) * PESO_CRITERIO;
 
     return promedioFinalProyectado.toFixed(2);
 }
 
-// BLOQUE B: Proceso de cálculo para el MODO B (Nota Necesaria x para obtener un promedio deseado.)
+// ==========================================
+// BLOQUE B: Proceso de cálculo para el MODO B (Nota Necesaria 'x' para obtener un promedio deseado.)
+// ==========================================
 
+function calcularNotaNecesariaEnCriterio(promedioObjetivo, notasExistentesArray, totalActividadesEsperadas, nombreCriterio, aporteOtrosCriterios) {
+    let cantidadNotasActuales = notasExistentesArray.length;
+    let actividadesPendientes = totalActividadesEsperadas - cantidadNotasActuales;
 
-// Función principal Modo B: Calcula la nota requerida 'x' en la actividad faltante para alcanzar la meta 'T'
-    function calcularNotaNecesariaEnCriterio(promedioObjetivo, cantidadNotasIngresadas, totalActividadesEsperadas, aporteOtrosCriterios, nombreCriterio) {
-
-    // "cantidadNotasIngresadas" es la lista de notas (un arreglo).
-    // Usamos .length para contar cuántas notas metió el usuario.
-    if (cantidadNotasIngresadas.length >= totalActividadesEsperadas) {
-        return "Error en el " + nombreCriterio + ": Ya ingresaste " + cantidadNotasIngresadas.length + " notas de " + totalActividadesEsperadas + " permitidas. Para calcular la nota faltante (x) debes ingresar máximo " + (totalActividadesEsperadas - 1) + " notas.";
+    // Validación si ya completó o se pasó del total de actividades
+    if (actividadesPendientes <= 0) {
+        return "Error en el " + nombreCriterio + ": Ya has ingresado " + cantidadNotasActuales + " notas de un total de " + totalActividadesEsperadas + " actividades esperadas.";
     }
 
+    // Sumar las notas que el estudiante ya tiene registradas
     let sumaNotasExistentes = 0;
-    for (let indice = 0; indice < cantidadNotasIngresadas; indice++) {
-        sumaNotasExistentes += notasObtenidas[indice];
+    for (let indice = 0; indice < notasExistentesArray.length; indice++) {
+        sumaNotasExistentes += notasExistentesArray[indice];
     }
 
-    let notaFaltanteEscalaCincuenta = (5 * ((promedioObjetivo - aporteOtrosCriterios) / 0.333333) * totalActividadesEsperadas) - sumaNotasExistentes;
-    let notaFaltanteEscalaDiez = notaFaltanteEscalaCincuenta / 5;
+    // Cálculo del puntaje total faltante en escala sobre 50 para este criterio
+    let puntajeTotalFaltanteEscalaCincuenta = (5 * ((promedioObjetivo - aporteOtrosCriterios) / PESO_CRITERIO) * totalActividadesEsperadas) - sumaNotasExistentes;
+    
+    // Promedio que necesita obtener en las actividades que le faltan
+    let promedioFaltanteEscalaCincuenta = puntajeTotalFaltanteEscalaCincuenta / actividadesPendientes;
+    let promedioFaltanteEscalaDiez = promedioFaltanteEscalaCincuenta / 5;
 
-    if (notaFaltanteEscalaCincuenta <= 0) {
-        return "¡Felicidades! Ya alcanzaste tu meta de " + promedioObjetivo.toFixed(2) + ". No necesitas sacar puntos adicionales en las actividades faltantes.";
-    } 
-
-    if (notaFaltanteEscalaCincuenta > 50) {
-        return "Imposible alcanzar la nota deseada (" + promedioObjetivo.toFixed(2) + "). Necesitarías sacar " + notaFaltanteEscalaCincuenta.toFixed(2) + " / 50 en la actividad faltante (supera el límite de 50 pts).";
+    if (puntajeTotalFaltanteEscalaCincuenta <= 0) {
+        return "¡Felicidades! Con lo que ya tienes asegurado, ya alcanzaste tu meta de " + promedioObjetivo.toFixed(2) + ". No necesitas sacar puntos adicionales.";
     }
 
-    return "Para alcanzar tu promedio objetivo de " + promedioObjetivo.toFixed(2) + ", necesitas sacar una nota de " + notaFaltanteEscalaCincuenta.toFixed(2) + " / 50 (" + notaFaltanteEscalaDiez.toFixed(2) + " / 10) en la actividad faltante.";
+    if (promedioFaltanteEscalaCincuenta > 50) {
+        return "Imposible alcanzar la nota deseada (" + promedioObjetivo.toFixed(2) + "). El promedio requerido en tus " + actividadesPendientes + " actividades pendientes supera el máximo de 50 puntos.";
+    }
+
+    return "Para alcanzar tu promedio objetivo de " + promedioObjetivo.toFixed(2) + " en el " + nombreCriterio + ", necesitas obtener un promedio de " + promedioFaltanteEscalaDiez.toFixed(2) + " (sobre 10) o " + promedioFaltanteEscalaCincuenta.toFixed(2) + " (sobre 50) en tus " + actividadesPendientes + " actividades pendientes.";
 }
+

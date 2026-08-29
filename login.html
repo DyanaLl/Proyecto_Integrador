@@ -4,13 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenida - Sistema Académico</title>
-    <!-- Librería SheetJS por si se requiere manipulación interna de datos -->
+    <!-- Librería SheetJS para manipular archivos Excel (.xlsx / .csv) -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="Estilos.css"> 
 </head>
 <body>
     <div id="modulo-login-deivid">
+        <!-- Todo tu contenido va aquí adentro -->
         <div class="container">
+            <!-- Panel de Control de Archivo Excel / CSV -->
+            <div class="file-control-box">
+                <div id="fileStatusMsg" class="file-status">Estado: Ningún archivo vinculado. Carga uno existente o guarda uno nuevo.</div>
+                <div class="actions-bar">
+                    <button id="btnCargar" class="btn-secondary-file">📂 Cargar Archivo Excel</button>
+                    <button id="btnGuardar" class="btn-success-file" disabled>💾 Crear / Actualizar Archivo Excel</button>
+                </div>
+            </div>
+
             <!-- 1. Vista de Bienvenida Principal -->
             <section id="seccion-bienvenida" class="card">
                 <h1>¡Bienvenido al Sistema Académico!</h1>
