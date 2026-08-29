@@ -1,55 +1,208 @@
 // ==========================================
-// SIMULADOR DE NOTAS - MODELO ALGEBRAICO LINEAL
+// SIMULADOR DE NOTAS - MODELO ALGEBRAICO Y PONDERADO
 // ==========================================
 
-// BLOQUE A: Proceso de cálculo para el MODO A (Simular cómo una nota afecta al promedio final.)
+// Control de visibilidad entre Modo A y Modo B
+function cambiarModo() {
+    let modo = document.getElementById('select-modo').value;
+    let secSimular = document.getElementById('sec-simular');
+    let secNecesaria = document.getElementById('sec-necesaria');
+    let txtRes = document.getElementById('texto-resultado');
 
-// Función principal Modo A: Simula la Nota Final Proyectada (reutilizando la función centralizada y PESO_CRITERIO)
-function simularNotaFinalPorCriterios(notasCriterioUno, notasCriterioDos, notasCriterioTres) {
-    let promedioCriterioUnoSobreDiez = calcularPromedioCriterio(notasCriterioUno);
-    let promedioCriterioDosSobreDiez = calcularPromedioCriterio(notasCriterioDos);
-    let promedioCriterioTresSobreDiez = calcularPromedioCriterio(notasCriterioTres);
+    if (secSimular && secNecesaria) {
+        secSimular.style.display = (modo === "simular") ? "block" : "none";
+        secNecesaria.style.display = (modo === "necesaria") ? "block" : "none";
+    }
 
-    // Se aplica la constante PESO_CRITERIO importada desde Calculos.js para evitar repetición
-    let promedioFinalProyectado = (promedioCriterioUnoSobreDiez + promedioCriterioDosSobreDiez + promedioCriterioTresSobreDiez) * PESO_CRITERIO;
+    // Limpiar la caja de resultado al cambiar de modo para evitar confusiones visuales
+    if (txtRes) {
+        txtRes.innerHTML = "Resultado";
+    }
 
-    return promedioFinalProyectado.toFixed(2);
+    if (modo === "simular") {
+        actualizarActividadesPendientesSimulador();
+    }
 }
 
-// ==========================================
-// BLOQUE B: Proceso de cálculo para el MODO B (Nota Necesaria 'x' para obtener un promedio deseado.)
-// ==========================================
+/**
+ * Rellena dinámicamente el selector de actividades pendientes del Modo A 
+ * según la Materia, RDA y Criterio que el usuario haya seleccionado.
+ */
+function actualizarActividadesPendientesSimulador() {
+    let materia = document.getElementById('select-materia-a')?.value;
+    let rda = document.getElementById('select-rda-a')?.value;
+    let criterio = document.getElementById('select-criterio-a')?.value;
+    let selectPendientes = document.getElementById('select-actividad-pendiente-a');
 
-function calcularNotaNecesariaEnCriterio(promedioObjetivo, notasExistentesArray, totalActividadesEsperadas, nombreCriterio, aporteOtrosCriterios) {
-    let cantidadNotasActuales = notasExistentesArray.length;
-    let actividadesPendientes = totalActividadesEsperadas - cantidadNotasActuales;
+    if (!selectPendientes) return;
 
-    // Validación si ya completó o se pasó del total de actividades
-    if (actividadesPendientes <= 0) {
-        return "Error en el " + nombreCriterio + ": Ya has ingresado " + cantidadNotasActuales + " notas de un total de " + totalActividadesEsperadas + " actividades esperadas.";
+    // Limpiar opciones anteriores
+    selectPendientes.innerHTML = '<option value="">-- Simular nota general / Actividad nueva --</option>';
+
+    if (!materia || !rda || !criterio) return;
+
+    if (typeof actividades !== 'undefined' && Array.isArray(actividades)) {
+        actividades.forEach((act, index) => {
+            // Evaluamos si coincide con los filtros y su estado es pendiente
+            if (
+                act.materia === materia &&
+                String(act.rda) === String(rda) &&
+                String(act.criterio) === String(criterio) &&
+                String(act.estado).toLowerCase() === "pendiente"
+            ) {
+                let option = document.createElement('option');
+                option.value = index; // Guardamos el índice en el arreglo global
+                option.textContent = `${act.tema || 'Actividad sin nombre'} (Pendiente)`;
+                selectPendientes.appendChild(option);
+            }
+        });
     }
-
-    // Sumar las notas que el estudiante ya tiene registradas
-    let sumaNotasExistentes = 0;
-    for (let indice = 0; indice < notasExistentesArray.length; indice++) {
-        sumaNotasExistentes += notasExistentesArray[indice];
-    }
-
-    // Cálculo del puntaje total faltante en escala sobre 50 para este criterio
-    let puntajeTotalFaltanteEscalaCincuenta = (5 * ((promedioObjetivo - aporteOtrosCriterios) / PESO_CRITERIO) * totalActividadesEsperadas) - sumaNotasExistentes;
-    
-    // Promedio que necesita obtener en las actividades que le faltan
-    let promedioFaltanteEscalaCincuenta = puntajeTotalFaltanteEscalaCincuenta / actividadesPendientes;
-    let promedioFaltanteEscalaDiez = promedioFaltanteEscalaCincuenta / 5;
-
-    if (puntajeTotalFaltanteEscalaCincuenta <= 0) {
-        return "¡Felicidades! Con lo que ya tienes asegurado, ya alcanzaste tu meta de " + promedioObjetivo.toFixed(2) + ". No necesitas sacar puntos adicionales.";
-    }
-
-    if (promedioFaltanteEscalaCincuenta > 50) {
-        return "Imposible alcanzar la nota deseada (" + promedioObjetivo.toFixed(2) + "). El promedio requerido en tus " + actividadesPendientes + " actividades pendientes supera el máximo de 50 puntos.";
-    }
-
-    return "Para alcanzar tu promedio objetivo de " + promedioObjetivo.toFixed(2) + " en el " + nombreCriterio + ", necesitas obtener un promedio de " + promedioFaltanteEscalaDiez.toFixed(2) + " (sobre 10) o " + promedioFaltanteEscalaCincuenta.toFixed(2) + " (sobre 50) en tus " + actividadesPendientes + " actividades pendientes.";
 }
 
+/**
+ * Extrae notas existentes y pendientes de un criterio filtrando por Materia y RDA.
+ * Las actividades pendientes no seleccionadas para simulación se computan automáticamente con nota 0.
+ */
+function obtenerNotasPorMateriaRDAYCriterio(materia, rda, criterio, indiceExcluir = null, tratarPendientesComoCero = true) {
+    let notas = [];
+    if (typeof actividades !== 'undefined' && Array.isArray(actividades)) {
+        actividades.forEach((act, index) => {
+            if (indiceExcluir !== null && Number(index) === Number(indiceExcluir)) {
+                return;
+            }
+
+            if (
+                act.materia === materia &&
+                String(act.rda) === String(rda) &&
+                String(act.criterio) === String(criterio)
+            ) {
+                let estadoLower = String(act.estado || '').toLowerCase();
+                let valor = parseFloat(act.nota);
+
+                if (estadoLower === "pendiente") {
+                    if (tratarPendientesComoCero) {
+                        notas.push(0);
+                    }
+                    // Si tratarPendientesComoCero es false, las ignoramos (las dejamos como casillas vacías a calcular)
+                } else if (!isNaN(valor)) {
+                    notas.push(valor);
+                }
+            }
+        });
+    }
+    return notas;
+}
+
+// Función principal de ejecución al hacer clic en "Calcular Resultado"
+function ejecutarCalculo() {
+    let modo = document.getElementById('select-modo').value;
+    let txtRes = document.getElementById('texto-resultado');
+
+    if (!txtRes) return;
+
+    // ==========================================
+    // MODO A: Simulación de Promedio Final
+    // ==========================================
+    if (modo === "simular") {
+        let materia = document.getElementById('select-materia-a').value;
+        let rda = document.getElementById('select-rda-a').value;
+        let criterio = document.getElementById('select-criterio-a').value;
+        let indicePendiente = document.getElementById('select-actividad-pendiente-a').value;
+        let notaHipotetica = parseFloat(document.getElementById('input-nota-nueva').value);
+
+        if (!materia) {
+            txtRes.innerText = "Por favor, selecciona una materia.";
+            return;
+        }
+
+        // NUEVA VALIDACIÓN: Obligar a que el usuario seleccione una actividad pendiente específica
+        if (indicePendiente === "") {
+            txtRes.innerText = "Por favor, selecciona una actividad pendiente válida para simular.";
+            return;
+        }
+
+        if (isNaN(notaHipotetica) || notaHipotetica < 0 || notaHipotetica > 50) {
+            txtRes.innerText = "Ingresa una nota hipotética válida (0 - 50).";
+            return;
+        }
+
+        let excluirIdx = parseInt(indicePendiente);
+
+        let notasC1 = obtenerNotasPorMateriaRDAYCriterio(materia, rda, "1", excluirIdx);
+        let notasC2 = obtenerNotasPorMateriaRDAYCriterio(materia, rda, "2", excluirIdx);
+        let notasC3 = obtenerNotasPorMateriaRDAYCriterio(materia, rda, "3", excluirIdx);
+
+        // Añadir nota hipotética al criterio seleccionado
+        if (criterio === "1") notasC1.push(notaHipotetica);
+        else if (criterio === "2") notasC2.push(notaHipotetica);
+        else if (criterio === "3") notasC3.push(notaHipotetica);
+
+        let promedioProyectado = simularNotaFinalPorCriterios(notasC1, notasC2, notasC3);
+
+        txtRes.innerHTML = `
+            <div style="padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #0056b3;">
+                Simulando tarea pendiente en ${materia} (RDA ${rda})<br>
+                <span style="font-size: 1.2em; color: #0056b3;">Resultado Proyectado: ${Number(promedioProyectado).toFixed(2)} / 100</span>
+            </div>
+        `;
+    }
+    // ==========================================
+    // MODO B: Cálculo de Nota Necesaria
+    // ==========================================
+    else {
+        let materia = document.getElementById('select-materia-b').value;
+        let rda = document.getElementById('select-rda-b').value;
+
+        if (!materia) {
+            txtRes.innerText = "Por favor, selecciona una materia.";
+            return;
+        }
+
+        let inputObjetivoVal = document.getElementById('input-T').value;
+        let valorObj = parseFloat(inputObjetivoVal);
+
+        if (isNaN(valorObj)) {
+            txtRes.innerText = "Error: Por favor, ingresa un número válido.";
+            return;
+        }
+
+        // Si ingresa en escala de 100 (ej. 95), lo convertimos automáticamente a escala de 10 (9.5)
+        if (valorObj > 10 && valorObj <= 100) {
+            valorObj = valorObj / 10;
+        }
+
+        if (valorObj < 0 || valorObj > 10) {
+            txtRes.innerText = "Error: Por favor, ingresa un Promedio Objetivo válido entre 0.0 y 10.0 (o hasta 100).";
+            return;
+        }
+
+        let promedioObjetivo = valorObj;
+        let criterioActivo = document.getElementById('select-crit-activo').value;
+
+        let inputFaltantesEl = document.getElementById('input-faltantes');
+        let actividadesPendientes = inputFaltantesEl ? parseInt(inputFaltantesEl.value) : 1;
+
+        if (isNaN(actividadesPendientes) || actividadesPendientes <= 0) {
+            txtRes.innerText = "Por favor, ingresa un número válido de actividades faltantes (min 1).";
+            return;
+        }
+
+        let notasExistentes = obtenerNotasPorMateriaRDAYCriterio(materia, rda, criterioActivo, null, false);
+        let totalActividades = notasExistentes.length + actividadesPendientes;
+
+        let nombreCriterio = "Criterio " + criterioActivo;
+
+        // Llamada actualizada pasando los parámetros correctos para evaluar el RDA completo
+        let mensajeResultado = calcularNotaNecesariaEnCriterio(
+            promedioObjetivo,
+            notasExistentes,
+            totalActividades,
+            nombreCriterio,
+            materia,
+            rda,
+            criterioActivo
+        );
+
+        txtRes.innerText = mensajeResultado;
+    }
+}

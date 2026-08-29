@@ -529,3 +529,89 @@ tr:nth-child(even) {
     background: #94a3b8;
     cursor: not-allowed;
 }
+
+/* --- ESTRUCTURA GENERAL DE VENTANAS MODALES --- */
+.modal-mensaje {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Contenedor base estándar para modales pequeños (alertas, mensajes) */
+.modal-contenido {
+    background-color: #ffffff;
+    padding: 20px 25px;
+    border-radius: 8px;
+    width: 320px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-contenido h3 {
+    color: #1e293b;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.modal-contenido p {
+    color: #475569;
+    font-size: 13px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.modal-contenido button {
+    width: 100%;
+    padding: 8px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal-contenido button:hover {
+    background: #1d4ed8;
+}
+
+/* --- MODAL 1: SIMULADOR DE NOTAS --- */
+#modal-simulador .modal-contenido {
+    width: 500px;
+    max-width: 95%;
+    text-align: left;
+}
+
+#modal-simulador select, 
+#modal-simulador input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+/* --- MODAL 2: HISTORIAL ACADÉMICO COMPLETO --- */
+#modal-historial-academico .modal-contenido {
+    width: 90%;
+    max-width: 950px;
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+/* --- MODAL 3: DESGLOSE DE RDA --- */
+#modal-detalle-rda .modal-contenido {
+    width: 80%;
+    max-width: 750px;
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: left;
+}
