@@ -1,102 +1,157 @@
-//Semáforo
 
+/**
+ * ============================================================================
+ * ARCHIVO PRINCIPAL DE CONTROL (Main.js)
+ * Sistema de Notas Académicas - Módulo del Simulador y Control Global - Semáforo
+ * ============================================================================
+ */
 
-//Simulador de Notas
-// Control de visibilidad entre Modo A y Modo B
-function cambiarModo() {
-    let modo = document.getElementById('select-modo').value;
-    let secSimular = document.getElementById('sec-simular');
-    let secNecesaria = document.getElementById('sec-necesaria');
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Sistema de Notas Académicas inicializado correctamente.");
 
-    secSimular.style.display = (modo === "simular") ? "block" : "none";
-    secNecesaria.style.display = (modo === "necesaria") ? "block" : "none";
+    // 1. Inicialización de módulos globales
+    inicializarSimulador();
+    vincularEventosSimulador();
+    evaluarSemaforoAcademicoGlobal();
+
+    // 2. Vinculación de eventos de la interfaz principal (Registro y Excel)
+    vincularEventosInterfazPrincipal();
+});
+
+/**
+ * Configura el estado inicial del simulador.
+ */
+function inicializarSimulador() {
+    if (typeof cambiarModo === "function") {
+        cambiarModo();
+    } else {
+        console.warn("La función 'cambiarModo' no está definida en Simulator.js.");
+    }
 }
 
-// Función auxiliar unificada para extraer notas del arreglo global 'actividades' filtrando por materia
-function obtenerNotasPorMateriaYCriterio(materia, criterio) {
-    let notas = [];
-    if (typeof actividades !== 'undefined' && Array.isArray(actividades)) {
-        actividades.forEach(act => {
-            if (act.materia === materia && String(act.criterio) === String(criterio)) {
-                let valor = parseFloat(act.nota);
-                if (!isNaN(valor)) notas.push(valor);
+/**
+ * Conecta los event listeners necesarios para el funcionamiento del simulador.
+ */
+function vincularEventosSimulador() {
+    const btnCalcular = document.getElementById("btn-calcular");
+    if (btnCalcular) {
+        btnCalcular.addEventListener("click", (evento) => {
+            evento.preventDefault();
+            if (typeof ejecutarCalculo === "function") {
+                ejecutarCalculo();
+            } else {
+                console.error("Error crítico: La función 'ejecutarCalculo' no está disponible.");
+                mostrarMensajeError("No se pudo ejecutar el cálculo. Verifique los scripts.");
             }
         });
     }
-    return notas;
+
+    const selectModo = document.getElementById("select-modo");
+    if (selectModo) {
+        selectModo.addEventListener("change", () => {
+            if (typeof cambiarModo === "function") {
+                cambiarModo();
+            }
+        });
+    }
+
+    const selectsModoA = ['select-materia-a', 'select-rda-a', 'select-criterio-a'];
+    selectsModoA.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.addEventListener("change", () => {
+                if (typeof actualizarActividadesPendientesSimulador === "function") {
+                    actualizarActividadesPendientesSimulador();
+                }
+            });
+        }
+    });
+
+    const btnAbrirSimulador = document.getElementById("btn-abrir-simulador");
+    const modalSimulador = document.getElementById("modal-simulador");
+    const btnCerrarSimulador = document.getElementById("btn-cerrar-simulador");
+
+    if (btnAbrirSimulador && modalSimulador) {
+        btnAbrirSimulador.addEventListener("click", () => {
+            modalSimulador.style.display = "flex";
+            if (typeof cambiarModo === "function") {
+                cambiarModo();
+            }
+        });
+    }
+
+    if (btnCerrarSimulador && modalSimulador) {
+        btnCerrarSimulador.addEventListener("click", () => {
+            modalSimulador.style.display = "none";
+        });
+    }
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modalSimulador) {
+            modalSimulador.style.display = "none";
+        }
+    });
 }
 
-// Función principal de ejecución al hacer clic en "Calcular Resultado"
-function ejecutarCalculo() {
-    let modo = document.getElementById('select-modo').value;
-    let txtRes = document.getElementById('texto-resultado');
-
-    // ==========================================
-    // MODO A: Simulación de Promedio Final
-    // ==========================================
-    if (modo === "simular") {
-        let materia = document.getElementById('select-materia-a').value;
-        let criterio = document.getElementById('select-criterio-a').value;
-        let notaHipotetica = parseFloat(document.getElementById('input-nota-nueva').value);
-
-        if (!materia) {
-            txtRes.innerText = "Por favor, selecciona una materia.";
-            return;
-        }
-        if (isNaN(notaHipotetica) || notaHipotetica < 0 || notaHipotetica > 50) {
-            txtRes.innerText = "Ingresa una nota hipotética válida (0 - 50).";
-            return;
-        }
-
-        // Extraer historial real filtrado por materia para los 3 criterios
-        let notasC1 = obtenerNotasPorMateriaYCriterio(materia, "1");
-        let notasC2 = obtenerNotasPorMateriaYCriterio(materia, "2");
-        let notasC3 = obtenerNotasPorMateriaYCriterio(materia, "3");
-
-        // Añadir nota hipotética al criterio seleccionado
-        if (criterio === "1") notasC1.push(notaHipotetica);
-        else if (criterio === "2") notasC2.push(notaHipotetica);
-        else if (criterio === "3") notasC3.push(notaHipotetica);
-
-        let promedioProyectado = simularNotaFinalPorCriterios(notasC1, notasC2, notasC3);
-        txtRes.innerHTML = `Proyección en <strong>${materia}</strong>: <strong>${promedioProyectado} / 10</strong>`;
-
+/**
+ * Evalúa y configura los elementos visuales del Semáforo Académico y sus modales.
+ */
+function evaluarSemaforoAcademicoGlobal() {
+    if (typeof evaluarSemaforoAcademico === "function") {
+        evaluarSemaforoAcademico();
     }
-    // ==========================================
-    // MODO B: Cálculo de Nota Necesaria
-    // ==========================================
-    else {
-        let materia = document.getElementById('select-materia-b').value;
-        if (!materia) {
-            txtRes.innerText = "Por favor, selecciona una materia.";
-            return;
-        }
 
-        let vObjetivo = validarPromedioObjetivo(document.getElementById('input-T').value);
-        if (!vObjetivo.esValido) {
-            txtRes.innerText = "Error: " + vObjetivo.mensajeError;
-            return;
-        }
+    const btnNotif = document.getElementById("btn-notificaciones-semaforo");
+    const modalDetalle = document.getElementById("modal-detalle-semaforo");
+    const btnCerrar = document.getElementById("btn-cerrar-modal-semaforo");
+    const btnAceptar = document.getElementById("btn-aceptar-semaforo");
+    const contenidoModal = document.getElementById("modal-semaforo-contenido");
 
-        let promedioObjetivo = vObjetivo.valor;
-        let criterioActivo = document.getElementById('select-crit-activo').value;
-        let actividadesPendientes = parseInt(document.getElementById('input-faltantes').value) || 1;
+    if (btnNotif && modalDetalle) {
+        btnNotif.addEventListener("click", () => {
+            if (typeof detallesAlertasActuales !== "undefined") {
+                let htmlList = "<ul style='padding-left: 20px; line-height: 1.6;'>";
+                detallesAlertasActuales.forEach(detalle => {
+                    htmlList += `<li style="margin-bottom: 8px;">${detalle}</li>`;
+                });
+                htmlList += "</ul>";
 
-        // Obtener notas existentes del arreglo de actividades para el criterio evaluado
-        let notasExistentes = obtenerNotasPorMateriaYCriterio(materia, criterioActivo);
-        let totalActividades = notasExistentes.length + actividadesPendientes;
+                if (contenidoModal) contenidoModal.innerHTML = htmlList;
+            }
+            modalDetalle.style.display = "flex";
+        });
 
-        let nombreCriterio = "Criterio " + criterioActivo;
-        let aporteOtrosCriterios = 3.33; // Aporte estándar base de los otros criterios
+        const cerrarModalFn = () => {
+            modalDetalle.style.display = "none";
+        };
 
-        let mensajeResultado = calcularNotaNecesariaEnCriterio(
-            promedioObjetivo,
-            notasExistentes,
-            totalActividades,
-            nombreCriterio,
-            aporteOtrosCriterios
-        );
+        if (btnCerrar) btnCerrar.addEventListener("click", cerrarModalFn);
+        if (btnAceptar) btnAceptar.addEventListener("click", cerrarModalFn);
+    }
+}
 
-        txtRes.innerText = mensajeResultado;
+/**
+ * Vincula acciones generales del panel principal (como la importación de Excel y botones de acción).
+ */
+function vincularEventosInterfazPrincipal() {
+    const inputExcel = document.getElementById('archivo-excel');
+    if (inputExcel) {
+        inputExcel.addEventListener('change', (event) => {
+            if (typeof leerExcel === 'function') {
+                leerExcel(event);
+            } else {
+                console.error("La función leerExcel no está definida.");
+            }
+        });
+    }
+}
+
+/**
+ * Función auxiliar para mostrar errores de forma visual en la caja de resultados del simulador.
+ */
+function mostrarMensajeError(mensaje) {
+    const textoResultado = document.getElementById("texto-resultado");
+    if (textoResultado) {
+        textoResultado.innerText = mensaje;
     }
 }

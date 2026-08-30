@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,563 +9,383 @@
 </head>
 
 <body>
+    <div class="contenedor">
+        <header class="encabezado">
+            <h1>Simulador de Notas Académicas</h1>
+            <p>Sistema para registrar actividades, consultar el historial académico, simular notas y visualizar el rendimiento del estudiante.</p>
+        </header>
 
-<div class="contenedor">
-
-    <header class="encabezado">
-        <h1>Simulador de Notas Académicas</h1>
-        <p>
-            Sistema para registrar actividades, consultar el historial académico,
-            simular notas y visualizar el rendimiento del estudiante.
-        </p>
-    </header>
-
-    <section class="seccion registro-dashboard">
-
-        <div class="titulo-seccion">
-            <div>
-                <h2>Registro de Actividades</h2>
-                <p>Agrega y administra las actividades académicas.</p>
+        <section class="seccion registro-dashboard">
+            <div class="titulo-seccion">
+                <div>
+                    <h2>Registro de Actividades</h2>
+                    <p>Agrega y administra las actividades académicas.</p>
+                </div>
+                <button type="button" id="btn-mostrar-registro" class="btn-mas" title="Agregar actividad">+</button>
             </div>
 
-            <button
-                    type="button"
-                    id="btn-mostrar-registro"
-                    class="btn-mas"
-                    title="Agregar actividad">
-                +
-            </button>
-        </div>
-        <div
-                id="formulario-registro"
-                class="registro-oculto">
-            <div class="registro-grid">
-                <div class="campo-registro">
-                    <label for="materia">
-                        Materia
-                    </label>
-                    <select id="materia">
-                        <option value="">
-                            Seleccione una materia
-                        </option>
-                        <option value="Álgebra">
-                            Álgebra
-                        </option>
+            <div id="formulario-registro" class="registro-oculto">
+                <div class="registro-grid">
+                    <div class="campo-registro">
+                        <label for="materia">Materia</label>
+                        <select id="materia">
+                            <option value="">Seleccione una materia</option>
+                            <option value="Álgebra">Álgebra</option>
+                            <option value="Habilidades Lógico-Matemáticas">Habilidades Lógico-Matemáticas</option>
+                        </select>
+                    </div>
 
-                        <option value="Programación">
-                            Programación
-                        </option>
+                    <div class="campo-registro">
+                        <label for="rda">RDA</label>
+                        <select id="rda">
+                            <option value="1">RDA 1</option>
+                            <option value="2">RDA 2</option>
+                            <option value="3">RDA 3</option>
+                        </select>
+                    </div>
 
-                        <option value="Desarrollo Web">
-                            Desarrollo Web
-                        </option>
+                    <div class="campo-registro">
+                        <label for="criterio">Criterio</label>
+                        <select id="criterio">
+                            <option value="1">Criterio 1</option>
+                            <option value="2">Criterio 2</option>
+                            <option value="3">Criterio 3</option>
+                        </select>
+                    </div>
 
-                        <option value="Habilidades Matemáticas">
-                            Habilidades Matemáticas
-                        </option>
+                    <div class="campo-registro">
+                        <label for="tema">Tema o actividad</label>
+                        <input type="text" id="tema" placeholder="Ej. Tarea 1">
+                    </div>
 
-                        <option value="Comunicación">
-                            Comunicación
-                        </option>
+                    <div class="campo-registro">
+                        <label for="nota">Nota</label>
+                        <input type="number" id="nota" min="0" max="50" step="0.01" placeholder="0 - 50">
+                    </div>
 
-                        <option value="Sistemas Operativos">
-                            Sistemas Operativos
-                        </option>
+                    <div class="campo-registro">
+                        <label for="estado">Estado</label>
+                        <select id="estado">
+                            <option value="pendiente">Pendiente</option>
+                            <option value="entregada">Entregada</option>
+                            <option value="vencida">Vencida</option>
+                        </select>
+                    </div>
 
-                        <option value="Fundamentos de Programación">
-                            Fundamentos de Programación
-                        </option>
-                    </select>
+                    <div class="campo-registro">
+                        <label for="fechaLimite">Fecha límite</label>
+                        <input type="date" id="fechaLimite" required>
+                    </div>
+                    
+                    <div class="campo-registro">
+                        <label for="hora">Hora límite</label>
+                        <input type="time" id="hora">
+                    </div>
+
+                    <!-- Campo para Ponderación Especial -->
+                    <div class="campo-registro">
+                        <label for="input-ponderacion-especial">Ponderación especial (%)</label>
+                        <input type="number" id="input-ponderacion-especial" min="0" max="100" step="0.01" placeholder="Opcional (Ej: 20)">
+                    </div>
                 </div>
 
-                <div class="campo-registro">
-                    <label for="criterio">
-                        Criterio
-                    </label>
-                    <select id="criterio">
+                <div class="acciones-registro">
+                    <div class="accion-boton">
+                        <button type="button" id="btn-registrar" class="btn btn-guardar">Registrar nueva tarea</button>
+                        <p class="nota-aclaratoria">Agrega una nueva actividad al historial académico.</p>
+                    </div>
 
-                        <option value="1">
-                            Criterio 1
-                        </option>
-                        <option value="2">
-                            Criterio 2
-                        </option>
-                        <option value="3">
-                            Criterio 3
-                        </option>
-                    </select>
-                </div>
-                <div class="campo-registro">
-                    <label for="tema">
-                        Tema o actividad
-                    </label>
-                    <input
-                            type="text"
-                            id="tema"
-                            placeholder="Ej. Taller de funciones">
+                    <div class="accion-boton">
+                        <button type="button" id="btn-actualizar" class="btn btn-actualizar">Actualizar actividad</button>
+                        <p class="nota-aclaratoria">Selecciona primero una actividad de la tabla para modificarla.</p>
+                    </div>
 
-                </div>
-                <div class="campo-registro">
-
-                    <label for="nota">
-                        Nota
-                    </label>
-                    <input
-                            type="number"
-                            id="nota"
-                            min="0"
-                            max="50"
-                            step="0.01"
-                            placeholder="0 - 50">
-
-                </div>
-                <div class="campo-registro">
-
-                    <label for="estado">
-                        Estado
-                    </label>
-
-                    <select id="estado">
-                        <option value="pendiente">
-                            Pendiente
-                        </option>
-
-                        <option value="entregada">
-                            Entregada
-                        </option>
-                        <option value="vencida">
-                            Vencida
-                        </option>
-                    </select>
-                </div>
-                <div class="campo-registro">
-                    <label for="fechaLimite">
-                        Fecha límite
-                    </label>
-                    <input
-                            type="date"
-                            id="fechaLimite"
-                            required>
-                    <p class="nota-aclaratoria">
-                        La fecha límite permite identificar automáticamente
-                        las actividades vencidas.
-                    </p>
-
+                    <div class="accion-boton">
+                        <button type="button" id="btn-exportar-excel" class="btn btn-excel">Exportar Excel</button>
+                        <p class="nota-aclaratoria">Descarga el historial académico completo.</p>
+                    </div>
                 </div>
 
-        <div id="formulario-registro" class="registro-oculto">
-
-            <div class="registro-grid">
-
-                <div class="campo-registro">
-                    <label for="materia">Materia</label>
-
-                    <select id="materia">
-                        <option value="">Seleccione una materia</option>
-                        <option value="Álgebra">Álgebra</option>
-                    </select>
+                <div class="importar-excel">
+                    <label for="archivo-excel">Importar historial académico</label>
+                    <input type="file" id="archivo-excel" accept=".xlsx,.xls">
+                    <p class="nota-aclaratoria">El Excel debe contener: Materia, RDA, Criterio, Tema, Nota, Estado y Fecha límite.</p>
                 </div>
+            </div>
+        </section>
 
-                <div class="campo-registro">
-                    <label for="criterio">Criterio</label>
-
-                    <select id="criterio">
-                        <option value="1">Criterio 1</option>
-                        <option value="2">Criterio 2</option>
-                        <option value="3">Criterio 3</option>
-                    </select>
+        <section class="seccion historial-academico">
+            <div class="cabecera-historial">
+                <div>
+                    <h2>Tabla de Actividades</h2>
+                    <p class="nota-aclaratoria">Se muestran únicamente las actividades pendientes que requieren seguimiento.</p>
                 </div>
-
-                <div class="campo-registro">
-                    <label for="tema">Tema o actividad</label>
-
-                    <input
-                            type="text"
-                            id="tema"
-                            placeholder="Ej. Taller de funciones">
-                </div>
-
-                <div class="campo-registro">
-                    <label for="nota">Nota</label>
-
-                    <input
-                            type="number"
-                            id="nota"
-                            min="0"
-                            max="50"
-                            step="0.01"
-                            placeholder="0 - 50">
-                </div>
-
-                <div class="campo-registro">
-                    <label for="estado">Estado</label>
-
-                    <select id="estado">
-                        <option value="pendiente">Pendiente</option>
-                        <option value="entregada">Entregada</option>
-                        <option value="vencida" disabled>Vencida</option>
-                    </select>
-                </div>
-
-                <div class="campo-registro">
-                    <label for="fechaLimite">Fecha límite</label>
-
-                    <input
-                            type="date"
-                            id="fechaLimite"
-                            required>
-
-                    <p class="nota-aclaratoria">
-                        La fecha límite permite identificar automáticamente las actividades vencidas.
-                    </p>
-                </div>
-
+                <button type="button" id="btn-ver-historial-completo" class="btn btn-excel">Ver historial académico completo</button>
             </div>
 
-            <div class="acciones-registro">
+            <div class="barra-historial">
+                <span>Registro de actividades</span>
+                <span>Escala: 0 - 50 puntos</span>
+            </div>
 
-                <div class="accion-boton">
-                    <button
-                            type="button"
-                            id="btn-registrar"
-                            class="btn btn-guardar">
-                        Registrar nueva tarea
-                    </button>
+            <div class="tabla-contenedor">
+                <table id="tabla-actividades">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>RDA</th>
+                            <th>Criterio</th>
+                            <th>Tema o actividad</th>
+                            <th>Nota</th>
+                            <th>Estado</th>
+                            <th>Fecha límite</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-actividades-body"></tbody>
+                </table>
+            </div>
+        </section>
 
-                    <p class="nota-aclaratoria">
-                        Agrega una nueva actividad al historial académico.
-                    </p>
+        <section class="seccion" id="seccion-promedios">
+            <div class="cabecera-historial">
+                <h2>Promedios por Materia</h2>
+                <p class="nota-aclaratoria">Esta tabla muestra el resultado de cada RDA y el promedio final de la materia.</p>
+            </div>
+            <div class="tabla-contenedor">
+                <table id="tabla-promedios">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>RDA 1</th>
+                            <th>RDA 2</th>
+                            <th>RDA 3</th>
+                            <th>Promedio Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-promedios-body"></tbody>
+                </table>
+            </div>
+            <div id="detalle-rda"></div>
+        </section>
+
+        <!-- SECCIÓN SIMULADOR (COMPACTA EN LA VISTA PRINCIPAL) -->
+        <section class="seccion simulador">
+            <div class="cabecera-historial">
+                <div>
+                    <h2>Simulador de Notas Académicas</h2>
+                    <p class="nota-aclaratoria">Simula una nota o calcula cuánto necesitas para alcanzar tu promedio objetivo.</p>
+                </div>
+                <button type="button" id="btn-abrir-simulador" class="btn btn-excel">Abrir Simulador</button>
+            </div>
+        </section>
+
+        <section class="seccion grafica-dashboard">
+            <div class="cabecera-historial">
+                <h2>Gráfica de Rendimiento Académico</h2>
+                <p class="nota-aclaratoria">La gráfica se actualiza utilizando la información registrada en el arreglo de actividades.</p>
+            </div>
+
+            <div class="grafica-contenedor">
+                <canvas id="graficaMaterias"></canvas>
+            </div>
+        </section>
+
+        <section id="seccion-semaforo" class="seccion">
+            <div class="cabecera-historial">
+                <h2>Semáforo de Alertas Académicas</h2>
+            </div>
+
+            <p class="nota-aclaratoria">El semáforo muestra el estado académico según el rendimiento y las tareas pendientes.</p>
+
+            <div class="semaforo-wrapper">
+                <div id="semaforo-visual">
+                    <div id="luz-roja" class="foquito luz-roja" title="En peligro crítico"></div>
+                    <div id="luz-amarilla" class="foquito luz-amarilla" title="En advertencia"></div>
+                    <div id="luz-verde" class="foquito luz-verde" title="Óptimo / Aprobado"></div>
                 </div>
 
-                <div class="accion-boton">
-                    <button
-                            type="button"
-                            id="btn-actualizar"
-                            class="btn btn-actualizar">
-                        Actualizar actividad
-                    </button>
-
-                    <p class="nota-aclaratoria">
-                        Selecciona primero una actividad del historial para modificarla.
-                    </p>
-                </div>
-
-                <div class="accion-boton">
-                    <button
-                            type="button"
-                            id="btn-exportar-excel"
-                            class="btn btn-excel">
-                        Exportar Excel
-                    </button>
-
-                    <p class="nota-aclaratoria">
-                        Descarga el historial completo cuando lo necesites.
-                    </p>
-                </div>
-
+                <!-- Botón con Contador de Notificaciones -->
+                <button type="button" id="btn-notificaciones-semaforo" class="btn btn-excel btn-semaforo-notif">
+                    <span>Ver Detalles de Alertas</span>
+                    <span id="badge-contador-alertas">0</span>
+                </button>
             </div>
 
-            <div class="importar-excel">
-                <label for="archivo-excel">
-                    Importar historial académico
-                </label>
-
-                <input
-                        type="file"
-                        id="archivo-excel"
-                        accept=".xlsx,.xls"
-                        onchange="leerExcel(event)">
-
-                <p class="nota-aclaratoria">
-                    El Excel debe contener: Materia, Criterio, Tema, Nota, Estado y Fecha límite.
-                </p>
+            <div id="resultado-semaforo">
+                <h3 id="estado-semaforo">Estado académico</h3>
+                <p id="mensaje-semaforo">Monitoreando tus actividades y calificaciones en tiempo real.</p>
             </div>
-
-        </div>
-    </section>
-
-    <section class="seccion historial-academico">
-
-        <div class="cabecera-historial">
-            <h2>Historial Académico</h2>
-            <p class="nota-aclaratoria">
-                Se muestra el historial completo de actividades académicas registradas.
-            </p>
-        </div>
-
-        <div class="barra-historial">
-            <span>Registro de actividades</span>
-            <span>Escala: 0 - 50 puntos</span>
-        </div>
-
-        <div class="tabla-contenedor">
-
-            <table id="tabla-actividades">
-
-                <thead>
-                <tr>
-                    <th>Materia</th>
-                    <th>Criterio</th>
-                    <th>Tema o actividad</th>
-                    <th>Nota</th>
-                    <th>Estado</th>
-                    <th>Fecha límite</th>
-                </tr>
-                </thead>
-
-                <tbody id="tabla-actividades-body"></tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <section class="seccion" id="seccion-promedios">
-
-        <div class="cabecera-historial">
-            <h2>Promedios por Materia</h2>
-            <p class="nota-aclaratoria">
-                Esta tabla calcula automáticamente el promedio de cada criterio
-                y el promedio final de las materias registradas.
-            </p>
-        </div>
-
-        <div class="tabla-contenedor">
-
-            <table id="tabla-promedios">
-
-                <thead>
-                <tr>
-                    <th>Materia</th>
-                    <th>Criterio 1</th>
-                    <th>Criterio 2</th>
-                    <th>Criterio 3</th>
-                    <th>Promedio Final</th>
-                </tr>
-                </thead>
-
-                <tbody id="tabla-promedios-body"></tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <section class="seccion simulador">
-
-        <div class="cabecera-historial">
-            <h2>Simulador de Notas Académicas</h2>
-            <p class="nota-aclaratoria">
-                Simula una nota o calcula cuánto necesitas para alcanzar tu promedio objetivo.
-            </p>
-        </div>
-
-        <label for="select-modo">
-            Selecciona lo que deseas calcular:
-        </label>
-
-        <select id="select-modo" onchange="cambiarModo()">
-
-            <option value="simular">
-                Modo A: Saber cómo una nota afecta en mi promedio final.
-            </option>
-
-            <option value="necesaria">
-                Modo B: Calcular Nota Necesaria.
-            </option>
-
-        </select>
-
-        <div id="sec-simular" class="modo-simulador">
-
-            <h3>Modo A: Simulación de Promedio Final</h3>
-
-            <label for="select-materia-a">
-                Selecciona la Materia:
-            </label>
-
-            <select id="select-materia-a">
-                <option value="">-- Selecciona una materia --</option>
-                <option value="Álgebra">Álgebra</option>
-            </select>
-
-            <label for="select-criterio-a">
-                Selecciona el Criterio:
-            </label>
-
-            <select id="select-criterio-a">
-                <option value="1">Criterio 1 (33.33%)</option>
-                <option value="2">Criterio 2 (33.33%)</option>
-                <option value="3">Criterio 3 (33.33%)</option>
-            </select>
-
-            <label for="input-nota-nueva">
-                Nota hipotética a simular:
-            </label>
-
-            <input
-                    type="number"
-                    id="input-nota-nueva"
-                    min="0"
-                    max="50"
-                    placeholder="Ej: 45">
-
-        </div>
-
-        <div
-                id="sec-necesaria"
-                class="modo-simulador"
-                style="display:none;">
-
-            <h3>Modo B: Calcular Nota Necesaria</h3>
-
-            <label for="select-materia-b">
-                Selecciona la Materia:
-            </label>
-
-            <select id="select-materia-b">
-                <option value="">-- Selecciona una materia --</option>
-                <option value="Álgebra">Álgebra</option>
-            </select>
-
-            <label for="input-T">
-                Promedio final objetivo:
-            </label>
-
-            <input
-                    type="number"
-                    id="input-T"
-                    step="0.1"
-                    min="0"
-                    max="10"
-                    placeholder="Ej: 9.0">
-
-            <label for="select-crit-activo">
-                ¿En cuál criterio tienes las actividades faltantes?
-            </label>
-
-            <select id="select-crit-activo">
-                <option value="1">Criterio 1</option>
-                <option value="2">Criterio 2</option>
-                <option value="3">Criterio 3</option>
-            </select>
-
-            <label for="input-faltantes">
-                ¿Cuántas actividades pendientes o faltantes tienes en este criterio?
-            </label>
-
-            <input
-                    type="number"
-                    id="input-faltantes"
-                    min="1"
-                    value="1"
-                    placeholder="Ej: 2">
-
-        </div>
-
-        <button
-                type="button"
-                id="btn-calcular"
-                onclick="ejecutarCalculo()"
-                class="btn btn-calcular">
-            Calcular Resultado
-        </button>
-
-        <div
-                id="texto-resultado"
-                class="caja-resultado">
-            Resultado
-        </div>
-
-    </section>
-
-    <section class="seccion grafica-dashboard">
-
-        <div class="cabecera-historial">
-            <h2>Gráfica de Rendimiento Académico</h2>
-            <p class="nota-aclaratoria">
-                La gráfica se actualiza utilizando la información registrada en el arreglo de actividades.
-            </p>
-        </div>
-
-        <div class="grafica-contenedor">
-            <canvas id="graficaMaterias"></canvas>
-        </div>
-
-    </section>
-
-    <section id="seccion-semaforo" class="seccion">
-
-        <div class="cabecera-historial">
-            <h2>Semáforo de Alertas Académicas</h2>
-        </div>
-
-        <p class="nota-aclaratoria">
-            El semáforo muestra el estado académico según el promedio final obtenido.
-        </p>
-
-        <div id="semaforo-visual">
-
-            <div
-                    id="luz-roja"
-                    class="luz-semaforo luz-roja"
-                    title="En peligro crítico">
-            </div>
-
-            <div
-                    id="luz-amarilla"
-                    class="luz-semaforo luz-amarilla"
-                    title="En advertencia">
-            </div>
-
-            <div
-                    id="luz-verde"
-                    class="luz-semaforo luz-verde"
-                    title="Óptimo / Aprobado">
-            </div>
-
-        </div>
-
-        <div id="resultado-semaforo">
-
-            <h3 id="estado-semaforo">
-                Estado académico
-            </h3>
-
-            <p id="mensaje-semaforo">
-                Calcula tu promedio para conocer tu estado académico.
-            </p>
-
-        </div>
-
-    </section>
-
-</div>
-<div id="modal-mensaje" class="modal-mensaje">
-    <div class="modal-contenido">
-        <h3>La página dice</h3>
-        <p id="modal-texto"></p>
-        <button
-                type="button"
-                id="modal-aceptar">
-            Aceptar
-        </button>
+        </section>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="Funciones/Calculos.js"></script>
-<script src="Funciones/Grafica.js"></script>
-<script src="Funciones/Validaciones.js"></script>
-<script src="Funciones/Simulador.js"></script>
-<script src="Funciones/Semaforo.js"></script>
-<script src="Funciones/Registro.js"></script>
-<script src="Funciones/Promedios.js"></script>
-<script src="Funciones/Main.js"></script>
+    <!-- MODAL DE MENSAJES DE ALERTA -->
+    <div id="modal-mensaje" class="modal-mensaje">
+        <div class="modal-contenido">
+            <h3>La página dice</h3>
+            <p id="modal-texto"></p>
+            <button type="button" id="modal-aceptar">Aceptar</button>
+        </div>
+    </div>
 
+    <!-- VENTANA MODAL PARA EL SIMULADOR DE NOTAS -->
+    <div id="modal-simulador" class="modal-mensaje">
+        <div class="modal-contenido">
+            <div class="cabecera-modal-simulador">
+                <h3>Simulador de Notas Académicas</h3>
+                <button type="button" id="btn-cerrar-simulador" class="btn-cerrar-modal">&times;</button>
+            </div>
+
+            <label for="select-modo">Selecciona lo que deseas calcular:</label>
+            <select id="select-modo" onchange="cambiarModo()">
+                <option value="simular">Modo A: Saber cómo una nota afecta en mi promedio final.</option>
+                <option value="necesaria">Modo B: Calcular Nota Necesaria.</option>
+            </select>
+
+            <!-- MODO A -->
+            <div id="sec-simular" class="modo-simulador">
+                <h3>Modo A: Simulación de Promedio Final</h3>
+
+                <label for="select-materia-a">Selecciona la Materia:</label>
+                <select id="select-materia-a" onchange="actualizarActividadesPendientesSimulador()">
+                    <option value="">-- Selecciona una materia --</option>
+                    <option value="Álgebra">Álgebra</option>
+                    <option value="Habilidades Lógico-Matemáticas">Habilidades Lógico-Matemáticas</option>
+                </select>
+
+                <label for="select-rda-a">Selecciona el RDA:</label>
+                <select id="select-rda-a" onchange="actualizarActividadesPendientesSimulador()">
+                    <option value="1">RDA 1</option>
+                    <option value="2">RDA 2</option>
+                    <option value="3">RDA 3</option>
+                </select>
+
+                <label for="select-criterio-a">Selecciona el Criterio:</label>
+                <select id="select-criterio-a" onchange="actualizarActividadesPendientesSimulador()">
+                    <option value="1">Criterio 1</option>
+                    <option value="2">Criterio 2</option>
+                    <option value="3">Criterio 3</option>
+                </select>
+
+                <label for="select-actividad-pendiente-a">Selecciona la actividad pendiente a simular (Opcional):</label>
+                <select id="select-actividad-pendiente-a">
+                    <option value="">-- Simular nota general / Actividad nueva --</option>
+                </select>
+
+                <label for="input-nota-nueva">Nota hipotética a simular (0 - 50):</label>
+                <input type="number" id="input-nota-nueva" min="0" max="50" step="0.01" placeholder="Ej: 45">
+            </div>
+
+            <!-- MODO B -->
+            <div id="sec-necesaria" class="modo-simulador oculto-inicial">
+                <h3>Modo B: Calcular Nota Necesaria</h3>
+
+                <label for="select-materia-b">Selecciona la Materia:</label>
+                <select id="select-materia-b">
+                    <option value="">-- Selecciona una materia --</option>
+                    <option value="Álgebra">Álgebra</option>
+                    <option value="Habilidades Lógico-Matemáticas">Habilidades Lógico-Matemáticas</option>
+                </select>
+
+                <label for="select-rda-b">Selecciona el RDA:</label>
+                <select id="select-rda-b">
+                    <option value="1">RDA 1</option>
+                    <option value="2">RDA 2</option>
+                    <option value="3">RDA 3</option>
+                </select>
+
+                <label for="input-T">Promedio final objetivo (Escala 0-10 o 0-100):</label>
+                <input type="number" id="input-T" step="0.1" min="0" max="100" placeholder="Ej: 9.0 o 90">
+
+                <label for="select-crit-activo">¿En cuál criterio tienes las actividades faltantes?</label>
+                <select id="select-crit-activo">
+                    <option value="1">Criterio 1</option>
+                    <option value="2">Criterio 2</option>
+                    <option value="3">Criterio 3</option>
+                </select>
+
+                <label for="input-faltantes">¿Cuántas actividades faltantes tienes por calificar en este criterio?</label>
+                <input type="number" id="input-faltantes" min="1" step="1" value="1" placeholder="Ej: 1, 2, 3...">
+            </div>
+
+            <button type="button" id="btn-calcular" class="btn btn-calcular">Calcular Resultado</button>
+            <div id="texto-resultado" class="caja-resultado">Resultado</div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL DE HISTORIAL ACADÉMICO COMPLETO -->
+    <div id="modal-historial-academico" class="modal-mensaje oculto-inicial">
+        <div class="modal-contenido">
+            <div class="cabecera-modal-historial">
+                <h3>Historial Académico Completo</h3>
+                <button type="button" id="btn-cerrar-historial" class="btn-cerrar-modal">&times;</button>
+            </div>
+
+            <div class="campo-registro">
+                <label for="modal-select-materia">Selecciona la Materia para ver su historial estructurado:</label>
+                <select id="modal-select-materia" class="campo-registro select" onchange="mostrarHistorialAcademicoCompleto()">
+                    <option value="">-- Selecciona una materia --</option>
+                    <option value="Álgebra">Álgebra</option>
+                    <option value="Habilidades Lógico-Matemáticas">Habilidades Lógico-Matemáticas</option>
+                </select>
+            </div>
+
+            <div class="tabla-contenedor">
+                <table id="tabla-historial-completo">
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>RDA</th>
+                            <th>Criterio</th>
+                            <th>Tema / Actividad</th>
+                            <th>Nota</th>
+                            <th>Estado</th>
+                            <th>Fecha límite</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-historial-body">
+                        <!-- Contenido dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL PARA EL DESGLOSE DE CRITERIOS DEL RDA -->
+    <div id="modal-detalle-rda" class="modal-mensaje oculto-inicial">
+        <div class="modal-contenido">
+            <div class="cabecera-modal-rda">
+                <h3 id="modal-rda-titulo">Desglose de RDA</h3>
+                <button type="button" id="btn-cerrar-modal-rda" class="btn-cerrar-modal">&times;</button>
+            </div>
+            <div id="modal-rda-contenido"></div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL PARA LOS DETALLES DEL SEMÁFORO -->
+    <div id="modal-detalle-semaforo" class="modal-mensaje">
+        <div class="modal-contenido modal-contenido-semaforo">
+            <div class="cabecera-modal-rda">
+                <h3 id="modal-semaforo-titulo">Detalle de Alertas Académicas</h3>
+                <button type="button" id="btn-cerrar-modal-semaforo" class="btn-cerrar-modal">&times;</button>
+            </div>
+            <div id="modal-semaforo-contenido" class="caja-detalles-semaforo">
+                <!-- Contenido dinámico inyectado por JS -->
+            </div>
+            <button type="button" id="btn-aceptar-semaforo" class="btn btn-guardar btn-margen-superior">Entendido</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="Funciones/Calculos.js"></script>
+    <script src="Funciones/Grafica.js"></script>
+    <script src="Funciones/Validaciones.js"></script>
+    <script src="Funciones/Simulador.js"></script>
+    <script src="Funciones/Semaforo.js"></script>
+    <script src="Funciones/Registro.js"></script>
+    <script src="Funciones/Promedios.js"></script>
+    <script src="Funciones/Main.js"></script>
 
 </body>
 </html>
