@@ -48,3 +48,27 @@ function activarLuz(color) {
         luz.classList.add("activa");
     }
 }
+
+function refrescarSemaforoGeneral() {
+    if (typeof actividades === 'undefined' || actividades.length === 0) return;
+
+    let sumaTotal = 0;
+    let contador = 0;
+
+    actividades.forEach(act => {
+        let notaNum = parseFloat(act.nota);
+        if (!isNaN(notaNum)) {
+            sumaTotal += notaNum;
+            contador++;
+        }
+    });
+
+    let promedioCalculado = contador > 0 ? (sumaTotal / contador) : 0;
+    if (promedioCalculado > 10) {
+        promedioCalculado = promedioCalculado / 5;
+    }
+
+    if (typeof evaluarSemaforo === "function") {
+        evaluarSemaforo(promedioCalculado, actividades);
+    }
+}
