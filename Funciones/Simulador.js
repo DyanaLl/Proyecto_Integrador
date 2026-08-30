@@ -108,7 +108,6 @@ function ejecutarCalculo() {
         let rda = document.getElementById('select-rda-a').value;
         let criterio = document.getElementById('select-criterio-a').value;
         let indicePendiente = document.getElementById('select-actividad-pendiente-a').value;
-        let notaHipotetica = parseFloat(document.getElementById('input-nota-nueva').value);
 
         if (!materia) {
             txtRes.innerText = "Por favor, selecciona una materia.";
@@ -121,10 +120,12 @@ function ejecutarCalculo() {
             return;
         }
 
-        if (isNaN(notaHipotetica) || notaHipotetica < 0 || notaHipotetica > 50) {
-            txtRes.innerText = "Ingresa una nota hipotética válida (0 - 50).";
+        let validacionNota = validarNotaActividad(document.getElementById('input-nota-nueva').value);
+        if (!validacionNota.esValido) {
+            txtRes.innerText = validacionNota.mensaje;
             return;
         }
+        let notaHipotetica = validacionNota.valor;
 
         let excluirIdx = parseInt(indicePendiente);
 
@@ -159,33 +160,23 @@ function ejecutarCalculo() {
         }
 
         let inputObjetivoVal = document.getElementById('input-T').value;
-        let valorObj = parseFloat(inputObjetivoVal);
+        let validacionObjetivo = validarPromedioObjetivo(inputObjetivoVal);
 
-        if (isNaN(valorObj)) {
-            txtRes.innerText = "Error: Por favor, ingresa un número válido.";
+        if (!validacionObjetivo.esValido) {
+            txtRes.innerText = "Error: " + validacionObjetivo.mensaje;
             return;
         }
 
-        // Si ingresa en escala de 100 (ej. 95), lo convertimos automáticamente a escala de 10 (9.5)
-        if (valorObj > 10 && valorObj <= 100) {
-            valorObj = valorObj / 10;
-        }
-
-        if (valorObj < 0 || valorObj > 10) {
-            txtRes.innerText = "Error: Por favor, ingresa un Promedio Objetivo válido entre 0.0 y 10.0 (o hasta 100).";
-            return;
-        }
-
-        let promedioObjetivo = valorObj;
+        let promedioObjetivo = validacionObjetivo.valor;
         let criterioActivo = document.getElementById('select-crit-activo').value;
 
         let inputFaltantesEl = document.getElementById('input-faltantes');
-        let actividadesPendientes = inputFaltantesEl ? parseInt(inputFaltantesEl.value) : 1;
-
-        if (isNaN(actividadesPendientes) || actividadesPendientes <= 0) {
-            txtRes.innerText = "Por favor, ingresa un número válido de actividades faltantes (min 1).";
+        let validacionFaltantes = validarCantidadActividadesFaltantes(inputFaltantesEl ? inputFaltantesEl.value : 1);
+        if (!validacionFaltantes.esValido) {
+            txtRes.innerText = validacionFaltantes.mensaje;
             return;
         }
+        let actividadesPendientes = validacionFaltantes.valor;
 
         let notasExistentes = obtenerNotasPorMateriaRDAYCriterio(materia, rda, criterioActivo, null, false);
         let totalActividades = notasExistentes.length + actividadesPendientes;

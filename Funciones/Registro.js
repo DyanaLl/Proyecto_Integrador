@@ -153,35 +153,8 @@ function registrarActividad() {
         ? parseFloat(inputPonderacionEspecial)
         : null;
 
-    if (!materia) {
-        mostrarMensaje("Selecciona una materia.");
-        return false;
-    }
-
-    if (![1, 2, 3].includes(rda)) {
-        mostrarMensaje("Selecciona un RDA válido.");
-        return false;
-    }
-
-    if (![1, 2, 3].includes(criterio)) {
-        mostrarMensaje("Selecciona un criterio válido.");
-        return false;
-    }
-
-    if (!tema) {
-        mostrarMensaje("Escribe el tema o actividad.");
-        return false;
-    }
-
-    const esEntregada = estado === "entregada" || estado === "entregado" || nota > 0;
-
-    if (!fechaLimite && !esEntregada) {
-        mostrarMensaje("Selecciona una fecha límite.");
-        return false;
-    }
-
-    if (isNaN(nota) || nota < 0 || nota > 50) {
-        mostrarMensaje("La nota debe estar entre 0 y 50.");
+    // Delegamos todas las validaciones al archivo validaciones.js
+    if (typeof validarFormularioActividad === "function" && !validarFormularioActividad()) {
         return false;
     }
 
@@ -220,7 +193,7 @@ function seleccionarActividad(indice) {
         actividad.materia;
 
     document.getElementById("rda").value =
-        String(actividad.rda || 1);
+        String(actividad.rda);
 
     document.getElementById("criterio").value =
         String(actividad.criterio);
@@ -307,49 +280,8 @@ function actualizarActividadSeleccionada() {
     const hora =
         document.getElementById("hora").value;
 
-    if (!materia || !tema) {
-        mostrarMensaje(
-            "Completa la materia y el tema o actividad."
-        );
-
-        return;
-    }
-
-    if (![1, 2, 3].includes(rda)) {
-        mostrarMensaje(
-            "Selecciona un RDA válido."
-        );
-
-        return;
-    }
-
-    if (![1, 2, 3].includes(criterio)) {
-        mostrarMensaje(
-            "Selecciona un criterio válido."
-        );
-
-        return;
-    }
-
-    const esEntregada = estado === "entregada" || estado === "entregado" || nota > 0;
-
-    if (!fechaLimite && !esEntregada) {
-        mostrarMensaje(
-            "Selecciona una fecha límite."
-        );
-
-        return;
-    }
-
-    if (
-        isNaN(nota) ||
-        nota < 0 ||
-        nota > 50
-    ) {
-        mostrarMensaje(
-            "La nota debe estar entre 0 y 50."
-        );
-
+    // Delegamos todas las validaciones de los campos al archivo validaciones.js
+    if (typeof validarFormularioActividad === "function" && !validarFormularioActividad()) {
         return;
     }
 
@@ -429,7 +361,7 @@ function mostrarActividades() {
 
         fila.innerHTML = `
             <td class="celda-materia">${item.actividad.materia}</td>
-            <td>RDA ${item.actividad.rda || 1}</td>
+            <td>RDA ${item.actividad.rda}</td>
             <td>Criterio ${item.actividad.criterio}</td>
             <td class="celda-tema">${item.actividad.tema}</td>
             <td class="celda-nota">${item.actividad.nota}</td>
@@ -502,7 +434,7 @@ function guardarExcel() {
     actividades.forEach(actividad => {
         datosExcel.push([
             actividad.materia,
-            actividad.rda || 1,
+            actividad.rda,
             actividad.criterio,
             actividad.tema,
             actividad.nota,
@@ -907,7 +839,7 @@ function leerExcel(evento) {
                             fila[
                             indiceRda
                             ]
-                        ) || 1,
+                        ),
 
                     criterio:
                         Number(
@@ -1177,7 +1109,7 @@ function mostrarHistorialAcademicoCompleto() {
 
             fila.innerHTML = `
                 <td class="celda-materia">${actividad.materia}</td>
-                <td>RDA ${actividad.rda || 1}</td>
+                <td>RDA ${actividad.rda}</td>
                 <td>Criterio ${actividad.criterio}</td>
                 <td class="celda-tema">${actividad.tema}</td>
                 <td class="celda-nota">${actividad.nota}</td>

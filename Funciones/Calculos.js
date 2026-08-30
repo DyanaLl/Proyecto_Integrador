@@ -1,4 +1,3 @@
-
 let actividades = [];
 
 function obtenerActividadesGlobales() {
@@ -82,11 +81,27 @@ function calcularPromedioRDA(materia, numeroRda) {
 
     if (activos.length === 0) return 0;
 
-    let peso = 100 / activos.length;
     let totalRda = 0;
-    if (p1 !== null) totalRda += p1 * (peso / 100);
-    if (p2 !== null) totalRda += p2 * (peso / 100);
-    if (p3 !== null) totalRda += p3 * (peso / 100);
+
+    // REGLA OFICIAL DE PONDERACIÓN EXACTA
+    if (activos.length === 2) {
+        // Si hay 2 criterios activos, cada uno vale 50%
+        let index = 0;
+        if (p1 !== null) { totalRda += p1 * 0.50; index++; }
+        if (p2 !== null) { totalRda += p2 * (index === 0 ? 0.50 : 0.50); index++; }
+        if (p3 !== null) { totalRda += p3 * 0.50; }
+    } else if (activos.length === 3) {
+        // Si hay 3 criterios activos: 33.33%, 33.33% y 33.34%
+        if (p1 !== null) totalRda += p1 * 0.3333;
+        if (p2 !== null) totalRda += p2 * 0.3333;
+        if (p3 !== null) totalRda += p3 * 0.3334;
+    } else {
+        // Caso por defecto si solo hubiera 1 activo (100%) u otro caso
+        let pesoUnico = 100 / activos.length;
+        if (p1 !== null) totalRda += p1 * (pesoUnico / 100);
+        if (p2 !== null) totalRda += p2 * (pesoUnico / 100);
+        if (p3 !== null) totalRda += p3 * (pesoUnico / 100);
+    }
 
     return Number(totalRda.toFixed(2));
 }
@@ -111,21 +126,30 @@ function simularNotaFinalPorCriterios(notasC1, notasC2, notasC3) {
 
     if (criteriosActivos.length === 0) return 0;
 
-    // Peso equitativo según los criterios que existan realmente (ej: 2 criterios = 50% y 50%)
-    let pesoCriterio = 100 / criteriosActivos.length;
-
     let promedioFinal = 0;
-    if (p1 !== null) promedioFinal += p1 * (pesoCriterio / 100);
-    if (p2 !== null) promedioFinal += p2 * (pesoCriterio / 100);
-    if (p3 !== null) promedioFinal += p3 * (pesoCriterio / 100);
+
+    // REGLA OFICIAL DE PONDERACIÓN EXACTA EN SIMULACIÓN
+    if (criteriosActivos.length === 2) {
+        let index = 0;
+        if (p1 !== null) { promedioFinal += p1 * 0.50; index++; }
+        if (p2 !== null) { promedioFinal += p2 * 0.50; index++; }
+        if (p3 !== null) { promedioFinal += p3 * 0.50; }
+    } else if (criteriosActivos.length === 3) {
+        if (p1 !== null) promedioFinal += p1 * 0.3333;
+        if (p2 !== null) promedioFinal += p2 * 0.3333;
+        if (p3 !== null) promedioFinal += p3 * 0.3334;
+    } else {
+        let pesoCriterio = 100 / criteriosActivos.length;
+        if (p1 !== null) promedioFinal += p1 * (pesoCriterio / 100);
+        if (p2 !== null) promedioFinal += p2 * (pesoCriterio / 100);
+        if (p3 !== null) promedioFinal += p3 * (pesoCriterio / 100);
+    }
 
     return Number(promedioFinal.toFixed(2));
 }
 /**
  * Valida y normaliza el promedio objetivo ingresado por el usuario.
- * Acepta escala de 0 a 10 (ej. 9.5) o de 0 a 100 (ej. 95) de forma flexible,
- * convirtiendo automáticamente los valores mayores a 10 a su escala correcta.
- */
+ * Acepta escala de 0 a 100*/
 function validarPromedioObjetivo(valorIngresado) {
     let valor = parseFloat(valorIngresado);
 
@@ -133,13 +157,8 @@ function validarPromedioObjetivo(valorIngresado) {
         return { esValido: false, mensajeError: "Por favor, ingresa un número válido." };
     }
 
-    // Si el usuario ingresa un número entre 10.1 y 100, asumimos escala sobre 100 (ej. 95 -> 9.5)
-    if (valor > 10 && valor <= 100) {
-        valor = valor / 10;
-    }
-
-    if (valor < 0 || valor > 10) {
-        return { esValido: false, mensajeError: "Por favor, ingresa un Promedio Objetivo válido entre 0.0 y 10.0 (o hasta 100)." };
+    if (valor < 0 || valor > 100) {
+        return { esValido: false, mensajeError: "Por favor, ingresa un Promedio Objetivo válido entre 0 y 100." };
     }
 
     return { esValido: true, valor: valor };
@@ -162,12 +181,22 @@ function calcularNotaNecesariaEnCriterio(promedioObjetivoRda, notasExistentesCri
     if (actC3.length > 0) criteriosActivos.push("3");
 
     if (criteriosActivos.length === 0) criteriosActivos = [String(criterioActual)];
-    let pesoCriterioPorcentaje = 100 / criteriosActivos.length; // Peso equitativo real
+    
+    // Ponderación exacta según la regla institucional
+    let pesoCriterioPorcentaje = 33.33; 
+    if (criteriosActivos.length === 2) {
+        pesoCriterioPorcentaje = 50.0;
+    } else if (criteriosActivos.length === 3) {
+        // Si el criterio actual es el 3, evaluamos su peso específico exacto (33.34), de lo contrario 33.33
+        pesoCriterioPorcentaje = (String(criterioActual) === "3") ? 33.34 : 33.33;
+    } else {
+        pesoCriterioPorcentaje = 100 / criteriosActivos.length;
+    }
 
     // Normalizamos el objetivo del usuario a escala 0-100 por si viene en formato 0-10
-    let objetivoEscala100 = promedioObjetivoRda <= 10 ? promedioObjetivoRda * 10 : promedioObjetivoRda;
+    let objetivoEscala100 = Number(promedioObjetivoRda);
 
-    // 2. Calculamos los puntos ya asegurados por los OTROS criterios (tratando sus pendientes como 0, igual que en el Modo A)
+    // 2. Calculamos los puntos ya asegurados por los OTROS criterios
     let aporteOtros = 0;
     criteriosActivos.forEach(crit => {
         if (String(crit) !== String(criterioActual)) {
@@ -176,7 +205,15 @@ function calcularNotaNecesariaEnCriterio(promedioObjetivoRda, notasExistentesCri
                 let sumaCrit = notasCrit.reduce((a, b) => a + b, 0);
                 let promedio50Crit = sumaCrit / notasCrit.length;
                 let promedio100Crit = (promedio50Crit / 50) * 100;
-                aporteOtros += promedio100Crit * (pesoCriterioPorcentaje / 100);
+                
+                let pesoOtroCrit = 33.33;
+                if (criteriosActivos.length === 2) {
+                    pesoOtroCrit = 50.0;
+                } else if (criteriosActivos.length === 3 && String(crit) === "3") {
+                    pesoOtroCrit = 33.34;
+                }
+                
+                aporteOtros += promedio100Crit * (pesoOtroCrit / 100);
             }
         }
     });
@@ -199,7 +236,7 @@ function calcularNotaNecesariaEnCriterio(promedioObjetivoRda, notasExistentesCri
 
     let notaFinalRedondeada = Math.round(notaNecesariaPorActividad);
 
-    // 5. Validaciones finales (sin etiquetas strong)
+    // 5. Validaciones finales
     if (notaFinalRedondeada <= 0) {
         return `Con las notas actuales ya alcanzas el promedio objetivo en el RDA ${numeroRda}. Incluso con un 0 en las pendientes lo lograrías.`;
     } else if (notaFinalRedondeada > 50) {

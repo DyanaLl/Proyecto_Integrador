@@ -108,7 +108,7 @@
 
                 <div class="importar-excel">
                     <label for="archivo-excel">Importar historial académico</label>
-                    <input type="file" id="archivo-excel" accept=".xlsx,.xls" onchange="leerExcel(event)">
+                    <input type="file" id="archivo-excel" accept=".xlsx,.xls">
                     <p class="nota-aclaratoria">El Excel debe contener: Materia, RDA, Criterio, Tema, Nota, Estado y Fecha límite.</p>
                 </div>
             </div>
@@ -195,17 +195,25 @@
                 <h2>Semáforo de Alertas Académicas</h2>
             </div>
 
-            <p class="nota-aclaratoria">El semáforo muestra el estado académico según el promedio final obtenido.</p>
+            <p class="nota-aclaratoria">El semáforo muestra el estado académico según el rendimiento y las tareas pendientes.</p>
 
-            <div id="semaforo-visual">
-                <div id="luz-roja" class="luz-semaforo luz-roja" title="En peligro crítico"></div>
-                <div id="luz-amarilla" class="luz-semaforo luz-amarilla" title="En advertencia"></div>
-                <div id="luz-verde" class="luz-semaforo luz-verde" title="Óptimo / Aprobado"></div>
+            <div class="semaforo-wrapper">
+                <div id="semaforo-visual">
+                    <div id="luz-roja" class="foquito luz-roja" title="En peligro crítico"></div>
+                    <div id="luz-amarilla" class="foquito luz-amarilla" title="En advertencia"></div>
+                    <div id="luz-verde" class="foquito luz-verde" title="Óptimo / Aprobado"></div>
+                </div>
+
+                <!-- Botón con Contador de Notificaciones -->
+                <button type="button" id="btn-notificaciones-semaforo" class="btn btn-excel btn-semaforo-notif">
+                    <span>Ver Detalles de Alertas</span>
+                    <span id="badge-contador-alertas">0</span>
+                </button>
             </div>
 
             <div id="resultado-semaforo">
                 <h3 id="estado-semaforo">Estado académico</h3>
-                <p id="mensaje-semaforo">Calcula tu promedio para conocer tu estado académico.</p>
+                <p id="mensaje-semaforo">Monitoreando tus actividades y calificaciones en tiempo real.</p>
             </div>
         </section>
     </div>
@@ -268,7 +276,7 @@
             </div>
 
             <!-- MODO B -->
-            <div id="sec-necesaria" class="modo-simulador" style="display:none;">
+            <div id="sec-necesaria" class="modo-simulador oculto-inicial">
                 <h3>Modo B: Calcular Nota Necesaria</h3>
 
                 <label for="select-materia-b">Selecciona la Materia:</label>
@@ -305,7 +313,7 @@
     </div>
 
     <!-- VENTANA MODAL DE HISTORIAL ACADÉMICO COMPLETO -->
-    <div id="modal-historial-academico" class="modal-mensaje" style="display: none;">
+    <div id="modal-historial-academico" class="modal-mensaje oculto-inicial">
         <div class="modal-contenido">
             <div class="cabecera-modal-historial">
                 <h3>Historial Académico Completo</h3>
@@ -344,13 +352,27 @@
     </div>
 
     <!-- VENTANA MODAL PARA EL DESGLOSE DE CRITERIOS DEL RDA -->
-    <div id="modal-detalle-rda" class="modal-mensaje" style="display: none;">
+    <div id="modal-detalle-rda" class="modal-mensaje oculto-inicial">
         <div class="modal-contenido">
             <div class="cabecera-modal-rda">
                 <h3 id="modal-rda-titulo">Desglose de RDA</h3>
                 <button type="button" id="btn-cerrar-modal-rda" class="btn-cerrar-modal">&times;</button>
             </div>
             <div id="modal-rda-contenido"></div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL PARA LOS DETALLES DEL SEMÁFORO -->
+    <div id="modal-detalle-semaforo" class="modal-mensaje">
+        <div class="modal-contenido modal-contenido-semaforo">
+            <div class="cabecera-modal-rda">
+                <h3 id="modal-semaforo-titulo">Detalle de Alertas Académicas</h3>
+                <button type="button" id="btn-cerrar-modal-semaforo" class="btn-cerrar-modal">&times;</button>
+            </div>
+            <div id="modal-semaforo-contenido" class="caja-detalles-semaforo">
+                <!-- Contenido dinámico inyectado por JS -->
+            </div>
+            <button type="button" id="btn-aceptar-semaforo" class="btn btn-guardar btn-margen-superior">Entendido</button>
         </div>
     </div>
 

@@ -241,39 +241,93 @@ button:hover,
     text-align: center;
 }
 
+.semaforo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
 #semaforo-visual {
-    width: 100px;
+    width: 45px;
     background: #0f172a;
-    padding: 10px;
-    border-radius: 15px;
-    margin: 10px auto;
+    padding: 8px;
+    border-radius: 12px;
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
 }
 
-.luz-semaforo {
-    width: 40px;
-    height: 40px;
+/* Foquitos individuales del semáforo */
+.foquito {
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
-    opacity: .3;
-    transition: all .3s ease;
-    border: 2px solid rgba(255, 255, 255, .2);
+    background-color: #555; /* Apagado por defecto */
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.3s ease;
 }
 
-.luz-roja { background-color: #ef4444; }
-.luz-amarilla { background-color: #f59e0b; }
-.luz-verde { background-color: #22c55e; }
+/* Clases de colores base (el JS controlará su encendido dinámico) */
+.luz-roja { background-color: #555; }
+.luz-amarilla { background-color: #555; }
+.luz-verde { background-color: #555; }
 
-.luz-semaforo.activa {
-    opacity: 1;
-    transform: scale(1.05);
+/* Estilo del botón de notificaciones al lado del semáforo */
+.btn-semaforo-notif {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: auto;
+    padding: 8px 14px;
 }
 
-.luz-roja.activa { box-shadow: 0 0 10px #ef4444; }
-.luz-amarilla.activa { box-shadow: 0 0 10px #f59e0b; }
-.luz-verde.activa { box-shadow: 0 0 10px #22c55e; }
+#badge-contador-alertas {
+    background-color: #dc2626;
+    color: white;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+/* --- MODAL ESPECÍFICO PARA LOS DETALLES DEL SEMÁFORO --- */
+.modal-contenido-semaforo {
+    width: 480px;
+    max-width: 95%;
+    text-align: left;
+}
+
+.caja-detalles-semaforo {
+    text-align: left;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.caja-detalles-semaforo ul {
+    padding-left: 18px;
+    margin: 0;
+}
+
+.caja-detalles-semaforo li {
+    font-size: 13px;
+    color: #334155;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
 
 #resultado-semaforo {
     margin-top: 8px;
@@ -615,3 +669,70 @@ tr:nth-child(even) {
     overflow-y: auto;
     text-align: left;
 }
+ /* Estlos dentro del HTML*/
+ .oculto-inicial {
+    display: none;
+}
+
+.btn-margen-superior {
+    margin-top: 15px;
+}
+
+/*Modal-Tabla Registros*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegura que esté por encima de todo */
+}
+
+/* Caja blanca flotante del modal */
+.modal-contenido-flotante {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow-y: auto; /* Permite scroll si la tabla es muy larga */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabecera del modal */
+.modal-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.modal-cabecera h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #2d3748;
+}
+
+/* Botón de cierre (X) */
+.btn-cerrar {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #a0aec0;
+    transition: color 0.2s;
+}
+
+.btn-cerrar:hover {
+    color: #2d3748;
+}
+
