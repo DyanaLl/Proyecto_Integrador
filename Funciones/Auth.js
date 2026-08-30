@@ -1,7 +1,6 @@
 /**
- * Módulo de Autenticación y Manejo de Excel/CSV con SheetJS
+ * Módulo de Autenticación y Manejo Interno de Usuarios
  */
-let fileHandle = null;
 let historialUsuarios = JSON.parse(localStorage.getItem("matrizUsuarios")) || [];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -42,12 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
             seccionBienvenida.style.display = "block";
         });
     }
-
-    // Inicializar eventos de Excel
-    initExcelEvents();
 });
 
-// Lógica de Registro de Usuarios
+// Lógica de Registro de Usuarios de forma interna
 const formRegistro = document.getElementById("form-registro");
 if (formRegistro) {
     formRegistro.addEventListener("submit", (e) => {
@@ -66,7 +62,7 @@ if (formRegistro) {
             return;
         }
 
-        // Agregamos la nueva fila a la matriz
+        // Agregamos la nueva fila a la matriz interna
         historialUsuarios.push({
             nombre: nombre,
             apellido: apellido,
@@ -75,11 +71,10 @@ if (formRegistro) {
             password: password
         });
 
-        // Guardamos en localStorage y activamos alerta de cambios pendientes en Excel
+        // Guardamos de forma persistente e interna en localStorage
         localStorage.setItem("matrizUsuarios", JSON.stringify(historialUsuarios));
-        activarAlertaModificacion();
 
-        alert("¡Registro guardado con éxito en el historial!");
+        alert("¡Registro guardado con éxito!");
         formRegistro.reset();
         
         document.getElementById("seccion-registro").style.display = "none";
