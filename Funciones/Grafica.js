@@ -1,36 +1,21 @@
-// ==========================================
-// MÓDULO DE GRÁFICA ESTADÍSTICA (Grafica.js)
-// ==========================================
-
 let miGraficaMaterias = null;
 
-// Función para calcular los promedios finales idénticos a la tabla de promedios
+// Calcula los promedios finales por materia idénticos a la tabla de promedios
 function calcularPromediosPorMateriaGrafica() {
     let promediosPorMateria = {};
 
-    // Verificamos si existe el arreglo global 'actividades' desde calculos.js
+    // Obtiene la lista de actividades desde el ámbito global disponible
     let listaActividades = typeof obtenerActividadesGlobales === 'function' ? obtenerActividadesGlobales() : (typeof actividades !== 'undefined' ? actividades : []);
 
     if (Array.isArray(listaActividades) && listaActividades.length > 0) {
-        // Extraer las materias únicas registradas de forma automática tal cual lo hace promedios.js
+        // Extrae las materias únicas registradas de forma automática
         let materiasUnicas = [...new Set(listaActividades.map(act => act.materia))];
 
         materiasUnicas.forEach(materia => {
-            // Obtenemos los RDA exactamente igual que en renderizarTablaPromedios()
-            const rda1 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 1) : 0;
-            const rda2 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 2) : 0;
-            const rda3 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 3) : 0;
-
-            // Calculamos el promedio final exactamente con la misma lógica de la tabla
-            let activosRda = [rda1, rda2, rda3].filter(val => val > 0);
-            let promedioFinal = 0;
-
-            if (typeof calcularPromedioFinalMateria === 'function') {
-                promedioFinal = calcularPromedioFinalMateria(materia);
-            } else {
-                // Si la función global directa no existe, aplicamos la misma lógica de respaldo
-                promedioFinal = activosRda.length > 0 ? (activosRda.reduce((a, b) => a + b, 0) / activosRda.length) : 0;
-            }
+            // Obtiene el promedio final delegando el cálculo a calculos.js
+            const promedioFinal = typeof calcularPromedioFinalMateria === 'function'
+                ? calcularPromedioFinalMateria(materia)
+                : 0;
 
             promediosPorMateria[materia] = parseFloat(Number(promedioFinal).toFixed(2));
         });
@@ -39,10 +24,10 @@ function calcularPromediosPorMateriaGrafica() {
     return promediosPorMateria;
 }
 
-// Función principal para renderizar o actualizar la gráfica de barras
+// Renderiza o actualiza la gráfica de barras con los datos calculados
 function inicializarGraficaMaterias() {
     let datosCalculados = calcularPromediosPorMateriaGrafica();
-    
+
     let materias = Object.keys(datosCalculados);
     let promedios = Object.values(datosCalculados);
 
@@ -51,20 +36,20 @@ function inicializarGraficaMaterias() {
 
     let contexto = elementoCanvas.getContext('2d');
 
-    // Destruir instancia previa para evitar duplicados o errores de renderizado
+    // Destruye la instancia previa para evitar duplicados o errores de renderizado
     if (miGraficaMaterias instanceof Chart) {
         miGraficaMaterias.destroy();
     }
 
-    // Creación de la gráfica de barras sincronizada con la escala 0-100 de la tabla
+    // Crea la gráfica de barras sincronizada con la escala del sistema
     miGraficaMaterias = new Chart(contexto, {
         type: 'bar',
         data: {
-            labels: materias.length > 0 ? materias : ['Sin materias'], 
+            labels: materias.length > 0 ? materias : ['Sin materias'],
             datasets: [{
                 label: 'Promedio Final',
                 data: promedios.length > 0 ? promedios : [0],
-                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899'],
+                backgroundColor: ['#082149', '#0e5e43', '#0f9c4a', '#228da8'],
                 borderWidth: 1
             }]
         },
@@ -74,9 +59,9 @@ function inicializarGraficaMaterias() {
             scales: {
                 x: {
                     ticks: {
-                        maxRotation: 0, // Evita que los nombres se inclinen feo de lado
+                        maxRotation: 0,
                         minRotation: 0,
-                        autoSkip: false  // Asegura que se muestren todas las materias
+                        autoSkip: false
                     }
                 },
                 y: {
@@ -90,7 +75,7 @@ function inicializarGraficaMaterias() {
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             let valorMateria = context.raw;
                             return ` Promedio Final: ${valorMateria}`;
                         }
@@ -101,12 +86,12 @@ function inicializarGraficaMaterias() {
     });
 }
 
-// Escuchar eventos personalizados por si el dashboard o la tabla se actualizan dinámicamente
-window.addEventListener('actualizarDashboard', function() {
+// Escucha eventos personalizados para actualizar la gráfica de forma dinámica
+window.addEventListener('actualizarDashboard', function () {
     inicializarGraficaMaterias();
 });
 
-// Ejecutar al cargar la página
-window.onload = function() {
-    setTimeout(inicializarGraficaMaterias, 100); // Pequeño respiro para asegurar carga de scripts previos
-};
+// Inicializa la gráfica al cargar completamente la página
+window.addEventListener('load', function () {
+    setTimeout(inicializarGraficaMaterias, 100);
+});

@@ -8,6 +8,7 @@ function normalizarTexto(texto) {
         .toLowerCase();
 }
 
+// Muestra mensajes flotantes en un modal
 function mostrarMensaje(mensaje) {
     const modal = document.getElementById("modal-mensaje");
     const texto = document.getElementById("modal-texto");
@@ -21,6 +22,34 @@ function mostrarMensaje(mensaje) {
     modal.style.display = "flex";
 }
 
+// Convierte fechas numéricas de Excel a formato de texto estándar
+function convertirFechaExcel(valor) {
+    if (
+        valor === null ||
+        valor === undefined ||
+        valor === ""
+    ) {
+        return "";
+    }
+
+    if (typeof valor === "number") {
+        const fechaExcel = XLSX.SSF.parse_date_code(
+            valor
+        );
+
+        if (fechaExcel) {
+            const anio = fechaExcel.y;
+            const mes = String(fechaExcel.m).padStart(2, "0");
+            const dia = String(fechaExcel.d).padStart(2, "0");
+
+            return `${anio}-${mes}-${dia}`;
+        }
+    }
+
+    String(valor).trim();
+}
+
+// Revisa si las fechas límite pasaron para cambiar el estado a vencida
 function verificarActividadesVencidas() {
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
@@ -51,6 +80,7 @@ function verificarActividadesVencidas() {
     }
 }
 
+// Actualiza la gráfica de materias si está disponible
 function actualizarGraficaRegistro() {
     if (
         typeof Chart === "undefined" ||
@@ -68,12 +98,10 @@ function actualizarGraficaRegistro() {
     inicializarGraficaMaterias();
 }
 
+// Rellena los selectores de materias para el simulador
 function actualizarMateriasSimulador() {
-    const selectMateriaA =
-        document.getElementById("select-materia-a");
-
-    const selectMateriaB =
-        document.getElementById("select-materia-b");
+    const selectMateriaA = document.getElementById("select-materia-a");
+    const selectMateriaB = document.getElementById("select-materia-b");
 
     if (!selectMateriaA || !selectMateriaB) {
         return;
@@ -101,17 +129,13 @@ function actualizarMateriasSimulador() {
 
     materias.forEach(materia => {
         const opcionA = document.createElement("option");
-
         opcionA.value = materia;
         opcionA.textContent = materia;
-
         selectMateriaA.appendChild(opcionA);
 
         const opcionB = document.createElement("option");
-
         opcionB.value = materia;
         opcionB.textContent = materia;
-
         selectMateriaB.appendChild(opcionB);
     });
 
@@ -124,7 +148,7 @@ function actualizarMateriasSimulador() {
     }
 }
 
-// Función auxiliar unificada para limpiar código repetitivo
+// Refresca todas las tablas, promedios y elementos visuales del registro
 function actualizarTablasRegistro() {
     mostrarActividades();
 
@@ -136,6 +160,44 @@ function actualizarTablasRegistro() {
     actualizarGraficaRegistro();
 }
 
+// Guarda los cambios generales en el almacenamiento local
+function actualizarActividades() {
+    localStorage.setItem(
+        "actividades",
+        JSON.stringify(actividades)
+    );
+
+    verificarActividadesVencidas();
+    actualizarTablasRegistro();
+
+    mostrarMensaje(
+        "Actividades actualizadas correctamente."
+    );
+}
+
+// Carga las actividades guardadas en el navegador al iniciar
+function cargarActividadesGuardadas() {
+    const datosGuardados = localStorage.getItem("actividades");
+
+    if (!datosGuardados) {
+        return;
+    }
+
+    try {
+        const datos = JSON.parse(datosGuardados);
+
+        if (Array.isArray(datos)) {
+            actividades = datos;
+        }
+
+    } catch (error) {
+        console.error(
+            "Error al cargar actividades:", error
+        );
+    }
+}
+
+// Registra una nueva actividad desde el formulario
 function registrarActividad() {
     const materia = document.getElementById("materia").value.trim();
     const rda = Number(document.getElementById("rda").value);
@@ -147,13 +209,11 @@ function registrarActividad() {
     const fechaLimite = document.getElementById("fechaLimite").value;
     const hora = document.getElementById("hora").value;
 
-    // Capturar la casilla opcional de ponderación especial
     const inputPonderacionEspecial = document.getElementById("input-ponderacion-especial")?.value;
     const ponderacion = (inputPonderacionEspecial !== undefined && inputPonderacionEspecial !== "" && !isNaN(inputPonderacionEspecial))
         ? parseFloat(inputPonderacionEspecial)
         : null;
 
-    // Delegamos todas las validaciones al archivo validaciones.js
     if (typeof validarFormularioActividad === "function" && !validarFormularioActividad()) {
         return false;
     }
@@ -176,10 +236,25 @@ function registrarActividad() {
     limpiarFormulario();
     actualizarTablasRegistro();
 
+    if (typeof restaurarVistaDashboard === "function") {
+        restaurarVistaDashboard();
+    } else {
+        const modalRegistro = document.getElementById("modal-registro");
+        const dashboardColumnas = document.querySelector(".dashboard-columnas");
+        const seccionEncabezado = document.getElementById("seccion-encabezado");
+        if (modalRegistro) {
+            modalRegistro.style.display = "none";
+            modalRegistro.classList.add("oculto-inicial");
+        }
+        if (dashboardColumnas) dashboardColumnas.style.display = "flex";
+        if (seccionEncabezado) seccionEncabezado.classList.remove("oculto-inicial");
+    }
+
     mostrarMensaje("Actividad registrada correctamente.");
     return true;
 }
 
+// Carga los datos de una actividad específica en el formulario para editarla
 function seleccionarActividad(indice) {
     const actividad = actividades[indice];
 
@@ -189,98 +264,65 @@ function seleccionarActividad(indice) {
 
     actividadSeleccionada = indice;
 
-    document.getElementById("materia").value =
-        actividad.materia;
+    document.getElementById("materia").value = actividad.materia;
+    document.getElementById("rda").value = String(actividad.rda);
+    document.getElementById("criterio").value = String(actividad.criterio);
+    document.getElementById("tema").value = actividad.tema;
+    document.getElementById("nota").value = actividad.nota;
+    document.getElementById("estado").value = normalizarTexto(actividad.estado);
+    document.getElementById("fechaLimite").value = actividad.fechaLimite || "";
+    document.getElementById("hora").value = actividad.hora || "";
 
-    document.getElementById("rda").value =
-        String(actividad.rda);
+    const modalRegistro = document.getElementById("modal-registro");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const encabezadoPrincipal = document.getElementById("seccion-encabezado");
 
-    document.getElementById("criterio").value =
-        String(actividad.criterio);
+    if (dashboardColumnas) dashboardColumnas.style.display = "none";
+    if (encabezadoPrincipal) encabezadoPrincipal.style.display = "none";
 
-    document.getElementById("tema").value =
-        actividad.tema;
-
-    document.getElementById("nota").value =
-        actividad.nota;
-
-    document.getElementById("estado").value =
-        normalizarTexto(actividad.estado);
-
-    document.getElementById("fechaLimite").value =
-        actividad.fechaLimite || "";
-
-    document.getElementById("hora").value =
-        actividad.hora || "";
-
-    const formulario =
-        document.getElementById("formulario-registro");
-
-    const boton =
-        document.getElementById("btn-mostrar-registro");
-
-    if (formulario) {
-        formulario.style.display = "block";
+    if (modalRegistro) {
+        modalRegistro.classList.remove("oculto-inicial");
+        modalRegistro.removeAttribute("style");
+        modalRegistro.style.display = "block";
     }
 
-    if (boton) {
-        boton.textContent = "−";
-    }
+    document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+    const navRegistroBtn = document.getElementById("nav-registro");
+    if (navRegistroBtn) navRegistroBtn.classList.add("activo");
 
     mostrarMensaje(
         "Actividad seleccionada. Ahora puedes cambiar sus datos y presionar Actualizar actividad."
     );
 }
 
+// Guarda los cambios realizados en una actividad que estaba siendo editada
 function actualizarActividadSeleccionada() {
     if (actividadSeleccionada === null) {
         mostrarMensaje(
             "Selecciona primero una actividad de la tabla."
         );
-
         return;
     }
 
-    const actividad =
-        actividades[actividadSeleccionada];
+    const actividad = actividades[actividadSeleccionada];
 
     if (!actividad) {
         actividadSeleccionada = null;
         return;
     }
 
-    const materia =
-        document.getElementById("materia").value.trim();
+    const materia = document.getElementById("materia").value.trim();
+    const rda = Number(document.getElementById("rda").value);
+    const criterio = Number(document.getElementById("criterio").value);
+    const tema = document.getElementById("tema").value.trim();
+    const notaTexto = document.getElementById("nota").value.trim();
+    const nota = notaTexto === "" ? 0 : Number(notaTexto);
+    const estado = normalizarTexto(
+        document.getElementById("estado").value
+    );
+    const fechaLimite = document.getElementById("fechaLimite").value;
+    const hora = document.getElementById("hora").value;
 
-    const rda =
-        Number(document.getElementById("rda").value);
-
-    const criterio =
-        Number(document.getElementById("criterio").value);
-
-    const tema =
-        document.getElementById("tema").value.trim();
-
-    const notaTexto =
-        document.getElementById("nota").value.trim();
-
-    const nota =
-        notaTexto === ""
-            ? 0
-            : Number(notaTexto);
-
-    const estado =
-        normalizarTexto(
-            document.getElementById("estado").value
-        );
-
-    const fechaLimite =
-        document.getElementById("fechaLimite").value;
-
-    const hora =
-        document.getElementById("hora").value;
-
-    // Delegamos todas las validaciones de los campos al archivo validaciones.js
     if (typeof validarFormularioActividad === "function" && !validarFormularioActividad()) {
         return;
     }
@@ -305,11 +347,16 @@ function actualizarActividadSeleccionada() {
 
     actividadSeleccionada = null;
 
+    if (typeof restaurarVistaDashboard === "function") {
+        restaurarVistaDashboard();
+    }
+
     mostrarMensaje(
         "Actividad actualizada correctamente."
     );
 }
 
+// Vacía todos los campos del formulario de registro
 function limpiarFormulario() {
     document.getElementById("materia").value = "";
     document.getElementById("rda").value = "1";
@@ -324,6 +371,7 @@ function limpiarFormulario() {
     if (inputPonderacion) inputPonderacion.value = "";
 }
 
+// Muestra las actividades pendientes en la tabla principal
 function mostrarActividades() {
     const tabla = document.getElementById("tabla-actividades-body");
 
@@ -381,43 +429,126 @@ function mostrarActividades() {
     });
 }
 
-function cargarActividadesGuardadas() {
-    const datosGuardados =
-        localStorage.getItem(
-            "actividades"
-        );
+// Muestra el historial académico completo filtrado por materia
+function mostrarHistorialAcademicoCompleto(materiaFiltro = null) {
+    const modalHistorial = document.getElementById("modal-historial-academico");
+    const modalRegistro = document.getElementById("modal-registro");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const encabezadoPrincipal = document.getElementById("seccion-encabezado");
+    const cuerpoTablaHistorial = document.getElementById("tabla-historial-body");
 
-    if (!datosGuardados) {
-        return;
+    if (!modalHistorial || !cuerpoTablaHistorial) return;
+
+    if (dashboardColumnas) dashboardColumnas.style.display = "none";
+    if (encabezadoPrincipal) encabezadoPrincipal.style.display = "none";
+    if (modalRegistro) {
+        modalRegistro.style.display = "none";
+        modalRegistro.classList.add("oculto-inicial");
     }
 
-    try {
-        const datos =
-            JSON.parse(datosGuardados);
+    cuerpoTablaHistorial.innerHTML = "";
 
-        if (Array.isArray(datos)) {
-            actividades = datos;
+    if (!materiaFiltro || materiaFiltro === "") {
+        cuerpoTablaHistorial.innerHTML = `<tr><td colspan="8" style="text-align: center;">Por favor, seleccione una materia para ver su historial.</td></tr>`;
+    } else {
+        const materiaBusc = materiaFiltro.trim().toLowerCase();
+        const actividadesAMostrar = actividades.filter(act => {
+            const materiaAct = act.materia ? act.materia.trim().toLowerCase() : "";
+            return materiaAct === materiaBusc;
+        });
+
+        if (actividadesAMostrar.length === 0) {
+            cuerpoTablaHistorial.innerHTML = `<tr><td colspan="8" style="text-align: center;">No hay actividades registradas para esta sección.</td></tr>`;
+        } else {
+            actividadesAMostrar.forEach((act) => {
+                const indiceGlobal = actividades.indexOf(act);
+                const fechaFormateada = act.fechaLimite ? act.fechaLimite : "Sin fecha";
+
+                const fila = document.createElement("tr");
+                fila.innerHTML = `
+                    <td>${act.materia || ""}</td>
+                    <td>RDA ${act.rda || ""}</td>
+                    <td>Crit. ${act.criterio || ""}</td>
+                    <td>${act.tema || ""}</td>
+                    <td>${act.nota || 0}</td>
+                    <td>${act.estado || "pendiente"}</td>
+                    <td>${fechaFormateada}</td>
+                    <td>
+                        <button class="btn-modificar" onclick="modificarDesdeHistorial(${indiceGlobal})">Editar</button>
+                        <button class="btn-eliminar" onclick="eliminarDesdeHistorial(${indiceGlobal})">Eliminar</button>
+                    </td>
+                `;
+                cuerpoTablaHistorial.appendChild(fila);
+            });
         }
+    }
 
-    } catch (error) {
-        console.error(
-            "Error al cargar actividades:",
-            error
-        );
+    modalHistorial.classList.remove("oculto-inicial");
+    modalHistorial.style.display = "block";
+
+    document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+    const navHistorialBtn = document.getElementById("nav-historial");
+    if (navHistorialBtn) navHistorialBtn.classList.add("activo");
+}
+
+// Permite modificar una actividad directamente desde la vista de historial
+function modificarDesdeHistorial(indice) {
+    const modalHistorial = document.getElementById("modal-historial-academico");
+    const modalRegistro = document.getElementById("modal-registro");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const encabezadoPrincipal = document.getElementById("seccion-encabezado");
+
+    if (dashboardColumnas) dashboardColumnas.style.display = "none";
+    if (encabezadoPrincipal) encabezadoPrincipal.style.display = "none";
+
+    if (modalHistorial) {
+        modalHistorial.style.display = "none";
+        modalHistorial.classList.add("oculto-inicial");
+    }
+
+    if (modalRegistro) {
+        modalRegistro.classList.remove("oculto-inicial");
+        modalRegistro.removeAttribute("style");
+        modalRegistro.style.display = "block";
+    }
+
+    document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+    const navRegistroBtn = document.getElementById("nav-registro");
+    if (navRegistroBtn) navRegistroBtn.classList.add("activo");
+
+    if (typeof limpiarFormulario === 'function') {
+        limpiarFormulario();
+    }
+    seleccionarActividad(indice);
+}
+
+// Elimina una actividad directamente desde la tabla de historial
+function eliminarDesdeHistorial(indice) {
+    if (confirm("¿Estás seguro de que deseas eliminar esta actividad?")) {
+        actividades.splice(indice, 1);
+        localStorage.setItem("actividades", JSON.stringify(actividades));
+        verificarActividadesVencidas();
+        actualizarTablasRegistro();
+
+        const selectFiltroMateria = document.getElementById("modal-select-materia");
+        const filtroActual = selectFiltroMateria ? selectFiltroMateria.value : null;
+
+        mostrarHistorialAcademicoCompleto(filtroActual);
+
+        mostrarMensaje("Actividad eliminada correctamente.");
     }
 }
 
+// Exporta todas las actividades actuales a un archivo de Excel con estilos
 function guardarExcel() {
     if (actividades.length === 0) {
         mostrarMensaje(
             "No existen actividades para exportar."
         );
-
         return;
     }
 
-    const libro =
-        XLSX.utils.book_new();
+    const libro = XLSX.utils.book_new();
 
     const datosExcel = [
         [
@@ -443,10 +574,7 @@ function guardarExcel() {
         ]);
     });
 
-    const hoja =
-        XLSX.utils.aoa_to_sheet(
-            datosExcel
-        );
+    const hoja = XLSX.utils.aoa_to_sheet(datosExcel);
 
     hoja["!cols"] = [
         { wch: 32 },
@@ -480,30 +608,10 @@ function guardarExcel() {
             vertical: "center"
         },
         border: {
-            top: {
-                style: "thin",
-                color: {
-                    rgb: "D9E1F2"
-                }
-            },
-            bottom: {
-                style: "thin",
-                color: {
-                    rgb: "D9E1F2"
-                }
-            },
-            left: {
-                style: "thin",
-                color: {
-                    rgb: "D9E1F2"
-                }
-            },
-            right: {
-                style: "thin",
-                color: {
-                    rgb: "D9E1F2"
-                }
-            }
+            top: { style: "thin", color: { rgb: "D9E1F2" } },
+            bottom: { style: "thin", color: { rgb: "D9E1F2" } },
+            left: { style: "thin", color: { rgb: "D9E1F2" } },
+            right: { style: "thin", color: { rgb: "D9E1F2" } }
         }
     };
 
@@ -512,155 +620,79 @@ function guardarExcel() {
             vertical: "center"
         },
         border: {
-            top: {
-                style: "thin",
-                color: {
-                    rgb: "E2E8F0"
-                }
-            },
-            bottom: {
-                style: "thin",
-                color: {
-                    rgb: "E2E8F0"
-                }
-            },
-            left: {
-                style: "thin",
-                color: {
-                    rgb: "E2E8F0"
-                }
-            },
-            right: {
-                style: "thin",
-                color: {
-                    rgb: "E2E8F0"
-                }
-            }
+            top: { style: "thin", color: { rgb: "E2E8F0" } },
+            bottom: { style: "thin", color: { rgb: "E2E8F0" } },
+            left: { style: "thin", color: { rgb: "E2E8F0" } },
+            right: { style: "thin", color: { rgb: "E2E8F0" } }
         }
     };
 
-    for (
-        let columna = 0;
-        columna < 7;
-        columna++
-    ) {
-        const direccion =
-            XLSX.utils.encode_cell({
-                r: 0,
-                c: columna
-            });
+    for (let columna = 0; columna < 7; columna++) {
+        const direccion = XLSX.utils.encode_cell({
+            r: 0,
+            c: columna
+        });
 
         if (hoja[direccion]) {
-            hoja[direccion].s =
-                estiloEncabezado;
+            hoja[direccion].s = estiloEncabezado;
         }
     }
 
-    for (
-        let fila = 1;
-        fila < datosExcel.length;
-        fila++
-    ) {
-        for (
-            let columna = 0;
-            columna < 7;
-            columna++
-        ) {
-            const direccion =
-                XLSX.utils.encode_cell({
-                    r: fila,
-                    c: columna
-                });
+    for (let fila = 1; fila < datosExcel.length; fila++) {
+        for (let columna = 0; columna < 7; columna++) {
+            const direccion = XLSX.utils.encode_cell({
+                r: fila,
+                c: columna
+            });
 
             if (hoja[direccion]) {
                 hoja[direccion].s = {
                     ...estiloCelda,
                     fill: {
                         fgColor: {
-                            rgb:
-                                fila % 2 === 0
-                                    ? "F7F9FC"
-                                    : "FFFFFF"
+                            rgb: fila % 2 === 0 ? "F7F9FC" : "FFFFFF"
                         }
                     }
                 };
             }
         }
 
-        const celdaEstado =
-            hoja[
+        const celdaEstado = hoja[
             XLSX.utils.encode_cell({
                 r: fila,
                 c: 5
             })
-            ];
+        ];
 
         if (celdaEstado) {
-            const estado =
-                normalizarTexto(
-                    celdaEstado.v
-                );
+            const estado = normalizarTexto(
+                celdaEstado.v
+            );
 
             if (estado === "entregada") {
                 celdaEstado.s = {
                     ...estiloCelda,
-                    font: {
-                        bold: true,
-                        color: {
-                            rgb: "1B5E20"
-                        }
-                    },
-                    fill: {
-                        fgColor: {
-                            rgb: "E2F0D9"
-                        }
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    }
+                    font: { bold: true, color: { rgb: "1B5E20" } },
+                    fill: { fgColor: { rgb: "E2F0D9" } },
+                    alignment: { horizontal: "center", vertical: "center" }
                 };
             }
 
             if (estado === "pendiente") {
                 celdaEstado.s = {
                     ...estiloCelda,
-                    font: {
-                        bold: true,
-                        color: {
-                            rgb: "7F6000"
-                        }
-                    },
-                    fill: {
-                        fgColor: {
-                            rgb: "FFF2CC"
-                        }
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    }
+                    font: { bold: true, color: { rgb: "7F6000" } },
+                    fill: { fgColor: { rgb: "FFF2CC" } },
+                    alignment: { horizontal: "center", vertical: "center" }
                 };
             }
 
             if (estado === "vencida") {
                 celdaEstado.s = {
                     ...estiloCelda,
-                    font: {
-                        bold: true,
-                        color: {
-                            rgb: "9C0006"
-                        }
-                    },
-                    fill: {
-                        fgColor: {
-                            rgb: "FFC7CE"
-                        }
-                    },
-                    alignment: {
-                        horizontal: "center",
-                        vertical: "center"
-                    }
+                    font: { bold: true, color: { rgb: "9C0006" } },
+                    fill: { fgColor: { rgb: "FFC7CE" } },
+                    alignment: { horizontal: "center", vertical: "center" }
                 };
             }
         }
@@ -688,40 +720,7 @@ function guardarExcel() {
     );
 }
 
-function convertirFechaExcel(valor) {
-    if (
-        valor === null ||
-        valor === undefined ||
-        valor === ""
-    ) {
-        return "";
-    }
-
-    if (typeof valor === "number") {
-        const fechaExcel =
-            XLSX.SSF.parse_date_code(
-                valor
-            );
-
-        if (fechaExcel) {
-            const anio =
-                fechaExcel.y;
-
-            const mes =
-                String(fechaExcel.m)
-                    .padStart(2, "0");
-
-            const dia =
-                String(fechaExcel.d)
-                    .padStart(2, "0");
-
-            return `${anio}-${mes}-${dia}`;
-        }
-    }
-
-    return String(valor).trim();
-}
-
+// Lee e importa actividades desde un archivo de Excel subido
 function leerExcel(evento) {
     const archivo = evento.target.files[0];
 
@@ -733,10 +732,7 @@ function leerExcel(evento) {
 
     lector.onload = function (e) {
         try {
-            const datos =
-                new Uint8Array(
-                    e.target.result
-                );
+            const datos = new Uint8Array(e.target.result);
 
             const libro = XLSX.read(datos, { type: "array" });
 
@@ -751,53 +747,27 @@ function leerExcel(evento) {
                 mostrarMensaje(
                     "El archivo Excel no contiene actividades."
                 );
-
                 return;
             }
 
-            const encabezados =
-                filas[0].map(
-                    normalizarTexto
-                );
+            const encabezados = filas[0].map(
+                normalizarTexto
+            );
 
-            const indiceMateria =
-                encabezados.indexOf(
-                    "materia"
-                );
+            const indiceMateria = encabezados.indexOf("materia");
+            const indiceRda = encabezados.indexOf("rda");
+            const indiceCriterio = encabezados.indexOf("criterio");
 
-            const indiceRda =
-                encabezados.indexOf(
-                    "rda"
-                );
-
-            const indiceCriterio =
-                encabezados.indexOf(
-                    "criterio"
-                );
-
-            let indiceTema =
-                encabezados.indexOf(
-                    "tema"
-                );
+            let indiceTema = encabezados.indexOf("tema");
 
             if (indiceTema === -1) {
                 indiceTema = encabezados.indexOf("tema o actividad");
             }
 
-            const indiceNota =
-                encabezados.indexOf(
-                    "nota"
-                );
+            const indiceNota = encabezados.indexOf("nota");
+            const indiceEstado = encabezados.indexOf("estado");
 
-            const indiceEstado =
-                encabezados.indexOf(
-                    "estado"
-                );
-
-            let indiceFechaLimite =
-                encabezados.indexOf(
-                    "fecha limite"
-                );
+            let indiceFechaLimite = encabezados.indexOf("fecha limite");
 
             if (indiceFechaLimite === -1) {
                 indiceFechaLimite = encabezados.indexOf("fecha límite");
@@ -821,62 +791,39 @@ function leerExcel(evento) {
                 .slice(1)
                 .filter(fila =>
                     fila.some(
-                        valor =>
-                            String(valor)
-                                .trim() !== ""
+                        valor => String(valor).trim() !== ""
                     )
                 )
                 .map(fila => ({
-                    materia:
-                        String(
-                            fila[
-                            indiceMateria
-                            ]
-                        ).trim(),
+                    materia: String(
+                        fila[indiceMateria]
+                    ).trim(),
 
-                    rda:
-                        Number(
-                            fila[
-                            indiceRda
-                            ]
-                        ),
+                    rda: Number(
+                        fila[indiceRda]
+                    ),
 
-                    criterio:
-                        Number(
-                            fila[
-                            indiceCriterio
-                            ]
-                        ) || 1,
+                    criterio: Number(
+                        fila[indiceCriterio]
+                    ) || 1,
 
-                    tema:
-                        String(
-                            fila[
-                            indiceTema
-                            ]
-                        ).trim(),
+                    tema: String(
+                        fila[indiceTema]
+                    ).trim(),
 
-                    nota:
-                        Number(
-                            fila[
-                            indiceNota
-                            ]
-                        ) || 0,
+                    nota: Number(
+                        fila[indiceNota]
+                    ) || 0,
 
-                    estado:
-                        normalizarTexto(
-                            fila[
-                            indiceEstado
-                            ]
-                        ) || "pendiente",
+                    estado: normalizarTexto(
+                        fila[indiceEstado]
+                    ) || "pendiente",
 
-                    fechaLimite:
-                        indiceFechaLimite !== -1
-                            ? convertirFechaExcel(
-                                fila[
-                                indiceFechaLimite
-                                ]
-                            )
-                            : ""
+                    fechaLimite: indiceFechaLimite !== -1
+                        ? convertirFechaExcel(
+                            fila[indiceFechaLimite]
+                        )
+                        : ""
                 }));
 
             localStorage.setItem(
@@ -902,117 +849,51 @@ function leerExcel(evento) {
     );
 }
 
-function actualizarActividades() {
-    localStorage.setItem(
-        "actividades",
-        JSON.stringify(actividades)
-    );
 
-    verificarActividadesVencidas();
-    actualizarTablasRegistro();
-
-    mostrarMensaje(
-        "Actividades actualizadas correctamente."
-    );
-}
-
-function configurarBotonMas() {
-    const boton =
-        document.getElementById(
-            "btn-mostrar-registro"
-        );
-
-    const formulario =
-        document.getElementById(
-            "formulario-registro"
-        );
-
-    if (!boton || !formulario) {
-        return;
-    }
-
-    formulario.style.display =
-        "none";
-
-    boton.addEventListener(
-        "click",
-        function () {
-            if (
-                formulario.style.display ===
-                "none" ||
-                formulario.style.display ===
-                ""
-            ) {
-                formulario.style.display =
-                    "block";
-
-                boton.textContent = "−";
-
-            } else {
-                formulario.style.display =
-                    "none";
-
-                boton.textContent = "+";
-            }
-        }
-    )
-}
-
+// Configura los escuchadores de eventos al cargar la página por completo
 document.addEventListener("DOMContentLoaded", function () {
     cargarActividadesGuardadas();
     verificarActividadesVencidas();
     mostrarActividades();
 
-    if (
-        typeof mostrarTablaPromedios ===
-        "function"
-    ) {
+    if (typeof mostrarTablaPromedios === "function") {
         mostrarTablaPromedios();
     }
 
     actualizarMateriasSimulador();
 
-    configurarBotonMas();
-
-    const modal =
-        document.getElementById(
-            "modal-mensaje"
-        );
-
-    const botonAceptar =
-        document.getElementById(
-            "modal-aceptar"
-        );
+    const modal = document.getElementById("modal-mensaje");
+    const botonAceptar = document.getElementById("modal-aceptar");
 
     if (modal && botonAceptar) {
-        botonAceptar.addEventListener(
-            "click",
-            function () {
-                modal.style.display =
-                    "none";
-            }
-        );
+        botonAceptar.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
 
-        modal.addEventListener(
-            "click",
-            function (evento) {
-                if (
-                    evento.target === modal
-                ) {
-                    modal.style.display =
-                        "none";
-                }
+        modal.addEventListener("click", function (evento) {
+            if (evento.target === modal) {
+                modal.style.display = "none";
             }
-        );
+        });
+    }
+
+    const selectFiltroMateria = document.getElementById("modal-select-materia");
+
+    if (selectFiltroMateria) {
+        selectFiltroMateria.addEventListener("change", function (e) {
+            const materiaSeleccionada = e.target.value;
+            mostrarHistorialAcademicoCompleto(materiaSeleccionada);
+        });
     }
 
     const botonVerHistorial = document.getElementById("btn-ver-historial-completo");
     const modalHistorial = document.getElementById("modal-historial-academico");
-    const botonCerrarHistorial = document.getElementById("btn-cerrar-historial"); // Asegúrate de tener este ID en tu "X" de cierre del modal
+    const botonCerrarHistorial = document.getElementById("btn-cerrar-historial");
 
-    if (botonVerHistorial) {
+    if (botonVerHistorial && modalHistorial) {
         botonVerHistorial.addEventListener("click", function () {
-            mostrarHistorialAcademicoCompleto();
+            const filtroActual = selectFiltroMateria ? selectFiltroMateria.value : null;
+            mostrarHistorialAcademicoCompleto(filtroActual);
         });
     }
 
@@ -1021,133 +902,29 @@ document.addEventListener("DOMContentLoaded", function () {
             modalHistorial.style.display = "none";
         });
     }
-
-    // Solución al congelamiento: cerrar el modal si hacen clic fuera de la caja blanca
-    window.addEventListener("click", function (evento) {
-        if (modalHistorial && evento.target === modalHistorial) {
-            modalHistorial.style.display = "none";
-        }
-    });
-
-    const botonRegistrar =
-        document.getElementById(
-            "btn-registrar"
-        );
-
-    if (botonRegistrar) {
-        botonRegistrar.addEventListener(
-            "click",
-            function () {
-                if (
-                    actividadSeleccionada !==
-                    null
-                ) {
-                    mostrarMensaje(
-                        "Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla."
-                    );
-
-                    return;
-                }
-
-                registrarActividad();
-            }
-        );
-    }
-
-    const botonActualizar =
-        document.getElementById(
-            "btn-actualizar"
-        );
-
-    if (botonActualizar) {
-        botonActualizar.addEventListener(
-            "click",
-            function () {
-                actualizarActividadSeleccionada();
-            }
-        );
-    }
-
-    const botonExportar =
-        document.getElementById(
-            "btn-exportar-excel"
-        );
-
-    if (botonExportar) {
-        botonExportar.addEventListener(
-            "click",
-            function () {
-                guardarExcel();
-            }
-        );
-    }
 });
 
-// Modal - Historial Académico Completo con Modificar y Eliminar
-function mostrarHistorialAcademicoCompleto() {
-    const modalHistorial = document.getElementById("modal-historial-academico");
-    const cuerpoTablaHistorial = document.getElementById("tabla-historial-body");
-
-    if (!modalHistorial || !cuerpoTablaHistorial) {
-        return;
-    }
-
-    cuerpoTablaHistorial.innerHTML = "";
-
-    if (actividades.length === 0) {
-        cuerpoTablaHistorial.innerHTML = `
-            <tr>
-                <td colspan="8" class="tabla-vacia">
-                    No hay actividades registradas en el historial.
-                </td>
-            </tr>
-        `;
-    } else {
-        actividades.forEach((actividad, indice) => {
-            const fila = document.createElement("tr");
-            const estado = normalizarTexto(actividad.estado);
-
-            fila.innerHTML = `
-                <td class="celda-materia">${actividad.materia}</td>
-                <td>RDA ${actividad.rda}</td>
-                <td>Criterio ${actividad.criterio}</td>
-                <td class="celda-tema">${actividad.tema}</td>
-                <td class="celda-nota">${actividad.nota}</td>
-                <td>
-                    <span class="estado-tabla estado-${estado}">
-                        ${actividad.estado}
-                    </span>
-                </td>
-                <td>${actividad.fechaLimite || "Sin fecha"}</td>
-                <td style="text-align: center;">
-                    <button type="button" class="btn btn-actualizar" onclick="modificarDesdeHistorial(${indice})" style="padding: 4px 8px; font-size: 12px; margin-right: 5px; cursor: pointer;">Modificar</button>
-                    <button type="button" class="btn" style="background-color: #e74c3c; color: white; padding: 4px 8px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer;" onclick="eliminarDesdeHistorial(${indice})">Eliminar</button>
-                </td>
-            `;
-
-            cuerpoTablaHistorial.appendChild(fila);
-        });
-    }
-
-    modalHistorial.style.display = "flex";
+const botonRegistrar = document.getElementById("btn-registrar");
+if (botonRegistrar) {
+    botonRegistrar.addEventListener("click", function () {
+        if (actividadSeleccionada !== null) {
+            mostrarMensaje("Tienes una actividad seleccionada. Usa Actualizar actividad para modificarla.");
+            return;
+        }
+        registrarActividad();
+    });
 }
 
-// Funciones de control de la tabla del modal
-function modificarDesdeHistorial(indice) {
-    const modalHistorial = document.getElementById("modal-historial-academico");
-    if (modalHistorial) {
-        modalHistorial.style.display = "none"; // Cierra el modal para que puedas ver y usar el formulario de edición
-    }
-    seleccionarActividad(indice);
+const botonActualizar = document.getElementById("btn-actualizar");
+if (botonActualizar) {
+    botonActualizar.addEventListener("click", function () {
+        actualizarActividadSeleccionada();
+    });
 }
 
-function eliminarDesdeHistorial(indice) {
-    if (confirm("¿Estás seguro de que deseas eliminar esta actividad?")) {
-        actividades.splice(indice, 1);
-        localStorage.setItem("actividades", JSON.stringify(actividades));
-        verificarActividadesVencidas();
-        actualizarTablasRegistro();
-        mostrarHistorialAcademicoCompleto(); // Refresca el modal con los cambios
-        mostrarMensaje("Actividad eliminada correctamente.");
-    }
+const botonExportar = document.getElementById("btn-exportar-excel");
+if (botonExportar) {
+    botonExportar.addEventListener("click", function () {
+        guardarExcel();
+    });
 }
