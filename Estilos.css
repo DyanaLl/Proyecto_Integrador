@@ -828,8 +828,8 @@ tr:nth-child(even) {
 /* ========================================================== */
 #modulo-login-deivid {
     font-family: Arial, Helvetica, sans-serif;
-    background: #eef2f7;
-    color: #333;
+    background: #0f172a;
+    color: #e2e8f0;
     padding: 30px;
     display: flex;
     justify-content: center;
@@ -851,16 +851,17 @@ tr:nth-child(even) {
 }
 
 #modulo-login-deivid .card {
-    background: white;
+    background: #ffffff;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
+    color: #334155;
 }
 
 #modulo-login-deivid h1,
 #modulo-login-deivid h2 {
-    color: #0d47a1;
+    color: #0f172a;
     font-size: 22px;
     margin-bottom: 15px;
     text-align: center;
@@ -868,7 +869,7 @@ tr:nth-child(even) {
 
 #modulo-login-deivid p {
     font-size: 14px;
-    color: #555;
+    color: #475569;
     margin-bottom: 15px;
     line-height: 1.4;
     text-align: center;
@@ -880,6 +881,7 @@ tr:nth-child(even) {
     margin-bottom: 6px;
     font-weight: bold;
     text-align: left;
+    color: #1e293b;
 }
 
 #modulo-login-deivid input[type=text],
@@ -889,15 +891,18 @@ tr:nth-child(even) {
 #modulo-login-deivid select {
     width: 100%;
     padding: 10px;
-    border: 1px solid #c7c7c7;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
     font-size: 15px;
+    background-color: #f8fafc;
+    color: #0f172a;
 }
 
 #modulo-login-deivid input:focus,
 #modulo-login-deivid select:focus {
     outline: none;
-    border: 1px solid #2196f3;
+    border: 1px solid #0f172a;
+    background-color: #ffffff;
 }
 
 #modulo-login-deivid .botones-inicio {
@@ -921,17 +926,17 @@ tr:nth-child(even) {
 }
 
 #modulo-login-deivid .btn-primary {
-    background: #1976d2;
+    background: #0f172a;
     color: white;
 }
 
 #modulo-login-deivid .btn-primary:hover {
-    background: #0d47a1;
+    background: #1e293b;
 }
 
 #modulo-login-deivid .btn-secondary {
     background: #e2e8f0;
-    color: #1e293b;
+    color: #0f172a;
 }
 
 #modulo-login-deivid .btn-secondary:hover {
@@ -945,7 +950,7 @@ tr:nth-child(even) {
 }
 
 #modulo-login-deivid .btn-link:hover {
-    color: #0d47a1;
+    color: #0f172a;
     text-decoration: underline;
 }
 

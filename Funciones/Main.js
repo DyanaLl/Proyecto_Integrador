@@ -24,14 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
  * Configura el comportamiento de minimizar/expandir la barra lateral con el botón de las tres líneas.
  */
 function configurarBotonMenuToggle() {
-    // Busca el botón de las tres líneas usando el ID correcto
     const btnToggle = document.getElementById("btn-toggle-sidebar");
     const sidebar = document.querySelector(".sidebar");
 
     if (btnToggle && sidebar) {
         btnToggle.addEventListener("click", (e) => {
             e.preventDefault();
-            // Alterna la clase para contraer o expandir la barra lateral
             sidebar.classList.toggle("collapsed");
         });
     }
@@ -154,7 +152,7 @@ function vincularEventosInterfazPrincipal() {
             if (typeof leerExcel === 'function') {
                 leerExcel(event);
             } else {
-                console.error("La función leerExcel não está definida.");
+                console.error("La función leerExcel no está definida.");
             }
         });
     }
@@ -175,16 +173,20 @@ function vincularEventosInterfazPrincipal() {
         });
     }
 
-    // CORRECCIÓN: Se eliminó el selector genérico "[id*='promedio']" para evitar 
-    // que afecte a los campos de entrada (inputs) de promedio final objetivo.
-    const botonesPromedioExtra = document.querySelectorAll(".btn-ver-promedios");
-    botonesPromedioExtra.forEach(btn => {
-        if (btn.id !== "nav-promedios") {
-            btn.addEventListener("click", (e) => {
-                e.preventDefault();
-                alternarVistaPromedios(true);
-            });
-        }
+    // Redirige al ítem 5 (Estadísticas / Promedios) al hacer clic en las celdas de notas
+    const celdasPromedioNotas = document.querySelectorAll(".tabla-promedios td a, .tabla-promedios span, #tabla-promedios td");
+    
+    celdasPromedioNotas.forEach(elemento => {
+        elemento.addEventListener("click", (e) => {
+            e.preventDefault();
+            alternarVistaPromedios(true);
+            
+            document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+            const navPromediosBtn = document.getElementById("nav-promedios");
+            if (navPromediosBtn) {
+                navPromediosBtn.classList.add("activo");
+            }
+        });
     });
 
     const btnHistorialSidebar = document.getElementById("nav-historial");
@@ -261,7 +263,6 @@ function restaurarVistaDashboard() {
     alternarVistaSimulador(false);
     alternarVistaPromedios(false);
 
-    // Limpiar y activar solo el inicio
     document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
     const btnInicio = document.getElementById("nav-inicio");
     if (btnInicio) btnInicio.classList.add("activo");
@@ -294,7 +295,6 @@ function alternarVistaRegistroPrincipal(mostrarRegistro) {
             modalRegistro.style.marginTop = "0";
         }
 
-        // Control unificado de clase activo
         document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
         const navRegistroBtn = document.getElementById("nav-registro");
         if (navRegistroBtn) navRegistroBtn.classList.add("activo");
@@ -342,7 +342,6 @@ function alternarVistaHistorialCompleto(mostrarHistorial) {
             modalHistorialCompleto.style.marginTop = "0";
         }
 
-        // Control unificado de clase activo
         document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
         const navHistorialBtn = document.getElementById("nav-historial");
         if (navHistorialBtn) navHistorialBtn.classList.add("activo");
@@ -390,7 +389,6 @@ function alternarVistaSimulador(mostrarSimulador) {
             modalSimulador.style.marginTop = "0";
         }
 
-        // Control unificado de clase activo
         document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
         const btnSimuladorSidebar = document.getElementById("nav-simulador");
         if (btnSimuladorSidebar) btnSimuladorSidebar.classList.add("activo");
@@ -438,7 +436,6 @@ function alternarVistaPromedios(mostrarPromedios) {
             modalEstadisticas.style.marginTop = "0";
         }
 
-        // Control unificado de clase activo
         document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
         const navPromedios = document.getElementById("nav-promedios");
         if (navPromedios) navPromedios.classList.add("activo");

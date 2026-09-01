@@ -10,7 +10,7 @@
 
 <body>
     <div class="app-layout">
-        <!-- Barra lateral de navegación -->
+        <!-- Barra lateral de navegación con el ítem 6 restaurado -->
         <nav id="sidebar" class="sidebar" aria-label="Navegación principal">
             <div class="sidebar-top">
                 <button type="button" id="btn-toggle-sidebar" class="sidebar-btn" title="Menú">☰</button>
@@ -22,7 +22,7 @@
             </div>
 
             <div class="sidebar-bottom">
-                <button type="button" id="nav-cuenta" class="sidebar-btn" title="Cuenta de Usuario">👤</button>
+                <!-- Zona inferior optimizada -->
             </div>
         </nav>
 
@@ -169,7 +169,7 @@
                 <div id="modal-simulador" class="modal-mensaje oculto-inicial">
                     <div class="modal-contenido">
                         <div class="cabecera-modal-historial">
-                            <h3>Simulador de Notas Académicas</h3>
+                            <h3>Ágora Dashboard</h3>
                         </div>
 
                         <label for="select-modo">Selecciona lo que deseas calcular:</label>
@@ -263,10 +263,16 @@
                     </div>
                 </div>
 
-                <!-- Encabezado de la página -->
-                <header class="encabezado" id="seccion-encabezado">
-                    <h1>Simulador de Notas Académicas</h1>
-                    <p>Sistema para registrar actividades, consultar el historial académico, simular notas y visualizar el rendimiento del estudiante.</p>
+                <!-- Encabezado de la página modificado con la imagen y línea vertical -->
+                <header class="encabezado" id="seccion-encabezado" style="display: flex; align-items: center; justify-content: space-between;">
+                    <div class="encabezado-texto" style="flex: 1;">
+                        <h1>Ágora Dashboard</h1>
+                        <p>Sistema para registrar actividades, consultar el historial académico, simular notas y visualizar el rendimiento del estudiante.</p>
+                    </div>
+                    <div class="encabezado-linea-vertical" style="width: 1px; height: 50px; background-color: rgba(255, 255, 255, 0.2); margin: 0 25px;"></div>
+                    <div class="encabezado-imagen" style="flex-shrink: 0;">
+                        <img src="1.jpeg" alt="Imagen del Dashboard" style="max-height: 75px; width: auto; display: block;">
+                    </div>
                 </header>
 
                 <!-- Secciones de Dashboard Grid -->
@@ -381,7 +387,7 @@
                             </div>
 
                             <div id="vista-detalle-rda" class="oculto-inicial margen-superior-15">
-                                <button type="button" id="btn-regresar-promedios" class="btn btn-excel margen-inferior-15">← Regresar a Promedios</button>
+                                <!-- Botón eliminado por completo de raíz -->
                             </div>
                         </section>
 
@@ -435,4 +441,3 @@
 
 </body>
 </html>
-

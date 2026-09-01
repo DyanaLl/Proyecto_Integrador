@@ -18,7 +18,7 @@ function renderizarTablaPromedios() {
     console.log("Pintando promedios con las actividades:", listaActividades);
 
     if (!listaActividades || listaActividades.length === 0) {
-        tablaBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay actividades registradas todavía.</td></tr>`;
+        tablaBody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #666; padding: 15px;">No hay actividades registradas todavía.</td></tr>`;
         return;
     }
 
@@ -59,24 +59,21 @@ function renderizarTablaPromedios() {
 }
 
 function configurarVistaDetalleRda() {
-    // Usamos delegación de eventos para capturar el botón dinámico de regresar
+    // Listener general por si llegara a requerirse en otro contexto, sin romper nada
     document.addEventListener("click", (e) => {
         if (e.target && e.target.id === "btn-regresar-promedios") {
             e.preventDefault();
 
-            // 1. Ocultar completamente el modal de estadísticas que muestra la pantalla blanca
             const modalEstadisticas = document.getElementById("modal-estadisticas");
             if (modalEstadisticas) {
                 modalEstadisticas.style.display = "none";
             }
 
-            // 2. Limpiar el contenido interno del detalle del RDA
             const contenidoGeneral = document.getElementById("estadisticas-contenido-general");
             if (contenidoGeneral) {
                 contenidoGeneral.innerHTML = "";
             }
 
-            // 3. Asegurar que la vista de la tabla de promedios dentro de la sección se muestre correctamente
             const vistaTablaPromedios = document.getElementById("vista-tabla-promedios");
             if (vistaTablaPromedios) {
                 vistaTablaPromedios.style.display = "block";
@@ -87,13 +84,11 @@ function configurarVistaDetalleRda() {
                 vistaDetalleRda.style.display = "none";
             }
             
-            // 4. Destruir la instancia de la gráfica de Chart.js para liberar memoria y evitar errores
             if (typeof graficaDetalleRdaInstance !== 'undefined' && graficaDetalleRdaInstance) {
                 graficaDetalleRdaInstance.destroy();
                 graficaDetalleRdaInstance = null;
             }
 
-            // 5. Re-renderizar la tabla de promedios para refrescar los datos del dashboard
             if (typeof renderizarTablaPromedios === 'function') {
                 renderizarTablaPromedios();
             }
@@ -106,8 +101,9 @@ function abrirDetalleRdaPantalla(materia, numeroRda) {
     const vistaDetalle = document.getElementById("vista-detalle-rda");
     const contenidoGeneral = document.getElementById("estadisticas-contenido-general");
 
-    if (!vistaPrincipal || !vistaDetalle || !contenidoGeneral) return;
+    if (!contenidoGeneral) return;
 
+    // Asegurarnos de que el contenedor de estadísticas tenga un estilo limpio y centrado si fuera necesario
     // Obtenemos actividades globales
     const listaActividades = typeof obtenerActividadesGlobales === 'function' ? obtenerActividadesGlobales() : [];
 
@@ -118,9 +114,10 @@ function abrirDetalleRdaPantalla(materia, numeroRda) {
 
     if (actividadesRda.length === 0) {
         contenidoGeneral.innerHTML = `
-            <button type="button" id="btn-regresar-promedios" class="btn btn-excel" style="margin-bottom: 15px;">← Regresar a Promedios</button>
-            <h3>Desglose de RDA ${numeroRda} - ${materia}</h3>
-            <p style="text-align: center; padding: 20px; color: #666;">No hay actividades registradas para este RDA en ${materia}.</p>
+            <div style="padding: 20px; text-align: center;">
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">Desglose de RDA ${numeroRda} - ${materia}</h3>
+                <p style="color: #666;">No hay actividades registradas para este RDA en ${materia}.</p>
+            </div>
         `;
     } else {
         // Agrupar actividades por Criterio para calcular sus promedios individuales y alimentar la gráfica
@@ -137,28 +134,26 @@ function abrirDetalleRdaPantalla(materia, numeroRda) {
         });
 
         let html = `
-            <!-- Botón de regresar integrado dinámicamente -->
-            <button type="button" id="btn-regresar-promedios" class="btn btn-excel" style="margin-bottom: 15px;">← Regresar a Promedios</button>
-            
-            <h3 style="margin-bottom: 15px; color: #2c3e50;">Desglose de RDA ${numeroRda} - ${materia}</h3>
-            
-            <!-- Contenedor de la Gráfica de Criterios -->
-            <div class="grafica-contenedor" style="margin-bottom: 25px; height: 280px; position: relative;">
-                <canvas id="graficaCriteriosRda"></canvas>
-            </div>
+            <div style="background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin: 0 auto; max-width: 900px;">
+                <h3 style="margin-bottom: 15px; color: #2c3e50; text-align: center;">Desglose de RDA ${numeroRda} - ${materia}</h3>
+                
+                <!-- Contenedor de la Gráfica de Criterios -->
+                <div class="grafica-contenedor" style="margin-bottom: 25px; height: 280px; position: relative;">
+                    <canvas id="graficaCriteriosRda"></canvas>
+                </div>
 
-            <p style="margin-bottom: 15px; font-size: 0.95em; color: #555;">Actividades, notas y promedios detallados por criterio:</p>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                <thead>
-                    <tr style="background-color: #f2f2f2; text-align: left;">
-                        <th style="padding: 8px; border: 1px solid #ddd;">Criterio</th>
-                        <th style="padding: 8px; border: 1px solid #ddd;">Tema o Actividad</th>
-                        <th style="padding: 8px; border: 1px solid #ddd;">Nota (0-50)</th>
-                        <th style="padding: 8px; border: 1px solid #ddd;">Estado</th>
-                        <th style="padding: 8px; border: 1px solid #ddd;">Fecha Límite</th>
-                    </tr>
-                </thead>
-                <tbody>
+                <p style="margin-bottom: 15px; font-size: 0.95em; color: #555;">Actividades, notas y promedios detallados por criterio:</p>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background-color: #f2f2f2; text-align: left;">
+                            <th style="padding: 10px; border: 1px solid #ddd;">Criterio</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Tema o Actividad</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Nota (0-50)</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Estado</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Fecha Límite</th>
+                        </tr>
+                    </thead>
+                    <tbody>
         `;
 
         // Recorrer cada criterio, pintar actividades y calcular promedios
@@ -202,8 +197,9 @@ function abrirDetalleRdaPantalla(materia, numeroRda) {
         });
 
         html += `
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         `;
         contenidoGeneral.innerHTML = html;
 
@@ -242,7 +238,7 @@ function abrirDetalleRdaPantalla(materia, numeroRda) {
         }, 50);
     }
 
-    // Ocultar la tabla principal y mostrar la nueva pantalla de estadísticas completa
-    vistaPrincipal.style.display = "none";
-    vistaDetalle.style.display = "block";
+    // Ocultar la tabla principal del dashboard y mostrar la sección de detalle correctamente
+    if (vistaPrincipal) vistaPrincipal.style.display = "none";
+    if (vistaDetalle) vistaDetalle.style.display = "block";
 }

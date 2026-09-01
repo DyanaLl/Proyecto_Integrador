@@ -53,7 +53,7 @@ function inicializarGraficaMaterias() {
             datasets: [{
                 label: 'Promedio Final',
                 data: promedios.length > 0 ? promedios : [0],
-                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ec4899'],
+                backgroundColor: ['#082149', '#0e5e43', '#0f9c4a', '#228da8'],
                 borderWidth: 1
             }]
         },
