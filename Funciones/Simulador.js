@@ -159,7 +159,7 @@ function ejecutarCalculo() {
             return;
         }
 
-        let inputObjetivoVal = document.getElementById('input-T').value;
+        let inputObjetivoVal = document.getElementById('input-promedio-objetivo').value;
         let validacionObjetivo = validarPromedioObjetivo(inputObjetivoVal);
 
         if (!validacionObjetivo.esValido) {

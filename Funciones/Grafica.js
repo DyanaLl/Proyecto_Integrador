@@ -16,21 +16,10 @@ function calcularPromediosPorMateriaGrafica() {
         let materiasUnicas = [...new Set(listaActividades.map(act => act.materia))];
 
         materiasUnicas.forEach(materia => {
-            // Obtenemos los RDA exactamente igual que en renderizarTablaPromedios()
-            const rda1 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 1) : 0;
-            const rda2 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 2) : 0;
-            const rda3 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 3) : 0;
-
-            // Calculamos el promedio final exactamente con la misma lógica de la tabla
-            let activosRda = [rda1, rda2, rda3].filter(val => val > 0);
-            let promedioFinal = 0;
-
-            if (typeof calcularPromedioFinalMateria === 'function') {
-                promedioFinal = calcularPromedioFinalMateria(materia);
-            } else {
-                // Si la función global directa no existe, aplicamos la misma lógica de respaldo
-                promedioFinal = activosRda.length > 0 ? (activosRda.reduce((a, b) => a + b, 0) / activosRda.length) : 0;
-            }
+            // Obtenemos el promedio final delegando el cálculo 100% a calculos.js para respetar ponderaciones y RDAs activos
+            const promedioFinal = typeof calcularPromedioFinalMateria === 'function'
+                ? calcularPromedioFinalMateria(materia)
+                : 0;
 
             promediosPorMateria[materia] = parseFloat(Number(promedioFinal).toFixed(2));
         });
@@ -42,7 +31,7 @@ function calcularPromediosPorMateriaGrafica() {
 // Función principal para renderizar o actualizar la gráfica de barras
 function inicializarGraficaMaterias() {
     let datosCalculados = calcularPromediosPorMateriaGrafica();
-    
+
     let materias = Object.keys(datosCalculados);
     let promedios = Object.values(datosCalculados);
 
@@ -60,7 +49,7 @@ function inicializarGraficaMaterias() {
     miGraficaMaterias = new Chart(contexto, {
         type: 'bar',
         data: {
-            labels: materias.length > 0 ? materias : ['Sin materias'], 
+            labels: materias.length > 0 ? materias : ['Sin materias'],
             datasets: [{
                 label: 'Promedio Final',
                 data: promedios.length > 0 ? promedios : [0],
@@ -90,7 +79,7 @@ function inicializarGraficaMaterias() {
             plugins: {
                 tooltip: {
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             let valorMateria = context.raw;
                             return ` Promedio Final: ${valorMateria}`;
                         }
@@ -102,11 +91,11 @@ function inicializarGraficaMaterias() {
 }
 
 // Escuchar eventos personalizados por si el dashboard o la tabla se actualizan dinámicamente
-window.addEventListener('actualizarDashboard', function() {
+window.addEventListener('actualizarDashboard', function () {
     inicializarGraficaMaterias();
 });
 
 // Ejecutar al cargar la página
-window.onload = function() {
-    setTimeout(inicializarGraficaMaterias, 100); // Pequeño respiro para asegurar carga de scripts previos
-};
+window.addEventListener('load', function () {
+    setTimeout(inicializarGraficaMaterias, 100);
+});

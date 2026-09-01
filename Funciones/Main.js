@@ -1,11 +1,9 @@
-
 /**
- * ============================================================================
+ * =========================================================================
  * ARCHIVO PRINCIPAL DE CONTROL (Main.js)
  * Sistema de Notas Académicas - Módulo del Simulador y Control Global - Semáforo
- * ============================================================================
+ * =========================================================================
  */
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Sistema de Notas Académicas inicializado correctamente.");
 
@@ -14,9 +12,30 @@ document.addEventListener("DOMContentLoaded", () => {
     vincularEventosSimulador();
     evaluarSemaforoAcademicoGlobal();
 
-    // 2. Vinculación de eventos de la interfaz principal (Registro y Excel)
+    // 2. Vinculación de eventos de la interfaz principal (Registro, Navegación y Excel)
     vincularEventosInterfazPrincipal();
+    configurarBotonMasGlobal();
+    
+    // 3. Activación del menú retráctil (botón de las tres líneas)
+    configurarBotonMenuToggle();
 });
+
+/**
+ * Configura el comportamiento de minimizar/expandir la barra lateral con el botón de las tres líneas.
+ */
+function configurarBotonMenuToggle() {
+    // Busca el botón de las tres líneas usando el ID correcto
+    const btnToggle = document.getElementById("btn-toggle-sidebar");
+    const sidebar = document.querySelector(".sidebar");
+
+    if (btnToggle && sidebar) {
+        btnToggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            // Alterna la clase para contraer o expandir la barra lateral
+            sidebar.classList.toggle("collapsed");
+        });
+    }
+}
 
 /**
  * Configura el estado inicial del simulador.
@@ -67,30 +86,25 @@ function vincularEventosSimulador() {
         }
     });
 
-    const btnAbrirSimulador = document.getElementById("btn-abrir-simulador");
+    const btnAbrirSimuladorSidebar = document.getElementById("nav-simulador");
+    const btnAbrirSimuladorCard = document.getElementById("btn-abrir-simulador");
     const modalSimulador = document.getElementById("modal-simulador");
-    const btnCerrarSimulador = document.getElementById("btn-cerrar-simulador");
 
-    if (btnAbrirSimulador && modalSimulador) {
-        btnAbrirSimulador.addEventListener("click", () => {
-            modalSimulador.style.display = "flex";
-            if (typeof cambiarModo === "function") {
-                cambiarModo();
-            }
-        });
-    }
-
-    if (btnCerrarSimulador && modalSimulador) {
-        btnCerrarSimulador.addEventListener("click", () => {
-            modalSimulador.style.display = "none";
-        });
-    }
-
-    window.addEventListener("click", (event) => {
-        if (event.target === modalSimulador) {
-            modalSimulador.style.display = "none";
+    const abrirSimuladorHandler = (e) => {
+        e.preventDefault();
+        alternarVistaSimulador(true);
+        if (typeof cambiarModo === "function") {
+            cambiarModo();
         }
-    });
+    };
+
+    if (btnAbrirSimuladorSidebar && modalSimulador) {
+        btnAbrirSimuladorSidebar.addEventListener("click", abrirSimuladorHandler);
+    }
+
+    if (btnAbrirSimuladorCard && modalSimulador) {
+        btnAbrirSimuladorCard.addEventListener("click", abrirSimuladorHandler);
+    }
 }
 
 /**
@@ -131,7 +145,7 @@ function evaluarSemaforoAcademicoGlobal() {
 }
 
 /**
- * Vincula acciones generales del panel principal (como la importación de Excel y botones de acción).
+ * Vincula acciones generales del panel principal (importación de Excel, botón de inicio y registro).
  */
 function vincularEventosInterfazPrincipal() {
     const inputExcel = document.getElementById('archivo-excel');
@@ -140,9 +154,308 @@ function vincularEventosInterfazPrincipal() {
             if (typeof leerExcel === 'function') {
                 leerExcel(event);
             } else {
-                console.error("La función leerExcel no está definida.");
+                console.error("La función leerExcel não está definida.");
             }
         });
+    }
+
+    const btnHome = document.getElementById("nav-inicio");
+    if (btnHome) {
+        btnHome.addEventListener("click", (e) => {
+            e.preventDefault();
+            restaurarVistaDashboard();
+        });
+    }
+
+    const btnRegistroSidebar = document.getElementById("nav-registro");
+    if (btnRegistroSidebar) {
+        btnRegistroSidebar.addEventListener("click", (e) => {
+            e.preventDefault();
+            alternarVistaRegistroPrincipal(true);
+        });
+    }
+
+    // CORRECCIÓN: Se eliminó el selector genérico "[id*='promedio']" para evitar 
+    // que afecte a los campos de entrada (inputs) de promedio final objetivo.
+    const botonesPromedioExtra = document.querySelectorAll(".btn-ver-promedios");
+    botonesPromedioExtra.forEach(btn => {
+        if (btn.id !== "nav-promedios") {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                alternarVistaPromedios(true);
+            });
+        }
+    });
+
+    const btnHistorialSidebar = document.getElementById("nav-historial");
+    if (btnHistorialSidebar) {
+        btnHistorialSidebar.addEventListener("click", (e) => {
+            e.preventDefault();
+            alternarVistaHistorialCompleto(true);
+        });
+    }
+
+    const btnVerHistorialDashboard = document.getElementById("btn-ver-historial-completo");
+    if (btnVerHistorialDashboard) {
+        btnVerHistorialDashboard.addEventListener("click", (e) => {
+            e.preventDefault();
+            alternarVistaHistorialCompleto(true);
+        });
+    }
+
+    const btnPromediosSidebar = document.getElementById("nav-promedios");
+    if (btnPromediosSidebar) {
+        btnPromediosSidebar.addEventListener("click", (e) => {
+            e.preventDefault();
+            alternarVistaPromedios(true);
+        });
+    }
+}
+
+/**
+ * Configuración unificada de los botones de registro y navegación auxiliar.
+ */
+function configurarBotonMasGlobal() {
+    const botonesMas = document.querySelectorAll("#btn-mostrar-registro, #nav-registro");
+    const btnInicio = document.getElementById("nav-inicio");
+    const btnNavHistorial = document.getElementById("nav-historial");
+
+    botonesMas.forEach(boton => {
+        boton.addEventListener("click", (e) => {
+            if (e) e.preventDefault();
+
+            if (typeof limpiarFormulario === 'function') {
+                limpiarFormulario();
+            }
+            if (typeof actividadSeleccionada !== 'undefined') {
+                actividadSeleccionada = null;
+            }
+
+            alternarVistaRegistroPrincipal(true);
+        });
+    });
+
+    if (btnInicio) {
+        btnInicio.addEventListener("click", (e) => {
+            if (e) e.preventDefault();
+            restaurarVistaDashboard();
+        });
+    }
+
+    if (btnNavHistorial) {
+        btnNavHistorial.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (typeof mostrarHistorialAcademicoCompleto === "function") {
+                mostrarHistorialAcademicoCompleto();
+            }
+        });
+    }
+}
+
+/**
+ * Restaura la vista inicial del Dashboard ocultando todas las pantallas secundarias y activando la casita.
+ */
+function restaurarVistaDashboard() {
+    alternarVistaRegistroPrincipal(false);
+    alternarVistaHistorialCompleto(false);
+    alternarVistaSimulador(false);
+    alternarVistaPromedios(false);
+
+    // Limpiar y activar solo el inicio
+    document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+    const btnInicio = document.getElementById("nav-inicio");
+    if (btnInicio) btnInicio.classList.add("activo");
+}
+
+/**
+ * Alterna dinámicamente la vista entre el Dashboard principal y la pantalla completa de Registro.
+ */
+function alternarVistaRegistroPrincipal(mostrarRegistro) {
+    const modalRegistro = document.getElementById("modal-registro");
+    const modalHistorialCompleto = document.getElementById("modal-historial-academico");
+    const modalSimulador = document.getElementById("modal-simulador");
+    const modalEstadisticas = document.getElementById("modal-estadisticas");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const seccionEncabezado = document.getElementById("seccion-encabezado");
+
+    if (mostrarRegistro) {
+        if (modalHistorialCompleto) { modalHistorialCompleto.style.display = "none"; modalHistorialCompleto.classList.add("oculto-inicial"); }
+        if (modalSimulador) { modalSimulador.style.display = "none"; modalSimulador.classList.add("oculto-inicial"); }
+        if (modalEstadisticas) { modalEstadisticas.style.display = "none"; modalEstadisticas.classList.add("oculto-inicial"); }
+
+        if (seccionEncabezado) seccionEncabezado.classList.add("oculto-inicial");
+        if (dashboardColumnas) dashboardColumnas.style.display = "none";
+
+        if (modalRegistro) {
+            modalRegistro.classList.remove("oculto-inicial");
+            modalRegistro.style.display = "block";
+            modalRegistro.style.position = "relative";
+            modalRegistro.style.width = "100%";
+            modalRegistro.style.marginTop = "0";
+        }
+
+        // Control unificado de clase activo
+        document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+        const navRegistroBtn = document.getElementById("nav-registro");
+        if (navRegistroBtn) navRegistroBtn.classList.add("activo");
+
+    } else {
+        if (modalRegistro) {
+            modalRegistro.style.display = "none";
+            modalRegistro.classList.add("oculto-inicial");
+        }
+        if (
+            modalHistorialCompleto && modalHistorialCompleto.classList.contains("oculto-inicial") &&
+            modalSimulador && modalSimulador.classList.contains("oculto-inicial") &&
+            modalEstadisticas && modalEstadisticas.classList.contains("oculto-inicial")
+        ) {
+            if (seccionEncabezado) seccionEncabezado.classList.remove("oculto-inicial");
+            if (dashboardColumnas) dashboardColumnas.style.display = "flex";
+        }
+    }
+}
+
+/**
+ * Alterna dinámicamente la vista entre el Dashboard principal y la pantalla completa del Historial Académico.
+ */
+function alternarVistaHistorialCompleto(mostrarHistorial) {
+    const modalHistorialCompleto = document.getElementById("modal-historial-academico");
+    const modalRegistro = document.getElementById("modal-registro");
+    const modalSimulador = document.getElementById("modal-simulador");
+    const modalEstadisticas = document.getElementById("modal-estadisticas");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const seccionEncabezado = document.getElementById("seccion-encabezado");
+
+    if (mostrarHistorial) {
+        if (modalRegistro) { modalRegistro.style.display = "none"; modalRegistro.classList.add("oculto-inicial"); }
+        if (modalSimulador) { modalSimulador.style.display = "none"; modalSimulador.classList.add("oculto-inicial"); }
+        if (modalEstadisticas) { modalEstadisticas.style.display = "none"; modalEstadisticas.classList.add("oculto-inicial"); }
+
+        if (seccionEncabezado) seccionEncabezado.classList.add("oculto-inicial");
+        if (dashboardColumnas) dashboardColumnas.style.display = "none";
+
+        if (modalHistorialCompleto) {
+            modalHistorialCompleto.classList.remove("oculto-inicial");
+            modalHistorialCompleto.style.display = "block";
+            modalHistorialCompleto.style.position = "relative";
+            modalHistorialCompleto.style.width = "100%";
+            modalHistorialCompleto.style.marginTop = "0";
+        }
+
+        // Control unificado de clase activo
+        document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+        const navHistorialBtn = document.getElementById("nav-historial");
+        if (navHistorialBtn) navHistorialBtn.classList.add("activo");
+
+    } else {
+        if (modalHistorialCompleto) {
+            modalHistorialCompleto.style.display = "none";
+            modalHistorialCompleto.classList.add("oculto-inicial");
+        }
+        if (
+            modalRegistro && modalRegistro.classList.contains("oculto-inicial") &&
+            modalSimulador && modalSimulador.classList.contains("oculto-inicial") &&
+            modalEstadisticas && modalEstadisticas.classList.contains("oculto-inicial")
+        ) {
+            if (seccionEncabezado) seccionEncabezado.classList.remove("oculto-inicial");
+            if (dashboardColumnas) dashboardColumnas.style.display = "flex";
+        }
+    }
+}
+
+/**
+ * Alterna dinámicamente la vista entre el Dashboard principal y la pantalla completa del Simulador.
+ */
+function alternarVistaSimulador(mostrarSimulador) {
+    const modalSimulador = document.getElementById("modal-simulador");
+    const modalRegistro = document.getElementById("modal-registro");
+    const modalHistorialCompleto = document.getElementById("modal-historial-academico");
+    const modalEstadisticas = document.getElementById("modal-estadisticas");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const seccionEncabezado = document.getElementById("seccion-encabezado");
+
+    if (mostrarSimulador) {
+        if (modalRegistro) { modalRegistro.style.display = "none"; modalRegistro.classList.add("oculto-inicial"); }
+        if (modalHistorialCompleto) { modalHistorialCompleto.style.display = "none"; modalHistorialCompleto.classList.add("oculto-inicial"); }
+        if (modalEstadisticas) { modalEstadisticas.style.display = "none"; modalEstadisticas.classList.add("oculto-inicial"); }
+
+        if (seccionEncabezado) seccionEncabezado.classList.add("oculto-inicial");
+        if (dashboardColumnas) dashboardColumnas.style.display = "none";
+
+        if (modalSimulador) {
+            modalSimulador.classList.remove("oculto-inicial");
+            modalSimulador.style.display = "block";
+            modalSimulador.style.position = "relative";
+            modalSimulador.style.width = "100%";
+            modalSimulador.style.marginTop = "0";
+        }
+
+        // Control unificado de clase activo
+        document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+        const btnSimuladorSidebar = document.getElementById("nav-simulador");
+        if (btnSimuladorSidebar) btnSimuladorSidebar.classList.add("activo");
+
+    } else {
+        if (modalSimulador) {
+            modalSimulador.style.display = "none";
+            modalSimulador.classList.add("oculto-inicial");
+        }
+        if (
+            modalRegistro && modalRegistro.classList.contains("oculto-inicial") &&
+            modalHistorialCompleto && modalHistorialCompleto.classList.contains("oculto-inicial") &&
+            modalEstadisticas && modalEstadisticas.classList.contains("oculto-inicial")
+        ) {
+            if (seccionEncabezado) seccionEncabezado.classList.remove("oculto-inicial");
+            if (dashboardColumnas) dashboardColumnas.style.display = "flex";
+        }
+    }
+}
+
+/**
+ * Alterna dinámicamente la vista hacia el módulo de Promedios y Estadísticas.
+ */
+function alternarVistaPromedios(mostrarPromedios) {
+    const modalEstadisticas = document.getElementById("modal-estadisticas");
+    const modalRegistro = document.getElementById("modal-registro");
+    const modalHistorialCompleto = document.getElementById("modal-historial-academico");
+    const modalSimulador = document.getElementById("modal-simulador");
+    const dashboardColumnas = document.querySelector(".dashboard-columnas");
+    const seccionEncabezado = document.getElementById("seccion-encabezado");
+
+    if (mostrarPromedios) {
+        if (modalRegistro) { modalRegistro.style.display = "none"; modalRegistro.classList.add("oculto-inicial"); }
+        if (modalHistorialCompleto) { modalHistorialCompleto.style.display = "none"; modalHistorialCompleto.classList.add("oculto-inicial"); }
+        if (modalSimulador) { modalSimulador.style.display = "none"; modalSimulador.classList.add("oculto-inicial"); }
+
+        if (seccionEncabezado) seccionEncabezado.classList.add("oculto-inicial");
+        if (dashboardColumnas) dashboardColumnas.style.display = "none";
+
+        if (modalEstadisticas) {
+            modalEstadisticas.classList.remove("oculto-inicial");
+            modalEstadisticas.style.display = "block";
+            modalEstadisticas.style.position = "relative";
+            modalEstadisticas.style.width = "100%";
+            modalEstadisticas.style.marginTop = "0";
+        }
+
+        // Control unificado de clase activo
+        document.querySelectorAll(".sidebar-btn").forEach(b => b.classList.remove("activo"));
+        const navPromedios = document.getElementById("nav-promedios");
+        if (navPromedios) navPromedios.classList.add("activo");
+
+    } else {
+        if (modalEstadisticas) {
+            modalEstadisticas.style.display = "none";
+            modalEstadisticas.classList.add("oculto-inicial");
+        }
+        if (
+            modalRegistro && modalRegistro.classList.contains("oculto-inicial") &&
+            modalHistorialCompleto && modalHistorialCompleto.classList.contains("oculto-inicial") &&
+            modalSimulador && modalSimulador.classList.contains("oculto-inicial")
+        ) {
+            if (seccionEncabezado) seccionEncabezado.classList.remove("oculto-inicial");
+            if (dashboardColumnas) dashboardColumnas.style.display = "flex";
+        }
     }
 }
 

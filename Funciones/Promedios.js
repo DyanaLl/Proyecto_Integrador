@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     renderizarTablaPromedios();
-    configurarModalRda();
+    configurarVistaDetalleRda();
 });
+
+// Variable global para controlar la instancia de la gráfica en el detalle y evitar errores de superposición
+let graficaDetalleRdaInstance = null;
 
 function renderizarTablaPromedios() {
     const tablaBody = document.getElementById("tabla-promedios-body");
@@ -28,18 +31,18 @@ function renderizarTablaPromedios() {
         const rda2 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 2) : 0;
         const rda3 = typeof calcularPromedioRDA === 'function' ? calcularPromedioRDA(materia, 3) : 0;
 
-        // Obtenemos el promedio final de la materia
+        // Obtenemos el promedio final de la materia delegando totalmente la lógica a calculos.js
         const promedioFinal = typeof calcularPromedioFinalMateria === 'function'
             ? calcularPromedioFinalMateria(materia)
-            : ((rda1 + rda2 + rda3) / 3);
+            : 0;
 
-        // Creamos y rellenamos la fila para la tabla HTML sin los números entre paréntesis
+        // Creamos y rellenamos la fila para la tabla HTML
         const fila = document.createElement("tr");
         fila.innerHTML = `
             <td><strong>${materia}</strong></td>
-            <td class="celda-rda" data-materia="${materia}" data-rda="1" style="cursor: pointer; color: #0066cc; text-decoration: underline;" title="Haz clic para ver desglose">${Number(rda1).toFixed(2)}</td>
-            <td class="celda-rda" data-materia="${materia}" data-rda="2" style="cursor: pointer; color: #0066cc; text-decoration: underline;" title="Haz clic para ver desglose">${Number(rda2).toFixed(2)}</td>
-            <td class="celda-rda" data-materia="${materia}" data-rda="3" style="cursor: pointer; color: #0066cc; text-decoration: underline;" title="Haz clic para ver desglose">${Number(rda3).toFixed(2)}</td>
+            <td class="celda-rda" data-materia="${materia}" data-rda="1" style="cursor: pointer; color: #0066cc; text-decoration: underline;" title="Haz clic para ver desglose y gráfica">${Number(rda1).toFixed(2)}</td>
+            <td class="celda-rda" data-materia="${materia}" data-rda="2" style="cursor: pointer; color: #0066cc; text-decoration: underline;" title="Haz clic para ver desglose y gráfica">${Number(rda2).toFixed(2)}</td>
+            <td class="celda-rda" data-materia="${materia}" data-rda="3" style="cursor: pointer; color: #0066cc; text-decoration: underline;" title="Haz clic para ver desglose y gráfica">${Number(rda3).toFixed(2)}</td>
             <td><strong style="color: #2c3e50;">${Number(promedioFinal).toFixed(2)}</strong></td>
         `;
         tablaBody.appendChild(fila);
@@ -50,37 +53,60 @@ function renderizarTablaPromedios() {
         celda.addEventListener("click", (e) => {
             const materia = e.currentTarget.getAttribute("data-materia");
             const rda = e.currentTarget.getAttribute("data-rda");
-            abrirDetalleRdaModal(materia, rda);
+            abrirDetalleRdaPantalla(materia, rda);
         });
     });
 }
 
-function configurarModalRda() {
-    const btnCerrar = document.getElementById("btn-cerrar-modal-rda");
-    const modal = document.getElementById("modal-detalle-rda");
+function configurarVistaDetalleRda() {
+    // Usamos delegación de eventos para capturar el botón dinámico de regresar
+    document.addEventListener("click", (e) => {
+        if (e.target && e.target.id === "btn-regresar-promedios") {
+            e.preventDefault();
 
-    if (btnCerrar && modal) {
-        btnCerrar.addEventListener("click", () => {
-            modal.style.display = "none";
-        });
-
-        // Cerrar también si hacen clic fuera del contenido del modal
-        window.addEventListener("click", (e) => {
-            if (e.target === modal) {
-                modal.style.display = "none";
+            // 1. Ocultar completamente el modal de estadísticas que muestra la pantalla blanca
+            const modalEstadisticas = document.getElementById("modal-estadisticas");
+            if (modalEstadisticas) {
+                modalEstadisticas.style.display = "none";
             }
-        });
-    }
+
+            // 2. Limpiar el contenido interno del detalle del RDA
+            const contenidoGeneral = document.getElementById("estadisticas-contenido-general");
+            if (contenidoGeneral) {
+                contenidoGeneral.innerHTML = "";
+            }
+
+            // 3. Asegurar que la vista de la tabla de promedios dentro de la sección se muestre correctamente
+            const vistaTablaPromedios = document.getElementById("vista-tabla-promedios");
+            if (vistaTablaPromedios) {
+                vistaTablaPromedios.style.display = "block";
+            }
+
+            const vistaDetalleRda = document.getElementById("vista-detalle-rda");
+            if (vistaDetalleRda) {
+                vistaDetalleRda.style.display = "none";
+            }
+            
+            // 4. Destruir la instancia de la gráfica de Chart.js para liberar memoria y evitar errores
+            if (typeof graficaDetalleRdaInstance !== 'undefined' && graficaDetalleRdaInstance) {
+                graficaDetalleRdaInstance.destroy();
+                graficaDetalleRdaInstance = null;
+            }
+
+            // 5. Re-renderizar la tabla de promedios para refrescar los datos del dashboard
+            if (typeof renderizarTablaPromedios === 'function') {
+                renderizarTablaPromedios();
+            }
+        }
+    });
 }
 
-function abrirDetalleRdaModal(materia, numeroRda) {
-    const modal = document.getElementById("modal-detalle-rda");
-    const titulo = document.getElementById("modal-rda-titulo");
-    const contenido = document.getElementById("modal-rda-contenido");
+function abrirDetalleRdaPantalla(materia, numeroRda) {
+    const vistaPrincipal = document.getElementById("vista-tabla-promedios");
+    const vistaDetalle = document.getElementById("vista-detalle-rda");
+    const contenidoGeneral = document.getElementById("estadisticas-contenido-general");
 
-    if (!modal || !titulo || !contenido) return;
-
-    titulo.textContent = `Desglose de RDA ${numeroRda} - ${materia}`;
+    if (!vistaPrincipal || !vistaDetalle || !contenidoGeneral) return;
 
     // Obtenemos actividades globales
     const listaActividades = typeof obtenerActividadesGlobales === 'function' ? obtenerActividadesGlobales() : [];
@@ -91,10 +117,17 @@ function abrirDetalleRdaModal(materia, numeroRda) {
     );
 
     if (actividadesRda.length === 0) {
-        contenido.innerHTML = `<p style="text-align: center; padding: 20px; color: #666;">No hay actividades registradas para este RDA en ${materia}.</p>`;
+        contenidoGeneral.innerHTML = `
+            <button type="button" id="btn-regresar-promedios" class="btn btn-excel" style="margin-bottom: 15px;">← Regresar a Promedios</button>
+            <h3>Desglose de RDA ${numeroRda} - ${materia}</h3>
+            <p style="text-align: center; padding: 20px; color: #666;">No hay actividades registradas para este RDA en ${materia}.</p>
+        `;
     } else {
-        // Agrupar actividades por Criterio para calcular sus promedios individuales
+        // Agrupar actividades por Criterio para calcular sus promedios individuales y alimentar la gráfica
         const criteriosMap = {};
+        const etiquetasGrafica = [];
+        const valoresGrafica = [];
+
         actividadesRda.forEach(act => {
             const critKey = act.criterio || '1';
             if (!criteriosMap[critKey]) {
@@ -104,7 +137,17 @@ function abrirDetalleRdaModal(materia, numeroRda) {
         });
 
         let html = `
-            <p style="margin-bottom: 15px; font-size: 0.95em; color: #555;">A continuación se muestran las actividades, notas y promedios por criterio de este RDA:</p>
+            <!-- Botón de regresar integrado dinámicamente -->
+            <button type="button" id="btn-regresar-promedios" class="btn btn-excel" style="margin-bottom: 15px;">← Regresar a Promedios</button>
+            
+            <h3 style="margin-bottom: 15px; color: #2c3e50;">Desglose de RDA ${numeroRda} - ${materia}</h3>
+            
+            <!-- Contenedor de la Gráfica de Criterios -->
+            <div class="grafica-contenedor" style="margin-bottom: 25px; height: 280px; position: relative;">
+                <canvas id="graficaCriteriosRda"></canvas>
+            </div>
+
+            <p style="margin-bottom: 15px; font-size: 0.95em; color: #555;">Actividades, notas y promedios detallados por criterio:</p>
             <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                 <thead>
                     <tr style="background-color: #f2f2f2; text-align: left;">
@@ -118,7 +161,7 @@ function abrirDetalleRdaModal(materia, numeroRda) {
                 <tbody>
         `;
 
-        // Recorrer cada criterio, pintar sus actividades y calcular su promedio final de criterio en escala 0-100
+        // Recorrer cada criterio, pintar actividades y calcular promedios
         Object.keys(criteriosMap).sort().forEach(critKey => {
             const actsCriterio = criteriosMap[critKey];
             let sumaNotas = 0;
@@ -140,11 +183,15 @@ function abrirDetalleRdaModal(materia, numeroRda) {
                 `;
             });
 
-            // Calcular el promedio del criterio sobre 50 y multiplicarlo por 2 para llevarlo a la escala de 0 a 100
+            // Promedio del criterio sobre 50 y llevado a escala 0-100
             const promedioCriterioBase = cantidadValidas > 0 ? (sumaNotas / cantidadValidas) : 0;
             const promedioCriterioEscala100 = promedioCriterioBase * 2;
 
-            // Fila de resumen con el promedio final del criterio en escala 0-100
+            // Guardamos los datos para estructurar la gráfica de Chart.js
+            etiquetasGrafica.push(`Criterio ${critKey}`);
+            valoresGrafica.push(promedioCriterioEscala100.toFixed(2));
+
+            // Fila de resumen de criterio
             html += `
                 <tr style="background-color: #eef2f7; font-weight: bold;">
                     <td colspan="5" style="padding: 8px; border: 1px solid #ddd; text-align: right; color: #1e293b;">
@@ -158,8 +205,44 @@ function abrirDetalleRdaModal(materia, numeroRda) {
                 </tbody>
             </table>
         `;
-        contenido.innerHTML = html;
+        contenidoGeneral.innerHTML = html;
+
+        // Renderizar la gráfica de barras de los criterios usando Chart.js
+        setTimeout(() => {
+            const canvasCriterios = document.getElementById("graficaCriteriosRda");
+            if (canvasCriterios) {
+                if (graficaDetalleRdaInstance) {
+                    graficaDetalleRdaInstance.destroy();
+                }
+
+                graficaDetalleRdaInstance = new Chart(canvasCriterios, {
+                    type: 'bar',
+                    data: {
+                        labels: etiquetasGrafica,
+                        datasets: [{
+                            label: `Rendimiento por Criterio (Escala 0-100)`,
+                            data: valoresGrafica,
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+        }, 50);
     }
 
-    modal.style.display = "flex";
+    // Ocultar la tabla principal y mostrar la nueva pantalla de estadísticas completa
+    vistaPrincipal.style.display = "none";
+    vistaDetalle.style.display = "block";
 }
