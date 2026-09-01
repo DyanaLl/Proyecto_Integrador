@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Académico</title>
     <link rel="stylesheet" href="Estilos.css">
 </head>
-
 <body>
     <div class="app-layout">
-        <!-- Barra lateral de navegación con el ítem 6 restaurado -->
+        <!-- Barra lateral de navegación -->
         <nav id="sidebar" class="sidebar" aria-label="Navegación principal">
             <div class="sidebar-top">
                 <button type="button" id="btn-toggle-sidebar" class="sidebar-btn" title="Menú">☰</button>
@@ -20,7 +18,6 @@
                 <button type="button" id="nav-promedios" class="sidebar-btn" title="Detalle y Gráficas por Materia">📊</button>
                 <button type="button" id="nav-simulador" class="sidebar-btn" title="Simulador de Notas">📈</button>
             </div>
-
             <div class="sidebar-bottom">
                 <!-- Zona inferior optimizada -->
             </div>
@@ -30,7 +27,8 @@
         <main class="contenedor-principal">
             <div class="contenedor">
 
-                <!-- Modal: Registro de Actividades -->
+                <!-- Pantallas Ocultas -->
+                <!-- Pantalla: Registro de Actividades -->
                 <div id="modal-registro" class="modal-mensaje oculto-inicial">
                     <div class="modal-contenido">
                         <div class="cabecera-modal-historial">
@@ -129,7 +127,7 @@
                     </div>
                 </div>
 
-                <!-- Modal: Historial Académico Completo -->
+                <!-- Pantalla: Historial Académico Completo -->
                 <div id="modal-historial-academico" class="modal-mensaje oculto-inicial">
                     <div class="modal-contenido">
                         <div class="cabecera-modal-historial">
@@ -165,7 +163,7 @@
                     </div>
                 </div>
 
-                <!-- Modal: Simulador de Notas -->
+                <!-- Pantalla: Simulador de Notas -->
                 <div id="modal-simulador" class="modal-mensaje oculto-inicial">
                     <div class="modal-contenido">
                         <div class="cabecera-modal-historial">
@@ -253,7 +251,7 @@
                     </div>
                 </div>
 
-                <!-- Modal: Estadísticas -->
+                <!-- Pantalla: Estadísticas -->
                 <div id="modal-estadisticas" class="modal-mensaje oculto-inicial">
                     <div class="modal-contenido modal-estadisticas-ancho">
                         <div class="cabecera-modal-historial">
@@ -263,7 +261,7 @@
                     </div>
                 </div>
 
-                <!-- Encabezado de la página modificado con la imagen y línea vertical -->
+                <!-- Encabezado de la Página -->
                 <header class="encabezado" id="seccion-encabezado" style="display: flex; align-items: center; justify-content: space-between;">
                     <div class="encabezado-texto" style="flex: 1;">
                         <h1>Ágora Dashboard</h1>
@@ -407,7 +405,7 @@
         </main>
     </div>
 
-    <!-- Modales Informativos y de Alerta -->
+    <!-- Modales Informativos y de Alerta del Sistema -->
     <div id="modal-mensaje" class="modal-mensaje">
         <div class="modal-contenido">
             <h3>La página dice</h3>
@@ -427,7 +425,7 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts de la Aplicación -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="Funciones/Calculos.js"></script>
@@ -438,6 +436,5 @@
     <script src="Funciones/Registro.js"></script>
     <script src="Funciones/Promedios.js"></script>
     <script src="Funciones/Main.js"></script>
-
 </body>
 </html>

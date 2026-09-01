@@ -1,11 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-    renderizarTablaPromedios();
-    configurarVistaDetalleRda();
-});
-
 // Variable global para controlar la instancia de la gráfica en el detalle y evitar errores de superposición
 let graficaDetalleRdaInstance = null;
 
+// Pinta la tabla principal de promedios por materia y RDA
 function renderizarTablaPromedios() {
     const tablaBody = document.getElementById("tabla-promedios-body");
     if (!tablaBody) return;
@@ -58,6 +54,7 @@ function renderizarTablaPromedios() {
     });
 }
 
+// Configura los eventos para alternar entre la vista de promedios y el detalle de RDA
 function configurarVistaDetalleRda() {
     // Listener general por si llegara a requerirse en otro contexto, sin romper nada
     document.addEventListener("click", (e) => {
@@ -96,6 +93,7 @@ function configurarVistaDetalleRda() {
     });
 }
 
+// Muestra la vista detallada de un RDA específico incluyendo su tabla por criterios y gráfica
 function abrirDetalleRdaPantalla(materia, numeroRda) {
     const vistaPrincipal = document.getElementById("vista-tabla-promedios");
     const vistaDetalle = document.getElementById("vista-detalle-rda");
@@ -242,3 +240,9 @@ function abrirDetalleRdaPantalla(materia, numeroRda) {
     if (vistaPrincipal) vistaPrincipal.style.display = "none";
     if (vistaDetalle) vistaDetalle.style.display = "block";
 }
+
+// Configura los escuchadores principales al cargar el DOM
+document.addEventListener("DOMContentLoaded", () => {
+    renderizarTablaPromedios();
+    configurarVistaDetalleRda();
+});

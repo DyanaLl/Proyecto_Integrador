@@ -1,30 +1,22 @@
 let actividades = [];
 
+// Retorna el arreglo global completo de actividades registradas
 function obtenerActividadesGlobales() {
     return actividades;
 }
 
-/**
- * Permite agregar una actividad al arreglo global.
- */
+/*** Permite agregar una actividad al arreglo global.*/
 function agregarActividadGlobal(actividad) {
     actividades.push(actividad);
 }
 
-// =========================================================================
-// OBTENCIÓN DE DATOS PARA SELECTS Y DESPLEGABLES
-// =========================================================================
-
-/**
- * Lista base predeterminada de materias del plan académico.
- */
+/*** Lista base predeterminada de materias del plan académico.*/
 const MATERIAS_PREDETERMINADAS = [
     "Álgebra",
     "Habilidades Lógico-Matemáticas"
 ];
 
-/**
- * Retorna la lista única de materias registradas en la base de datos o arreglo global,
+/*** Retorna la lista única de materias registradas en la base de datos o arreglo global,
  * combinadas con las materias predeterminadas de la institución.
  * @returns {string[]} Lista de nombres de materias sin duplicados.
  */
@@ -66,10 +58,6 @@ function obtenerListaCriterios(materiaId, rdaId) {
     if (criteriosMateria.length === 0) return [1, 2, 3];
     return [...new Set(criteriosMateria)].sort((a, b) => a - b);
 }
-
-// =========================================================================
-// FILTROS Y PROCESAMIENTO DE ACTIVIDADES
-// =========================================================================
 
 /**
  * Filtra las actividades según Materia, RDA y Criterio específicos.
@@ -138,11 +126,7 @@ function calcularPromedioCriterioActividades(listaActividades) {
         return sumaNotas / listaActividades.length;
     }
 }
-
-// =========================================================================
-// CÁLCULOS OFICIALES DE PROMEDIO POR RDA Y MATERIA
-// =========================================================================
-
+// Calcula RDA
 function calcularPromedioRDA(materia, numeroRda) {
     const actC1 = obtenerActividadesPorRDAyCriterio(materia, numeroRda, 1);
     const actC2 = obtenerActividadesPorRDAyCriterio(materia, numeroRda, 2);
@@ -191,6 +175,8 @@ function calcularPromedioRDA(materia, numeroRda) {
     return Number(totalRda.toFixed(2));
 }
 
+// CÁLCULO DE PROMEDIO FINAL DE MATERIA
+
 function calcularPromedioFinalMateria(materiaOrRda1, rda2Param, rda3Param) {
     let promedios = [];
 
@@ -231,9 +217,7 @@ function calcularPromedioFinalMateria(materiaOrRda1, rda2Param, rda3Param) {
     return Number(promedioFinal.toFixed(2));
 }
 
-// =========================================================================
-// SIMULADOR DE NOTAS Y HERRAMIENTAS OBJETIVO
-// =========================================================================
+// SIMULACIÓN DE NOTA FINAL POR CRITERIOS
 
 function simularNotaFinalPorCriterios(notasC1, notasC2, notasC3) {
     const promediarYNormalizar = (lista) => {

@@ -1,6 +1,6 @@
-
 let detallesAlertasActuales = [];
 
+/** Evalúa el semáforo académico según tareas y promedios. */
 function evaluarSemaforoAcademico() {
     const luzRoja = document.getElementById("luz-roja");
     const luzAmarilla = document.getElementById("luz-amarilla");
@@ -12,7 +12,7 @@ function evaluarSemaforoAcademico() {
     if (!luzRoja || !luzAmarilla || !luzVerde) return;
     if (typeof actividades === "undefined" || !Array.isArray(actividades)) return;
 
-    // 1. Resetear luces (apagadas por defecto)
+    // Resetear luces (apagadas por defecto)
     luzRoja.style.backgroundColor = "#555";
     luzRoja.style.boxShadow = "none";
     luzAmarilla.style.backgroundColor = "#555";
@@ -26,7 +26,7 @@ function evaluarSemaforoAcademico() {
     let hayRojo = false;
     let hayAmarillo = false;
 
-    // 2. Evaluar Condiciones Individuales de Tareas (Fechas y Vencimientos)
+    // Evaluar Condiciones Individuales de Tareas (Fechas y Vencimientos)
     actividades.forEach(actividad => {
         const estadoNorm = String(actividad.estado || "").toLowerCase().trim();
         const nombreActividad = actividad.tema || actividad.nombre || 'Sin nombre';
@@ -61,7 +61,7 @@ function evaluarSemaforoAcademico() {
         }
     });
 
-    // 3. Evaluar Impacto y Promedios Reales por Materia y sus RDA agrupados
+    // Evaluar Impacto y Promedios Reales por Materia y sus RDA agrupados
     const materiasUnicas = [...new Set(actividades.map(a => a.materia).filter(Boolean))];
 
     materiasUnicas.forEach(materia => {
@@ -82,7 +82,7 @@ function evaluarSemaforoAcademico() {
             if (tieneNotas) {
                 if (promedioOficialRDA > 0 && promedioOficialRDA < 60) {
                     rdasMenoresA60++;
-                } else if (promedioOficialRDA >= 60 && promedioOficialRDA < 70) { // Rango exacto 60 <= RDA < 70
+                } else if (promedioOficialRDA >= 60 && promedioOficialRDA < 70) {
                     rdasEntre60y70++;
                 }
             }
@@ -106,7 +106,7 @@ function evaluarSemaforoAcademico() {
 
     detallesAlertasActuales = Array.from(alertasSet);
 
-    // 4. Encender Luces del Semáforo
+    // Encender Luces del Semáforo y actualizar mensajes
     if (hayRojo) {
         luzRoja.style.backgroundColor = "#ef4444";
         luzRoja.style.boxShadow = "0 0 10px #ef4444";

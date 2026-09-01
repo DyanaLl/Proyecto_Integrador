@@ -1,14 +1,4 @@
-// =========================================================
-// MÓDULO: VALIDACIONES DE ENTRADA
-// =========================================================
-// Su trabajo es limpiar, verificar y preparar las entradas de texto del usuario para que
-// no se rompa el programa ni genere errores aunque no se ingrese el dato solicitado. 
-
-/**
- * Función general coordinadora que integra las validaciones individuales
- * para los campos del formulario de actividad.
- * @returns {boolean} - true si el formulario es completamente válido, false si falla alguna regla.
- */
+/** Valida de forma integral el formulario de actividades.*/
 function validarFormularioActividad() {
     const materia = document.getElementById("materia")?.value;
     const rda = document.getElementById("rda")?.value;
@@ -18,60 +8,58 @@ function validarFormularioActividad() {
     const fechaLimite = document.getElementById("fechaLimite")?.value;
     const hora = document.getElementById("hora")?.value;
     const ponderacionEspecial = document.getElementById("ponderacionEspecial")?.value;
-    
-    // CORRECCIÓN: Capturamos el estado del formulario para enviarlo a la validación de la nota
     const estado = document.getElementById("estado")?.value;
 
-    // 1. Validar materia
+    // Validar materia
     const valMateria = validarTextoObligatorio(materia, "La materia");
     if (!valMateria.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valMateria.mensaje);
         return false;
     }
 
-    // 2. Validar RDA
+    // Validar RDA
     const valRda = validarRda(rda);
     if (!valRda.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valRda.mensaje);
         return false;
     }
 
-    // 3. Validar Criterio
+    // Validar Criterio
     const valCriterio = validarCriterio(criterio);
     if (!valCriterio.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valCriterio.mensaje);
         return false;
     }
 
-    // 4. Validar Tema / Actividad
+    // Validar Tema / Actividad
     const valTema = validarTextoObligatorio(tema, "El tema de la actividad");
     if (!valTema.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valTema.mensaje);
         return false;
     }
 
-    // 5. Validar Nota (Ahora pasamos correctamente la variable 'estado')
+    // Validar Nota
     const valNota = validarNotaActividad(nota, estado);
     if (!valNota.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valNota.mensaje);
         return false;
     }
 
-    // 6. Validar Fecha límite
+    // Validar Fecha límite
     const valFecha = validarFecha(fechaLimite);
     if (!valFecha.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valFecha.mensaje);
         return false;
     }
 
-    // 7. Validar Hora
+    // Validar Hora
     const valHora = validarHora(hora);
     if (!valHora.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valHora.mensaje);
         return false;
     }
 
-    // 8. Validar Ponderación Especial (opcional)
+    // Validar Ponderación Especial
     const valPonderacion = validarPonderacionEspecial(ponderacionEspecial);
     if (!valPonderacion.esValido) {
         if (typeof mostrarMensaje === "function") mostrarMensaje(valPonderacion.mensaje);
@@ -81,12 +69,9 @@ function validarFormularioActividad() {
     return true;
 }
 
+// FUNCIONES AUXILIARES DE VALIDACIÓN ESPECÍFICA
 
-// =========================================================
-// 2. FUNCIONES AUXILIARES DE VALIDACIÓN ESPECÍFICA
-// =========================================================
-
-// TABLA - REGISTRO / SIMULADOR DE NOTAS
+/** Valida la nota de una actividad según su estado. */
 function validarNotaActividad(valor, estadoStr = "") {
     const estadoNormalizado = String(estadoStr || "")
         .normalize("NFD")
@@ -96,12 +81,10 @@ function validarNotaActividad(valor, estadoStr = "") {
 
     const esPendiente = estadoNormalizado.includes("pendiente");
 
-    // Si está pendiente y la nota está vacía, se acepta de inmediato como válido
     if ((valor === null || valor === undefined || String(valor).trim() === "") && esPendiente) {
         return { esValido: true, valor: null };
     }
 
-    // Para cualquier otro caso (o si no está pendiente), se valida el número normalmente
     let numero = Number(valor);
     if (valor === null || valor === undefined || String(valor).trim() === "" || isNaN(numero) || numero < 0 || numero > 50) {
         return { esValido: false, mensaje: "La nota de la actividad debe ser un número válido entre 0 y 50." };
@@ -109,9 +92,7 @@ function validarNotaActividad(valor, estadoStr = "") {
     return { esValido: true, valor: numero };
 }
 
-/**
- * Valida el Promedio Objetivo o notas hipotéticas (Rango: 0 a 100)
- */
+/** Valida el promedio objetivo o notas hipotéticas (0-100). */
 function validarPromedioObjetivo(valor) {
     let numero = Number(valor);
     if (valor === null || valor === undefined || String(valor).trim() === "" || isNaN(numero) || numero < 0 || numero > 100) {
@@ -120,9 +101,7 @@ function validarPromedioObjetivo(valor) {
     return { esValido: true, valor: numero };
 }
 
-/**
- * Valida que el RDA sea estrictamente 1, 2 o 3
- */
+/** Valida que el RDA sea 1, 2 o 3. */
 function validarRda(rda) {
     let num = Number(rda);
     if (![1, 2, 3].includes(num)) {
@@ -131,9 +110,7 @@ function validarRda(rda) {
     return { esValido: true, valor: num };
 }
 
-/**
- * Valida que el Criterio sea estrictamente 1, 2 o 3
- */
+/** Valida que el criterio sea 1, 2 o 3. */
 function validarCriterio(criterio) {
     let num = Number(criterio);
     if (![1, 2, 3].includes(num)) {
@@ -142,9 +119,7 @@ function validarCriterio(criterio) {
     return { esValido: true, valor: num };
 }
 
-/**
- * Valida que un campo de texto obligatorio no esté vacío
- */
+/** Valida que un campo de texto obligatorio no esté vacío. */
 function validarTextoObligatorio(texto, nombreCampo = "Este campo") {
     if (!texto || texto.trim() === "") {
         return { esValido: false, mensaje: `${nombreCampo} es obligatorio y no puede estar vacío.` };
@@ -152,9 +127,7 @@ function validarTextoObligatorio(texto, nombreCampo = "Este campo") {
     return { esValido: true, valor: texto.trim() };
 }
 
-/**
- * Valida que la fecha ingresada tenga un formato coherente y real
- */
+/** Valida el formato y existencia de una fecha. */
 function validarFecha(fechaStr) {
     if (!fechaStr || fechaStr.trim() === "") {
         return { esValido: true, valor: null };
@@ -166,9 +139,7 @@ function validarFecha(fechaStr) {
     return { esValido: true, valor: fechaStr };
 }
 
-/**
- * Valida el formato horario (ej. HH:MM)
- */
+/** Valida el formato de hora HH:MM. */
 function validarHora(horaStr) {
     if (!horaStr || horaStr.trim() === "") {
         return { esValido: true, valor: null };
@@ -180,9 +151,7 @@ function validarHora(horaStr) {
     return { esValido: true, valor: horaStr.trim() };
 }
 
-/**
- * Valida la ponderación especial cuando corresponda (Rango: 0 a 100)
- */
+/** Valida la ponderación especial (0-100). */
 function validarPonderacionEspecial(ponderacion) {
     if (ponderacion === null || ponderacion === undefined || String(ponderacion).trim() === "") {
         return { esValido: true, valor: null };
@@ -194,9 +163,7 @@ function validarPonderacionEspecial(ponderacion) {
     return { esValido: true, valor: numero };
 }
 
-/**
- * Valida que el número de actividades faltantes sea un entero mayor que 0
- */
+/** Valida que la cantidad de actividades faltantes sea un entero mayor a 0. */
 function validarCantidadActividadesFaltantes(cantidad) {
     let numero = Number(cantidad);
     if (isNaN(numero) || !Number.isInteger(numero) || numero <= 0) {

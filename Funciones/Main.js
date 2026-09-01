@@ -1,9 +1,4 @@
-/**
- * =========================================================================
- * ARCHIVO PRINCIPAL DE CONTROL (Main.js)
- * Sistema de Notas Académicas - Módulo del Simulador y Control Global - Semáforo
- * =========================================================================
- */
+// Inicializa todos los módulos principales al cargar el DOM del documento
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Sistema de Notas Académicas inicializado correctamente.");
 
@@ -20,9 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarBotonMenuToggle();
 });
 
-/**
- * Configura el comportamiento de minimizar/expandir la barra lateral con el botón de las tres líneas.
- */
+// Alterna la visibilidad y el estado expandido o colapsado de la barra lateral
 function configurarBotonMenuToggle() {
     const btnToggle = document.getElementById("btn-toggle-sidebar");
     const sidebar = document.querySelector(".sidebar");
@@ -35,9 +28,8 @@ function configurarBotonMenuToggle() {
     }
 }
 
-/**
- * Configura el estado inicial del simulador.
- */
+
+// Simulador
 function inicializarSimulador() {
     if (typeof cambiarModo === "function") {
         cambiarModo();
@@ -46,9 +38,7 @@ function inicializarSimulador() {
     }
 }
 
-/**
- * Conecta los event listeners necesarios para el funcionamiento del simulador.
- */
+// Vincula los eventos de clic y cambios de selección dentro del simulador
 function vincularEventosSimulador() {
     const btnCalcular = document.getElementById("btn-calcular");
     if (btnCalcular) {
@@ -105,9 +95,7 @@ function vincularEventosSimulador() {
     }
 }
 
-/**
- * Evalúa y configura los elementos visuales del Semáforo Académico y sus modales.
- */
+// Semáforo
 function evaluarSemaforoAcademicoGlobal() {
     if (typeof evaluarSemaforoAcademico === "function") {
         evaluarSemaforoAcademico();
@@ -142,9 +130,9 @@ function evaluarSemaforoAcademicoGlobal() {
     }
 }
 
-/**
- * Vincula acciones generales del panel principal (importación de Excel, botón de inicio y registro).
- */
+// INTERFAZ PRINCIPAL Y NAVEGACIÓN
+
+// Vincula los eventos globales de carga de archivos Excel y accesos del menú lateral
 function vincularEventosInterfazPrincipal() {
     const inputExcel = document.getElementById('archivo-excel');
     if (inputExcel) {
@@ -152,7 +140,7 @@ function vincularEventosInterfazPrincipal() {
             if (typeof leerExcel === 'function') {
                 leerExcel(event);
             } else {
-                console.error("La función leerExcel no está definida.");
+                console.error("La función leerExcel não está definida.");
             }
         });
     }
@@ -173,7 +161,6 @@ function vincularEventosInterfazPrincipal() {
         });
     }
 
-    // Redirige al ítem 5 (Estadísticas / Promedios) al hacer clic en las celdas de notas
     const celdasPromedioNotas = document.querySelectorAll(".tabla-promedios td a, .tabla-promedios span, #tabla-promedios td");
     
     celdasPromedioNotas.forEach(elemento => {
@@ -214,9 +201,7 @@ function vincularEventosInterfazPrincipal() {
     }
 }
 
-/**
- * Configuración unificada de los botones de registro y navegación auxiliar.
- */
+// Configura de forma unificada los botones globales de adición, inicio y historial
 function configurarBotonMasGlobal() {
     const botonesMas = document.querySelectorAll("#btn-mostrar-registro, #nav-registro");
     const btnInicio = document.getElementById("nav-inicio");
@@ -254,9 +239,9 @@ function configurarBotonMasGlobal() {
     }
 }
 
-/**
- * Restaura la vista inicial del Dashboard ocultando todas las pantallas secundarias y activando la casita.
- */
+// GESTIÓN DE VISTAS Y PANTALLAS
+
+// Restaura la vista principal del panel ocultando los modales activos
 function restaurarVistaDashboard() {
     alternarVistaRegistroPrincipal(false);
     alternarVistaHistorialCompleto(false);
@@ -268,9 +253,7 @@ function restaurarVistaDashboard() {
     if (btnInicio) btnInicio.classList.add("activo");
 }
 
-/**
- * Alterna dinámicamente la vista entre el Dashboard principal y la pantalla completa de Registro.
- */
+// Muestra u oculta la pantalla de registro principal del sistema
 function alternarVistaRegistroPrincipal(mostrarRegistro) {
     const modalRegistro = document.getElementById("modal-registro");
     const modalHistorialCompleto = document.getElementById("modal-historial-academico");
@@ -315,9 +298,7 @@ function alternarVistaRegistroPrincipal(mostrarRegistro) {
     }
 }
 
-/**
- * Alterna dinámicamente la vista entre el Dashboard principal y la pantalla completa del Historial Académico.
- */
+// Muestra u oculta la vista completa del historial académico general
 function alternarVistaHistorialCompleto(mostrarHistorial) {
     const modalHistorialCompleto = document.getElementById("modal-historial-academico");
     const modalRegistro = document.getElementById("modal-registro");
@@ -362,9 +343,7 @@ function alternarVistaHistorialCompleto(mostrarHistorial) {
     }
 }
 
-/**
- * Alterna dinámicamente la vista entre el Dashboard principal y la pantalla completa del Simulador.
- */
+// Muestra u oculta la pantalla interactiva del módulo de simulación
 function alternarVistaSimulador(mostrarSimulador) {
     const modalSimulador = document.getElementById("modal-simulador");
     const modalRegistro = document.getElementById("modal-registro");
@@ -409,9 +388,7 @@ function alternarVistaSimulador(mostrarSimulador) {
     }
 }
 
-/**
- * Alterna dinámicamente la vista hacia el módulo de Promedios y Estadísticas.
- */
+// Muestra u oculta el módulo de estadísticas y promedios académicos
 function alternarVistaPromedios(mostrarPromedios) {
     const modalEstadisticas = document.getElementById("modal-estadisticas");
     const modalRegistro = document.getElementById("modal-registro");
@@ -456,9 +433,7 @@ function alternarVistaPromedios(mostrarPromedios) {
     }
 }
 
-/**
- * Función auxiliar para mostrar errores de forma visual en la caja de resultados del simulador.
- */
+// Imprime mensajes de error informativos en la sección de resultados del simulador
 function mostrarMensajeError(mensaje) {
     const textoResultado = document.getElementById("texto-resultado");
     if (textoResultado) {

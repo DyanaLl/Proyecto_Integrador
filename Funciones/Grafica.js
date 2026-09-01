@@ -1,22 +1,18 @@
-// ==========================================
-// MÓDULO DE GRÁFICA ESTADÍSTICA (Grafica.js)
-// ==========================================
-
 let miGraficaMaterias = null;
 
-// Función para calcular los promedios finales idénticos a la tabla de promedios
+// Calcula los promedios finales por materia idénticos a la tabla de promedios
 function calcularPromediosPorMateriaGrafica() {
     let promediosPorMateria = {};
 
-    // Verificamos si existe el arreglo global 'actividades' desde calculos.js
+    // Obtiene la lista de actividades desde el ámbito global disponible
     let listaActividades = typeof obtenerActividadesGlobales === 'function' ? obtenerActividadesGlobales() : (typeof actividades !== 'undefined' ? actividades : []);
 
     if (Array.isArray(listaActividades) && listaActividades.length > 0) {
-        // Extraer las materias únicas registradas de forma automática tal cual lo hace promedios.js
+        // Extrae las materias únicas registradas de forma automática
         let materiasUnicas = [...new Set(listaActividades.map(act => act.materia))];
 
         materiasUnicas.forEach(materia => {
-            // Obtenemos el promedio final delegando el cálculo 100% a calculos.js para respetar ponderaciones y RDAs activos
+            // Obtiene el promedio final delegando el cálculo a calculos.js
             const promedioFinal = typeof calcularPromedioFinalMateria === 'function'
                 ? calcularPromedioFinalMateria(materia)
                 : 0;
@@ -28,7 +24,7 @@ function calcularPromediosPorMateriaGrafica() {
     return promediosPorMateria;
 }
 
-// Función principal para renderizar o actualizar la gráfica de barras
+// Renderiza o actualiza la gráfica de barras con los datos calculados
 function inicializarGraficaMaterias() {
     let datosCalculados = calcularPromediosPorMateriaGrafica();
 
@@ -40,12 +36,12 @@ function inicializarGraficaMaterias() {
 
     let contexto = elementoCanvas.getContext('2d');
 
-    // Destruir instancia previa para evitar duplicados o errores de renderizado
+    // Destruye la instancia previa para evitar duplicados o errores de renderizado
     if (miGraficaMaterias instanceof Chart) {
         miGraficaMaterias.destroy();
     }
 
-    // Creación de la gráfica de barras sincronizada con la escala 0-100 de la tabla
+    // Crea la gráfica de barras sincronizada con la escala del sistema
     miGraficaMaterias = new Chart(contexto, {
         type: 'bar',
         data: {
@@ -63,9 +59,9 @@ function inicializarGraficaMaterias() {
             scales: {
                 x: {
                     ticks: {
-                        maxRotation: 0, // Evita que los nombres se inclinen feo de lado
+                        maxRotation: 0,
                         minRotation: 0,
-                        autoSkip: false  // Asegura que se muestren todas las materias
+                        autoSkip: false
                     }
                 },
                 y: {
@@ -90,12 +86,12 @@ function inicializarGraficaMaterias() {
     });
 }
 
-// Escuchar eventos personalizados por si el dashboard o la tabla se actualizan dinámicamente
+// Escucha eventos personalizados para actualizar la gráfica de forma dinámica
 window.addEventListener('actualizarDashboard', function () {
     inicializarGraficaMaterias();
 });
 
-// Ejecutar al cargar la página
+// Inicializa la gráfica al cargar completamente la página
 window.addEventListener('load', function () {
     setTimeout(inicializarGraficaMaterias, 100);
 });
